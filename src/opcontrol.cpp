@@ -15,14 +15,11 @@
  */
 void opcontrol()
 {
-	Chassis c(1, 2, 3, 4);
-	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::Motor left_mtr(1);
-	pros::Motor right_mtr(2);
+
 	while (true)
 	{
-		int left = master.get_analog(ANALOG_LEFT_Y);
-		int right = master.get_analog(ANALOG_RIGHT_Y);
+		chassis.driverControl();
+		intake.driverControl();
 
 		pros::delay(20);
 	}
