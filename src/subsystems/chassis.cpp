@@ -23,18 +23,38 @@ void Chassis::moveRightDriveVoltage(int voltage)
 {
   frontRightDrive.move_voltage(voltage);
   backRightDrive.move_voltage(voltage);
+  if (voltage == 0)
+  {
+    frontRightDrive.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
+    backRightDrive.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
+  }
 }
 
 void Chassis::moveLeftDriveVoltage(int voltage)
 {
   frontLeftDrive.move_voltage(voltage);
   backLeftDrive.move_voltage(voltage);
+  if (voltage == 0)
+  {
+    frontLeftDrive.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
+    backLeftDrive.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
+  }
+}
+
+void Chassis::addMovement(DriveMovement dm)
+{
+  //movements.push_back(dm);
 }
 
 void Chassis::driverControl()
 {
   moveRightDrive(master.get_analog(ANALOG_LEFT_Y));
   moveLeftDrive(master.get_analog(ANALOG_RIGHT_Y));
+}
+
+void Chassis::deleteFirstMovement()
+{
+  movements.erase(movements.begin());
 }
 
 void Chassis::completeMovements()
@@ -47,7 +67,22 @@ void Chassis::completeMovements()
     {
       if (turnToTarget(dm.getTargetAngle(), dm.getSpeedDeadband(), dm.getKP()) == true)
       {
-        movements.erase(movements.begin());
+
+        deleteFirstMovement();
+        //Find way to erase from movements here
+        //For some reason it required me to make the deletion a seperate method.  That probably
+        //isn't good, so try to figure out why it didn't like the following line being in both
+        //place: movements.erase(movements.begin())
+      }
+    }
+    else if (dm.getMovementType() == DRIVE_MOVEMENT_LINE)
+    {
+      if (driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(),
+                       dm.getKP()) == true)
+      {
+        deleteFirstMovement();
+        //movements.erase(movements.begin());
+        //This is the other spot the line used to be
       }
     }
   }
@@ -58,8 +93,19 @@ void Chassis::sensorInit()
   //reset encoders, gyros, etc for drive base here
 }
 
+bool Chassis::driveToPoint(double x, double y, int speedDeadband, int kp)
+{
+  //Insert code for driving to a point with odometry here
+  //This code should dynamically update its path if external factors cause the robot to
+  //get off course.
+  // Look at motion profiling concepts for this
+}
+
 bool Chassis::turnToTarget(double targetAngle, int speedDeadband, int kp)
 {
+
+  //This function is still missing shortest path addition to choose which direction
+  //is the quickest to reach desired angle
   int tolerance = 5;
   float scaledAngle = targetAngle * GYRO_SCALE;
   int error = (scaledAngle * 10.0) - gyro.get_value();

@@ -17,15 +17,21 @@ private:
   int speedDeadband;
   double kp;
 
+  double targetX;
+  double targetY;
+
 public:
   DriveMovement(double targetAngle);
-  DriveMovement(double x, double y, double targetAngle);
+  DriveMovement(double x, double y);
 
   double getTargetAngle();
 
   int getMovementType();
   int getSpeedDeadband();
   double getKP();
+
+  double getTargetX();
+  double getTargetY();
 
   void setSpeedDeadband(int deadband);
   void setKP(double value);

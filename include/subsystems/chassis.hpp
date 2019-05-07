@@ -30,10 +30,13 @@ public:
   void moveRightDriveVoltage(int voltage);
   void moveLeftDriveVoltage(int voltage);
 
+  void addMovement(DriveMovement dm);
   void driverControl();
+  void deleteFirstMovement();
   void completeMovements();
   void sensorInit();
 
+  bool driveToPoint(double x, double y, int speedDeadband, int kp);
   bool turnToTarget(double targetAngle, int speedDeadband, int kp);
 };
 

@@ -15,6 +15,9 @@
  */
 void opcontrol()
 {
+	DriveMovement dm1(45);
+	dm1.setKP(19);
+	dm1.setSpeedDeadband(5000);
 
 	while (true)
 	{

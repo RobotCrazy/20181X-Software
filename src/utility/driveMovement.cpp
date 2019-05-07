@@ -9,6 +9,15 @@ DriveMovement::DriveMovement(double angle)
   targetAngle = angle;
   speedDeadband = 1700;
   kp = 13;
+  //The values for speedDeadband and KP in this constructor are the default values.
+  //These can be set using seperate methods for specific cases.
+}
+
+DriveMovement::DriveMovement(double x, double y)
+{
+  movementType = DRIVE_MOVEMENT_LINE;
+  targetX = x;
+  targetY = y;
 }
 
 double DriveMovement::getTargetAngle()
@@ -29,6 +38,15 @@ int DriveMovement::getSpeedDeadband()
 double DriveMovement::getKP()
 {
   return kp;
+}
+
+double DriveMovement::getTargetX()
+{
+  return targetX;
+}
+double DriveMovement::getTargetY()
+{
+  return targetY;
 }
 
 void DriveMovement::setSpeedDeadband(int deadband)
