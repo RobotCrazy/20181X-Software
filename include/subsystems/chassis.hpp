@@ -30,7 +30,7 @@ public:
   void moveRightDriveVoltage(int voltage);
   void moveLeftDriveVoltage(int voltage);
 
-  void addMovement(DriveMovement dm);
+  void addMovement(DriveMovement &dm);
   void driverControl();
   void deleteFirstMovement();
   void completeMovements();

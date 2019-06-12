@@ -58,3 +58,28 @@ void DriveMovement::setKP(double value)
 {
   kp = value;
 }
+
+void DriveMovement::setComplete()
+{
+  actionComplete = true;
+}
+
+bool DriveMovement::isComplete()
+{
+  return actionComplete;
+}
+
+void DriveMovement::addDrivePrereq(DriveMovement &dm)
+{
+  drivePrereqs.push_back(dm);
+}
+
+bool DriveMovement::readyToOperate()
+{
+  bool ready = false;
+}
+
+/*void DriveMovement::addIntakePrereq(IntakeMovement im)
+{
+  intakePreqs.push_back(im)
+}*/

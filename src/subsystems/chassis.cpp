@@ -41,7 +41,7 @@ void Chassis::moveLeftDriveVoltage(int voltage)
   }
 }
 
-void Chassis::addMovement(DriveMovement dm)
+void Chassis::addMovement(DriveMovement &dm)
 {
   //movements.push_back(dm);
 }
@@ -54,12 +54,13 @@ void Chassis::driverControl()
 
 void Chassis::deleteFirstMovement()
 {
-  movements.erase(movements.begin());
+  /*movements.at(0).setComplete();
+  movements.erase(movements.begin());*/
 }
 
 void Chassis::completeMovements()
 {
-  if (movements.size() > 0)
+  /*if (movements.size() > 0)
   {
     DriveMovement dm = movements.at(0);
 
@@ -69,10 +70,6 @@ void Chassis::completeMovements()
       {
 
         deleteFirstMovement();
-        //Find way to erase from movements here
-        //For some reason it required me to make the deletion a seperate method.  That probably
-        //isn't good, so try to figure out why it didn't like the following line being in both
-        //place: movements.erase(movements.begin())
       }
     }
     else if (dm.getMovementType() == DRIVE_MOVEMENT_LINE)
@@ -81,11 +78,9 @@ void Chassis::completeMovements()
                        dm.getKP()) == true)
       {
         deleteFirstMovement();
-        //movements.erase(movements.begin());
-        //This is the other spot the line used to be
       }
     }
-  }
+  }*/
 }
 
 void Chassis::sensorInit()
@@ -106,8 +101,9 @@ bool Chassis::turnToTarget(double targetAngle, int speedDeadband, int kp)
 
   //This function is still missing shortest path addition to choose which direction
   //is the quickest to reach desired angle
-  int tolerance = 5;
+
   float scaledAngle = targetAngle * GYRO_SCALE;
+  const int tolerance = 5;
   int error = (scaledAngle * 10.0) - gyro.get_value();
   int driveSpeed = error * kp;
 

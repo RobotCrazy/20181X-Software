@@ -40,6 +40,7 @@
 #include "subsystems/intake.hpp"
 #include "utility/driveMovement.hpp"
 #include "utility/globals.h"
+#include "utility/prereq.hpp"
 
 /**
  * You should add more #includes here

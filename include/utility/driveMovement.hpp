@@ -1,4 +1,5 @@
 #include "api.h"
+#include <vector>
 
 #ifndef _DRIVEMOVEMENT_HPP_
 #define _DRIVEMOVEMENT_HPP_
@@ -20,6 +21,10 @@ private:
   double targetX;
   double targetY;
 
+  bool actionComplete = false;
+
+  std::vector<DriveMovement> drivePrereqs;
+
 public:
   DriveMovement(double targetAngle);
   DriveMovement(double x, double y);
@@ -35,6 +40,13 @@ public:
 
   void setSpeedDeadband(int deadband);
   void setKP(double value);
+
+  void setComplete();
+  bool isComplete();
+
+  void addDrivePrereq(DriveMovement &dm);
+
+  bool readyToOperate();
 };
 
 #endif
