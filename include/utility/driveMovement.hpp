@@ -1,5 +1,6 @@
 #include "api.h"
 #include <vector>
+#include "prereq.hpp"
 
 #ifndef _DRIVEMOVEMENT_HPP_
 #define _DRIVEMOVEMENT_HPP_
@@ -23,7 +24,7 @@ private:
 
   bool actionComplete = false;
 
-  std::vector<DriveMovement> drivePrereqs;
+  Prereq drivePrereq;
 
 public:
   DriveMovement(double targetAngle);
@@ -44,7 +45,7 @@ public:
   void setComplete();
   bool isComplete();
 
-  void addDrivePrereq(DriveMovement &dm);
+  void setDrivePrereq(Prereq p);
 
   bool readyToOperate();
 };

@@ -10,7 +10,9 @@ private:
   std::function<bool()> condition; //experiment with "auto condition"
 
 public:
+  Prereq();
   Prereq(std::function<bool()> c);
+  void setPrereqFunction(std::function<bool()> c);
   bool isComplete();
 };
 

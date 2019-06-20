@@ -8,5 +8,6 @@
 extern pros::Controller master;
 extern Chassis chassis;
 extern Intake intake;
+extern char *param;
 
 #endif

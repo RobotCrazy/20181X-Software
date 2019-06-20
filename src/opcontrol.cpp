@@ -21,7 +21,6 @@ void opcontrol()
 	{
 		chassis.driverControl();
 		intake.driverControl();
-
 		pros::delay(20);
 	}
 }
