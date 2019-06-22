@@ -1,6 +1,8 @@
 #include "mathUtil.h"
 #include <cmath>
 
+const double PI = atan(1) * 4.0;
+
 double degreeToRadian(double degrees)
 {
   return degrees * (PI / 180.0);

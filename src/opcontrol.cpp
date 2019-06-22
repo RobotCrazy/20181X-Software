@@ -14,14 +14,20 @@
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
+
+bool functionThing()
+{
+	return true;
+}
 void opcontrol()
 {
-
+	//Syntax for setting a prereq function
+	// Prereq p1;
+	// p1.setPrereqFunction(functionThing);
 	while (true)
 	{
 		chassis.driverControl();
 		intake.driverControl();
-
 		pros::delay(20);
 	}
 }

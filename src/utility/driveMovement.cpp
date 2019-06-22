@@ -69,9 +69,9 @@ bool DriveMovement::isComplete()
   return actionComplete;
 }
 
-void DriveMovement::addDrivePrereq(DriveMovement &dm)
+void DriveMovement::setDrivePrereq(Prereq p)
 {
-  drivePrereqs.push_back(dm);
+  drivePrereq = p;
 }
 
 bool DriveMovement::readyToOperate()

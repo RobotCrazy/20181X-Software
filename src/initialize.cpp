@@ -8,6 +8,8 @@
  */
 void initialize()
 {
+  pros::lcd::initialize();
+  chassis.sensorInit();
 }
 
 /**
