@@ -18,8 +18,8 @@ extern pros::Task chassisControl;
 class Chassis
 {
 private:
-  double currentX;
-  double currentY;
+  double currentX = 0;
+  double currentY = 0;
   double currentAngle = (PI / 2);
   pros::Motor frontLeftDrive;
   pros::Motor backLeftDrive;

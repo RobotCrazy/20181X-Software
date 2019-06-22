@@ -3,8 +3,8 @@
 const double WHEEL_RADIUS = 2;
 const double WHEEL_CIRCUMFERENCE = WHEEL_RADIUS * 2 * PI;
 const double GYRO_SCALE = .78;
-const double leftTWheelDistance = 6.1875;
-const double rightTWheelDistance = 6.1875;
+const double leftTWheelDistance = 4;
+const double rightTWheelDistance = 4;
 
 Chassis::Chassis(int frontLeft, int backLeft, int frontRight, int backRight, char gyroPort)
     : frontLeftDrive(frontLeft, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES),
@@ -131,28 +131,37 @@ void Chassis::trackPosition()
 
   float angleChange = (flDriveInches - frDriveInches) / (leftTWheelDistance + rightTWheelDistance);
   currentAngle += angleChange;
+  //The problem with the angle change may be that the drive is geared.  We need to scale everything
+  //by the gearing to make sure the motor's encoder readings are correct.  We should scale the ticks
+  //that the encoders read by (I think 1.25)
 
-  float traveledDistanceR = ((frDriveInches / angleChange) * sin(angleChange)) / sin((180 - angleChange) / 2);
-  float traveledDistanceL = ((flDriveInches / angleChange) * sin(angleChange)) / sin((180 - angleChange) / 2);
-
+  float traveledDistanceR = 0;
+  float traveledDistanceL = 0;
+  if (angleChange == 0)
+  {
+    traveledDistanceR = frDriveInches;
+    traveledDistanceL = flDriveInches;
+  }
+  else
+  {
+    traveledDistanceR = ((frDriveInches / angleChange) * sin(angleChange)) / sin((PI - angleChange) / 2.0);
+    traveledDistanceL = ((flDriveInches / angleChange) * sin(angleChange)) / sin((PI - angleChange) / 2.0);
+  }
   float xTranslationR = cos(currentAngle) * traveledDistanceR;
   float yTranslationR = sin(currentAngle) * traveledDistanceR;
 
   float xTranslationL = cos(currentAngle) * traveledDistanceL;
   float yTranslationL = sin(currentAngle) * traveledDistanceL;
 
-  float finalXTranslation = (xTranslationR + xTranslationL) / 2;
-  float finalYTranslation = (yTranslationR + yTranslationL) / 2;
+  float finalXTranslation = (xTranslationR + xTranslationL) / 2.0;
+  float finalYTranslation = (yTranslationR + yTranslationL) / 2.0;
 
   currentX += finalXTranslation;
   currentY += finalYTranslation;
 
   pros::lcd::print(0, "%f", currentX);
-  pros::lcd::print(1, "%f", angleChange);
-  pros::lcd::print(2, "%f", finalXTranslation);
-  pros::lcd::print(3, "%f", finalYTranslation);
-  // pros::lcd::print(2, "%f", degreeToRadian(flDrive));
-  // pros::lcd::print(3, "%f", degreeToRadian(blDrive));
+  pros::lcd::print(1, "%f", currentY);
+  pros::lcd::print(2, "%f", currentAngle);
 
   prevFRDrive = frDrive;
   prevBRDrive = brDrive;
@@ -204,7 +213,7 @@ bool Chassis::turnToTarget(double targetAngle, int speedDeadband, int kp)
 }
 
 /*
-This function invokes all actions that belong to the chassis subsytem that need to be iterated.  
+This function invokes all actions that belong to the chassis subsytem that need to be iterated over.  
  */
 void chassisTaskActions(void *param)
 {
