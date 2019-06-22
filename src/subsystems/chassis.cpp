@@ -169,7 +169,7 @@ void Chassis::trackPosition()
   prevBLDrive = blDrive;
 }
 
-bool Chassis::driveToPoint(double x, double y, int speedDeadband, int kp)
+bool Chassis::driveToPoint(double x, double y, int speedDeadband, int kp, bool stopOnCompletion)
 {
   //Insert code for driving to a point with odometry here
   //This code should dynamically update its path if external factors cause the robot to
@@ -177,7 +177,7 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int kp)
   // Look at motion profiling concepts for this
 }
 
-bool Chassis::turnToTarget(double targetAngle, int speedDeadband, int kp)
+bool Chassis::turnToTarget(double targetAngle, int speedDeadband, int kp, bool stopOnCompletion)
 {
 
   //This function is still missing shortest path addition to choose which direction
