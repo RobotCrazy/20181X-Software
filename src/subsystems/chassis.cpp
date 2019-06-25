@@ -3,8 +3,9 @@
 const double WHEEL_RADIUS = 2;
 const double WHEEL_CIRCUMFERENCE = WHEEL_RADIUS * 2 * PI;
 const double GYRO_SCALE = .78;
-const double leftTWheelDistance = 4;
-const double rightTWheelDistance = 4;
+const double leftTWheelDistance = 6.1875;
+const double rightTWheelDistance = 6.1875;
+const double DRIVE_BASE_GEARING = 1.25;
 
 Chassis::Chassis(int frontLeft, int backLeft, int frontRight, int backRight, char gyroPort)
     : frontLeftDrive(frontLeft, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES),
@@ -115,10 +116,10 @@ void Chassis::trackPosition()
 {
   //current angle will start at 90 degrees or PI/2 radians
 
-  float frDrive = degreeToRadian(frontRightDrive.get_position() * -1);
-  float brDrive = degreeToRadian(backRightDrive.get_position() * -1);
-  float flDrive = degreeToRadian(frontLeftDrive.get_position());
-  float blDrive = degreeToRadian(backLeftDrive.get_position());
+  float frDrive = degreeToRadian(frontRightDrive.get_position() * -1) * DRIVE_BASE_GEARING;
+  float brDrive = degreeToRadian(backRightDrive.get_position() * -1) * DRIVE_BASE_GEARING;
+  float flDrive = degreeToRadian(frontLeftDrive.get_position()) * DRIVE_BASE_GEARING;
+  float blDrive = degreeToRadian(backLeftDrive.get_position()) * DRIVE_BASE_GEARING;
 
   // float rightEncAverage = ((frDrive - prevFRDrive) +
   //                          (brDrive - prevBRDrive)) /
@@ -171,6 +172,10 @@ void Chassis::trackPosition()
 
 bool Chassis::driveToPoint(double x, double y, int speedDeadband, int kp, bool stopOnCompletion)
 {
+  double xDistance = x - currentX;
+  double yDistance = y - currentY;
+  double targetAngle = atan(yDistance / xDistance);
+
   //Insert code for driving to a point with odometry here
   //This code should dynamically update its path if external factors cause the robot to
   //get off course.

@@ -44,8 +44,13 @@ public:
   void sensorInit();
 
   void trackPosition();
-  bool driveToPoint(double x, double y, int speedDeadband, int kp);
-  bool turnToTarget(double targetAngle, int speedDeadband, int kp);
+
+  /**
+   * Drives to a specified point
+   * Returns whether the action is complete (true if complete; false otherwise)
+   */
+  bool driveToPoint(double x, double y, int speedDeadband, int kp, bool stopOnCompletion);
+  bool turnToTarget(double targetAngle, int speedDeadband, int kp, bool stopOnCompletion);
 };
 
 #endif
