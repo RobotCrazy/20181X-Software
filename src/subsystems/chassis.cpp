@@ -170,11 +170,27 @@ void Chassis::trackPosition()
   prevBLDrive = blDrive;
 }
 
-bool Chassis::driveToPoint(double x, double y, int speedDeadband, int kp, bool stopOnCompletion)
+bool Chassis::driveToPoint(double x, double y, int speedDeadband, int minSpeed, int kp, bool stopOnCompletion)
 {
+  const double angleThreshold = (PI / 6.0);
+  const double angleKP = 1.0; //Tune these two constants as needed
   double xDistance = x - currentX;
   double yDistance = y - currentY;
   double targetAngle = atan(yDistance / xDistance);
+  double error = distance(currentX, currentY, x, y);
+  double speed = error * kp;
+  if (abs(targetAngle - currentAngle) > angleThreshold)
+  {
+    turnToTarget(targetAngle, speedDeadband, kp, false);
+  }
+  else
+  {
+    double angleDifference = currentAngle - targetAngle; //It might need to be flipped depending on
+    //which angle is positive and which is negative (targetAngle - currentAngle)
+    moveRightDriveVoltage((error * kp) + (angleDifference * angleKP));
+    moveLeftDriveVoltage((error * kp) - (angleDifference * angleKP)); //It might need to be
+    //addition instead of subtraction or vice versa
+  }
 
   //Insert code for driving to a point with odometry here
   //This code should dynamically update its path if external factors cause the robot to
