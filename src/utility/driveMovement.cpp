@@ -1,6 +1,6 @@
 #include "main.h"
 
-const int DRIVE_MOVEMENT_LINE = 1;
+const int DRIVE_MOVEMENT_POINT = 1;
 const int DRIVE_MOVEMENT_TURN = 2;
 
 DriveMovement::DriveMovement(double angle)
@@ -8,16 +8,22 @@ DriveMovement::DriveMovement(double angle)
   movementType = DRIVE_MOVEMENT_TURN;
   targetAngle = angle;
   speedDeadband = 1700;
+  maxSpeed = 12000;
   kp = 13;
+  stopOnCompletion = true;
   //The values for speedDeadband and KP in this constructor are the default values.
   //These can be set using seperate methods for specific cases.
 }
 
 DriveMovement::DriveMovement(double x, double y)
 {
-  movementType = DRIVE_MOVEMENT_LINE;
+  movementType = DRIVE_MOVEMENT_POINT;
   targetX = x;
   targetY = y;
+  speedDeadband = 1700;
+  maxSpeed = 12000;
+  kp = 13;
+  stopOnCompletion = true;
 }
 
 double DriveMovement::getTargetAngle()
@@ -76,7 +82,27 @@ void DriveMovement::setDrivePrereq(Prereq p)
 
 bool DriveMovement::readyToOperate()
 {
-  bool ready = false;
+  return drivePrereq.isComplete();
+}
+
+void DriveMovement::setStopOnCompletion(bool stop)
+{
+  stopOnCompletion = stop;
+}
+
+bool DriveMovement::getStopOnCompletion()
+{
+  return stopOnCompletion;
+}
+
+void DriveMovement::setMaxSpeed(int voltage)
+{
+  maxSpeed = voltage;
+}
+
+int DriveMovement::getMaxSpeed()
+{
+  return maxSpeed;
 }
 
 /*void DriveMovement::addIntakePrereq(IntakeMovement im)

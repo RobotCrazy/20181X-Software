@@ -74,29 +74,27 @@ void Chassis::deleteFirstMovement()
 
 void Chassis::completeMovements()
 {
-  DriveMovement dm = getFirstMovement();
-  //add code to actually complete the first movement.
-  /*if (movements.size() > 0)
+  if (movements.empty() == false)
   {
-    DriveMovement dm = movements.at(0);
-
-    if (dm.getMovementType() == DRIVE_MOVEMENT_TURN)
+    DriveMovement dm = getFirstMovement();
+    if (dm.readyToOperate() == true)
     {
-      if (turnToTarget(dm.getTargetAngle(), dm.getSpeedDeadband(), dm.getKP()) == true)
+      if (dm.getMovementType() == DRIVE_MOVEMENT_TURN)
       {
-
-        deleteFirstMovement();
+        if (turnToTarget(dm.getTargetAngle(), dm.getSpeedDeadband(), dm.getKP(), dm.getStopOnCompletion()) == true)
+        {
+          deleteFirstMovement();
+        }
+      }
+      else if (dm.getMovementType() == DRIVE_MOVEMENT_POINT)
+      {
+        if (driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion()) == true)
+        {
+          deleteFirstMovement();
+        }
       }
     }
-    else if (dm.getMovementType() == DRIVE_MOVEMENT_LINE)
-    {
-      if (driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(),
-                       dm.getKP()) == true)
-      {
-        deleteFirstMovement();
-      }
-    }
-  }*/
+  }
 }
 
 void Chassis::sensorInit()
@@ -170,10 +168,11 @@ void Chassis::trackPosition()
   prevBLDrive = blDrive;
 }
 
-bool Chassis::driveToPoint(double x, double y, int speedDeadband, int minSpeed, int kp, bool stopOnCompletion)
+bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, int kp, bool stopOnCompletion)
 {
   const double angleThreshold = (PI / 6.0);
   const double angleKP = 1.0; //Tune these two constants as needed
+  const double errorTolerance = .25;
   double xDistance = x - currentX;
   double yDistance = y - currentY;
   double targetAngle = atan(yDistance / xDistance);
@@ -182,6 +181,7 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int minSpeed, 
   if (abs(targetAngle - currentAngle) > angleThreshold)
   {
     turnToTarget(targetAngle, speedDeadband, kp, false);
+    return false;
   }
   else
   {
@@ -191,6 +191,7 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int minSpeed, 
     moveLeftDriveVoltage((error * kp) - (angleDifference * angleKP)); //It might need to be
     //addition instead of subtraction or vice versa
   }
+  return (abs(error) < errorTolerance);
 
   //Insert code for driving to a point with odometry here
   //This code should dynamically update its path if external factors cause the robot to
@@ -241,7 +242,7 @@ void chassisTaskActions(void *param)
   while (true)
   {
     chassis.trackPosition();
-    //chassis.completeMovements();
+    chassis.completeMovements();
 
     pros::delay(10);
   }

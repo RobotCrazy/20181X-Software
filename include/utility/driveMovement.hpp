@@ -5,7 +5,7 @@
 #ifndef _DRIVEMOVEMENT_HPP_
 #define _DRIVEMOVEMENT_HPP_
 
-extern const int DRIVE_MOVEMENT_LINE;
+extern const int DRIVE_MOVEMENT_POINT;
 //Movement type for driving to a specified point
 
 extern const int DRIVE_MOVEMENT_TURN;
@@ -17,12 +17,14 @@ private:
   int movementType;
   int targetAngle;
   int speedDeadband;
+  int maxSpeed;
   double kp;
 
   double targetX;
   double targetY;
 
   bool actionComplete = false;
+  bool stopOnCompletion;
 
   Prereq drivePrereq;
 
@@ -48,6 +50,12 @@ public:
   void setDrivePrereq(Prereq p);
 
   bool readyToOperate();
+
+  void setStopOnCompletion(bool stop);
+  bool getStopOnCompletion();
+
+  void setMaxSpeed(int voltage);
+  int getMaxSpeed();
 };
 
 #endif
