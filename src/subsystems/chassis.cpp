@@ -1,10 +1,11 @@
 #include "main.h"
+#include "utility/mathUtil.h"
 
-const double WHEEL_RADIUS = 2;
-const double WHEEL_CIRCUMFERENCE = WHEEL_RADIUS * 2 * PI;
+const double WHEEL_RADIUS = 2.0;
+const double WHEEL_CIRCUMFERENCE = WHEEL_RADIUS * 2.0 * PI;
 const double GYRO_SCALE = .78;
-const double leftTWheelDistance = 6.1875;
-const double rightTWheelDistance = 6.1875;
+const double leftTWheelDistance = 6.0;
+const double rightTWheelDistance = 6.0;
 const double DRIVE_BASE_GEARING = 1.25;
 
 Chassis::Chassis(int frontLeft, int backLeft, int frontRight, int backRight, char gyroPort)
@@ -37,8 +38,8 @@ void Chassis::driverControl()
 
 void Chassis::moveRightDriveVoltage(int voltage)
 {
-  frontRightDrive.move_voltage(voltage);
-  backRightDrive.move_voltage(voltage);
+  frontRightDrive.move_voltage(voltage * -1);
+  backRightDrive.move_voltage(voltage * -1);
   if (voltage == 0)
   {
     frontRightDrive.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
@@ -74,8 +75,11 @@ void Chassis::deleteFirstMovement()
 
 void Chassis::completeMovements()
 {
+  pros::lcd::print(3, "Completing Movements");
+
   if (movements.empty() == false)
   {
+    pros::lcd::print(6, "Inside if statement");
     DriveMovement dm = getFirstMovement();
     if (dm.readyToOperate() == true)
     {
@@ -97,6 +101,12 @@ void Chassis::completeMovements()
   }
 }
 
+void Chassis::init()
+{
+  currentX = 0;
+  currentY = 0;
+  currentAngle = PI / 2;
+}
 void Chassis::sensorInit()
 {
   frontRightDrive.tare_position();
@@ -199,37 +209,42 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
   // Look at motion profiling concepts for this
 }
 
-bool Chassis::turnToTarget(double targetAngle, int speedDeadband, int kp, bool stopOnCompletion)
+bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, bool stopOnCompletion)
 {
 
   //This function is still missing shortest path addition to choose which direction
   //is the quickest to reach desired angle
 
-  float scaledAngle = targetAngle * GYRO_SCALE;
-  const int tolerance = 5;
-  int error = (scaledAngle * 10.0) - gyro.get_value();
-  int driveSpeed = error * kp;
-
-  if (abs(error) > tolerance)
+  const double tolerance = .05;
+  /*if (abs(targetAngle - currentAngle) > abs((targetAngle + ((targetAngle > 0) ? (-2 * PI) : (2 * PI)) - currentAngle)))
   {
-    error = (scaledAngle * 10) - gyro.get_value();
+    targetAngle = ((targetAngle > 0) ? (-2 * PI) : (2 * PI));
+  } //find shortest direction to target angle*/
+  double error = targetAngle - currentAngle;
+  double driveSpeed = error * kp;
+  // pros::lcd::print(5, "%f", driveSpeed);
+  // pros::lcd::print(6, "%f", currentAngle);
+  // pros::lcd::print(7, "%f", fabs(error));
+
+  if (fabs(error) > tolerance)
+  {
+    error = targetAngle - currentAngle;
     driveSpeed = error * kp;
 
-    if (isBetween(driveSpeed, -1 * speedDeadband, 0))
+    if (abs(driveSpeed) < speedDeadband)
     {
-      driveSpeed = -1 * speedDeadband;
-    }
-    if (isBetween(driveSpeed, 0, speedDeadband))
-    {
-      driveSpeed = speedDeadband;
+      driveSpeed = speedDeadband * sign(driveSpeed);
     }
 
-    moveRightDriveVoltage(driveSpeed * -1);
+    moveRightDriveVoltage(driveSpeed * -1.0);
     moveLeftDriveVoltage(driveSpeed);
+
     return false;
   }
   else
   {
+    moveRightDriveVoltage(0);
+    moveLeftDriveVoltage(0);
     return true;
   }
 }
@@ -243,9 +258,21 @@ void chassisTaskActions(void *param)
   {
     chassis.trackPosition();
     chassis.completeMovements();
+    pros::lcd::print(4, "Task Actions");
+    pros::delay(10);
+  }
+}
+
+/*void chassisAutonActions(void *param)
+{
+  while (true)
+  {
+    chassis.completeMovements();
+    //pros::lcd::print(4, "Running auton actions");
 
     pros::delay(10);
   }
 }
+*/
 
 pros::Task chassisControl(chassisTaskActions, param, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Chassis Subsystem Task");

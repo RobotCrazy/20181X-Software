@@ -41,6 +41,7 @@ public:
   DriveMovement getFirstMovement();
   void deleteFirstMovement();
   void completeMovements();
+  void init();
   void sensorInit();
 
   void trackPosition();
@@ -50,7 +51,10 @@ public:
    * Returns whether the action is complete (true if complete; false otherwise)
    */
   bool driveToPoint(double x, double y, int speedDeadband, int maxSpeed, int kp, bool stopOnCompletion);
-  bool turnToTarget(double targetAngle, int speedDeadband, int kp, bool stopOnCompletion);
+  bool turnToTarget(double targetAngle, int speedDeadband, double kp, bool stopOnCompletion);
 };
+
+void chassisAutonActions(void *param);
+extern pros::Task chassisControl;
 
 #endif

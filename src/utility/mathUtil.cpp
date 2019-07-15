@@ -18,7 +18,7 @@ bool isBetween(float number, float rangeLower, float rangeUpper)
   return (number > rangeLower && number < rangeUpper);
 }
 
-int sign(double num)
+double sign(double num)
 {
   if (num > 0)
   {

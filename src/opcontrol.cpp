@@ -24,6 +24,7 @@ void opcontrol()
 	//Syntax for setting a prereq function
 	// Prereq p1;
 	// p1.setPrereqFunction(functionThing);
+	chassisControl.suspend();
 	while (true)
 	{
 		chassis.driverControl();

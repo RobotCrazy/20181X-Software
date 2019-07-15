@@ -15,7 +15,7 @@ class DriveMovement
 {
 private:
   int movementType;
-  int targetAngle;
+  double targetAngle;
   int speedDeadband;
   int maxSpeed;
   double kp;

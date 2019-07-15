@@ -1,5 +1,9 @@
 #include "main.h"
 
+void initializeGUI()
+{
+}
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -10,6 +14,7 @@ void initialize()
 {
   pros::lcd::initialize();
   chassis.sensorInit();
+  chassis.init();
 }
 
 /**
