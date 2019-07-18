@@ -7,6 +7,10 @@ const double GYRO_SCALE = .78;
 const double leftTWheelDistance = 6.0;
 const double rightTWheelDistance = 6.0;
 const double DRIVE_BASE_GEARING = 1.25;
+double prevFRDrive = 0;
+double prevBRDrive = 0;
+double prevFLDrive = 0;
+double prevBLDrive = 0;
 
 Chassis::Chassis(int frontLeft, int backLeft, int frontRight, int backRight, char gyroPort)
     : frontLeftDrive(frontLeft, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES),
@@ -75,11 +79,10 @@ void Chassis::deleteFirstMovement()
 
 void Chassis::completeMovements()
 {
-  pros::lcd::print(3, "Completing Movements");
 
   if (movements.empty() == false)
   {
-    pros::lcd::print(6, "Inside if statement");
+    //pros::lcd::print(6, "Inside if statement");
     DriveMovement dm = getFirstMovement();
     if (dm.readyToOperate() == true)
     {
@@ -103,9 +106,10 @@ void Chassis::completeMovements()
 
 void Chassis::init()
 {
-  currentX = 0;
-  currentY = 0;
+  currentX = 0.0;
+  currentY = 0.0;
   currentAngle = PI / 2;
+  pros::lcd::print(7, "initing %f", currentX);
 }
 void Chassis::sensorInit()
 {
@@ -116,18 +120,14 @@ void Chassis::sensorInit()
   //reset encoders, gyros, etc for drive base here
 }
 
-float prevFRDrive = 0;
-float prevBRDrive = 0;
-float prevFLDrive = 0;
-float prevBLDrive = 0;
 void Chassis::trackPosition()
 {
   //current angle will start at 90 degrees or PI/2 radians
 
-  float frDrive = degreeToRadian(frontRightDrive.get_position() * -1) * DRIVE_BASE_GEARING;
-  float brDrive = degreeToRadian(backRightDrive.get_position() * -1) * DRIVE_BASE_GEARING;
-  float flDrive = degreeToRadian(frontLeftDrive.get_position()) * DRIVE_BASE_GEARING;
-  float blDrive = degreeToRadian(backLeftDrive.get_position()) * DRIVE_BASE_GEARING;
+  double frDrive = degreeToRadian(frontRightDrive.get_position() * -1) * DRIVE_BASE_GEARING;
+  double brDrive = degreeToRadian(backRightDrive.get_position() * -1) * DRIVE_BASE_GEARING;
+  double flDrive = degreeToRadian(frontLeftDrive.get_position()) * DRIVE_BASE_GEARING;
+  double blDrive = degreeToRadian(backLeftDrive.get_position()) * DRIVE_BASE_GEARING;
 
   // float rightEncAverage = ((frDrive - prevFRDrive) +
   //                          (brDrive - prevBRDrive)) /
@@ -135,17 +135,17 @@ void Chassis::trackPosition()
   // float leftEncAverage = ((flDrive - prevFLDrive) +
   //                         (blDrive - prevBLDrive)) /
   //                        2;
-  float frDriveInches = (frDrive - prevFRDrive) * WHEEL_RADIUS;
-  float flDriveInches = (flDrive - prevFLDrive) * WHEEL_RADIUS;
+  double frDriveInches = (frDrive - prevFRDrive) * WHEEL_RADIUS;
+  double flDriveInches = (flDrive - prevFLDrive) * WHEEL_RADIUS;
 
-  float angleChange = (flDriveInches - frDriveInches) / (leftTWheelDistance + rightTWheelDistance);
+  double angleChange = (flDriveInches - frDriveInches) / (leftTWheelDistance + rightTWheelDistance);
   currentAngle += angleChange;
   //The problem with the angle change may be that the drive is geared.  We need to scale everything
   //by the gearing to make sure the motor's encoder readings are correct.  We should scale the ticks
   //that the encoders read by (I think 1.25)
 
-  float traveledDistanceR = 0;
-  float traveledDistanceL = 0;
+  double traveledDistanceR = 0;
+  double traveledDistanceL = 0;
   if (angleChange == 0)
   {
     traveledDistanceR = frDriveInches;
@@ -156,14 +156,14 @@ void Chassis::trackPosition()
     traveledDistanceR = ((frDriveInches / angleChange) * sin(angleChange)) / sin((PI - angleChange) / 2.0);
     traveledDistanceL = ((flDriveInches / angleChange) * sin(angleChange)) / sin((PI - angleChange) / 2.0);
   }
-  float xTranslationR = cos(currentAngle) * traveledDistanceR;
-  float yTranslationR = sin(currentAngle) * traveledDistanceR;
+  double xTranslationR = cos(currentAngle) * traveledDistanceR;
+  double yTranslationR = sin(currentAngle) * traveledDistanceR;
 
-  float xTranslationL = cos(currentAngle) * traveledDistanceL;
-  float yTranslationL = sin(currentAngle) * traveledDistanceL;
+  double xTranslationL = cos(currentAngle) * traveledDistanceL;
+  double yTranslationL = sin(currentAngle) * traveledDistanceL;
 
-  float finalXTranslation = (xTranslationR + xTranslationL) / 2.0;
-  float finalYTranslation = (yTranslationR + yTranslationL) / 2.0;
+  double finalXTranslation = (xTranslationR + xTranslationL) / 2.0;
+  double finalYTranslation = (yTranslationR + yTranslationL) / 2.0;
 
   currentX += finalXTranslation;
   currentY += finalYTranslation;
@@ -222,9 +222,9 @@ bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, boo
   } //find shortest direction to target angle*/
   double error = targetAngle - currentAngle;
   double driveSpeed = error * kp;
-  // pros::lcd::print(5, "%f", driveSpeed);
-  // pros::lcd::print(6, "%f", currentAngle);
-  // pros::lcd::print(7, "%f", fabs(error));
+  pros::lcd::print(3, "%f", driveSpeed);
+  pros::lcd::print(4, "%f", currentAngle);
+  pros::lcd::print(5, "%f", fabs(error));
 
   if (fabs(error) > tolerance)
   {
@@ -254,11 +254,15 @@ This function invokes all actions that belong to the chassis subsytem that need 
  */
 void chassisTaskActions(void *param)
 {
+  chassis.init();
+  int i = 0;
   while (true)
   {
+    //pros::lcd::print(7, "%d", pros::Task::get_count());
     chassis.trackPosition();
     chassis.completeMovements();
-    pros::lcd::print(4, "Task Actions");
+    pros::lcd::print(6, "Task %d", i);
+    i++;
     pros::delay(10);
   }
 }

@@ -24,7 +24,8 @@ void opcontrol()
 	//Syntax for setting a prereq function
 	// Prereq p1;
 	// p1.setPrereqFunction(functionThing);
-	chassisControl.suspend();
+	chassisControl.remove();
+	pros::lcd::print(7, "%d", pros::Task::get_count());
 	while (true)
 	{
 		chassis.driverControl();

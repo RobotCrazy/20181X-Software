@@ -9,7 +9,7 @@ DriveMovement::DriveMovement(double angle)
   targetAngle = angle;
   speedDeadband = 1700;
   maxSpeed = 12000;
-  kp = 5000.0;
+  kp = 8000.0;
   stopOnCompletion = true;
   //The values for speedDeadband and KP in this constructor are the default values.
   //These can be set using seperate methods for specific cases.
