@@ -20,6 +20,7 @@ Chassis::Chassis(int frontLeft, int backLeft, int frontRight, int backRight, cha
       gyro(gyroPort)
 {
   sensorInit();
+  initialize();
 }
 
 void Chassis::moveRightDrive(int value)
@@ -60,6 +61,13 @@ void Chassis::moveLeftDriveVoltage(int voltage)
     frontLeftDrive.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
     backLeftDrive.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
   }
+}
+
+void Chassis::printCoords()
+{
+  pros::lcd::print(3, "%f", currentX);
+  pros::lcd::print(4, "%f", currentY);
+  pros::lcd::print(5, "%f", currentAngle);
 }
 
 void Chassis::addMovement(DriveMovement dm)
@@ -104,19 +112,23 @@ void Chassis::completeMovements()
   }
 }
 
-void Chassis::init()
+void Chassis::initialize()
 {
   currentX = 0.0;
   currentY = 0.0;
   currentAngle = PI / 2;
   pros::lcd::print(7, "initing %f", currentX);
 }
+
 void Chassis::sensorInit()
 {
   frontRightDrive.tare_position();
   backRightDrive.tare_position();
   frontLeftDrive.tare_position();
   backLeftDrive.tare_position();
+  currentX = 0.0;
+  currentY = 0.0;
+  currentAngle = PI / 2;
   //reset encoders, gyros, etc for drive base here
 }
 
@@ -254,13 +266,20 @@ This function invokes all actions that belong to the chassis subsytem that need 
  */
 void chassisTaskActions(void *param)
 {
-  chassis.init();
+
   int i = 0;
   while (true)
   {
+    if (i == 0)
+    {
+      chassis.sensorInit();
+    }
+
     //pros::lcd::print(7, "%d", pros::Task::get_count());
     chassis.trackPosition();
-    chassis.completeMovements();
+
+    chassis.printCoords();
+    //chassis.completeMovements();
     pros::lcd::print(6, "Task %d", i);
     i++;
     pros::delay(10);

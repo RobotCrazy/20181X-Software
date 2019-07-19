@@ -13,12 +13,9 @@ void initializeGUI()
 void initialize()
 {
   pros::lcd::initialize();
-  pros::delay(1000);
   chassisControl.suspend();
-  pros::delay(1000);
   chassis.sensorInit();
-  chassis.init();
-  pros::delay(1000);
+  chassis.sensorInit();
   chassisControl.resume();
 }
 

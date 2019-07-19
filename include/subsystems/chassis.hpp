@@ -37,11 +37,12 @@ public:
   void moveRightDriveVoltage(int voltage);
   void moveLeftDriveVoltage(int voltage);
 
+  void printCoords();
   void addMovement(DriveMovement dm);
   DriveMovement getFirstMovement();
   void deleteFirstMovement();
   void completeMovements();
-  void init();
+  void initialize();
   void sensorInit();
 
   void trackPosition();
