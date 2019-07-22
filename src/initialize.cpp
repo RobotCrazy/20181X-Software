@@ -13,10 +13,9 @@ void initializeGUI()
 void initialize()
 {
   pros::lcd::initialize();
-  chassisControl.suspend();
   chassis.sensorInit();
-  chassis.sensorInit();
-  chassisControl.resume();
+  pros::delay(2000);
+  pros::Task chassisControl(chassisTaskActions, param, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Chassis Subsystem Task");
 }
 
 /**

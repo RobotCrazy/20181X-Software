@@ -129,6 +129,7 @@ void Chassis::sensorInit()
   currentX = 0.0;
   currentY = 0.0;
   currentAngle = PI / 2;
+  pros::lcd::print(7, "%f, %f", currentX, currentY);
   //reset encoders, gyros, etc for drive base here
 }
 
@@ -136,10 +137,14 @@ void Chassis::trackPosition()
 {
   //current angle will start at 90 degrees or PI/2 radians
 
-  double frDrive = degreeToRadian(frontRightDrive.get_position() * -1) * DRIVE_BASE_GEARING;
-  double brDrive = degreeToRadian(backRightDrive.get_position() * -1) * DRIVE_BASE_GEARING;
-  double flDrive = degreeToRadian(frontLeftDrive.get_position()) * DRIVE_BASE_GEARING;
-  double blDrive = degreeToRadian(backLeftDrive.get_position()) * DRIVE_BASE_GEARING;
+  double frDrive = 0;
+  frDrive = degreeToRadian(frontRightDrive.get_position() * -1) * DRIVE_BASE_GEARING;
+  double brDrive = 0;
+  brDrive = degreeToRadian(backRightDrive.get_position() * -1) * DRIVE_BASE_GEARING;
+  double flDrive = 0;
+  flDrive = degreeToRadian(frontLeftDrive.get_position()) * DRIVE_BASE_GEARING;
+  double blDrive = 0;
+  blDrive = degreeToRadian(backLeftDrive.get_position()) * DRIVE_BASE_GEARING;
 
   // float rightEncAverage = ((frDrive - prevFRDrive) +
   //                          (brDrive - prevBRDrive)) /
@@ -268,16 +273,15 @@ void chassisTaskActions(void *param)
 {
 
   int i = 0;
+  pros::delay(5000);
   while (true)
   {
-    if (i == 0)
-    {
-      chassis.sensorInit();
-    }
-
+    // if (i < 3)
+    // {
+    //   chassis.sensorInit();
+    // } //This worked, but it's a terrible way of going about it.
     //pros::lcd::print(7, "%d", pros::Task::get_count());
     chassis.trackPosition();
-
     chassis.printCoords();
     //chassis.completeMovements();
     pros::lcd::print(6, "Task %d", i);
@@ -297,5 +301,3 @@ void chassisTaskActions(void *param)
   }
 }
 */
-
-pros::Task chassisControl(chassisTaskActions, param, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Chassis Subsystem Task");
