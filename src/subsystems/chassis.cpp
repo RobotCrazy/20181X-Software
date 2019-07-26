@@ -7,10 +7,11 @@ const double GYRO_SCALE = .78;
 const double leftTWheelDistance = 6.0;
 const double rightTWheelDistance = 6.0;
 const double DRIVE_BASE_GEARING = 1.25;
-double prevFRDrive = 0;
-double prevBRDrive = 0;
-double prevFLDrive = 0;
-double prevBLDrive = 0;
+double prevFRDrive = degreeToRadian(chassis.frontRightDrive.get_position() * -1) * DRIVE_BASE_GEARING;
+double prevBRDrive = degreeToRadian(chassis.backRightDrive.get_position() * -1) * DRIVE_BASE_GEARING;
+double prevFLDrive = degreeToRadian(chassis.frontLeftDrive.get_position()) * DRIVE_BASE_GEARING;
+double prevBLDrive = degreeToRadian(chassis.backLeftDrive.get_position()) * DRIVE_BASE_GEARING;
+chassis.setCurrentAngle(PI / 2);
 
 Chassis::Chassis(int frontLeft, int backLeft, int frontRight, int backRight, char gyroPort)
     : frontLeftDrive(frontLeft, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES),
@@ -61,6 +62,11 @@ void Chassis::moveLeftDriveVoltage(int voltage)
     frontLeftDrive.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
     backLeftDrive.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
   }
+}
+
+void Chassis::setCurrentAngle(double angle)
+{
+  currentAngle = angle;
 }
 
 void Chassis::printCoords()
@@ -271,15 +277,19 @@ This function invokes all actions that belong to the chassis subsytem that need 
  */
 void chassisTaskActions(void *param)
 {
-
   int i = 0;
+  //chassis.sensorInit();
+  //pros::lcd::print(6, "Initialized + waiting 1");
   pros::delay(5000);
+  //chassis.sensorInit();
+  //pros::lcd::print(6, "Initialized 2");
+  // pros::delay(5000);
   while (true)
   {
     // if (i < 3)
     // {
     //   chassis.sensorInit();
-    // } //This worked, but it's a terrible way of going about it.
+    // } //This worked, but it's a terrible way of doing it.
     //pros::lcd::print(7, "%d", pros::Task::get_count());
     chassis.trackPosition();
     chassis.printCoords();
@@ -301,3 +311,5 @@ void chassisTaskActions(void *param)
   }
 }
 */
+
+pros::Task chassisControl(chassisTaskActions, param, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Chassis Subsystem Task");

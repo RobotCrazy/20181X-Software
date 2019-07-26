@@ -21,22 +21,24 @@ private:
   double currentX = 0;
   double currentY = 0;
   double currentAngle = (PI / 2);
-  pros::Motor frontLeftDrive;
-  pros::Motor backLeftDrive;
-  pros::Motor frontRightDrive;
-  pros::Motor backRightDrive;
+
   pros::ADIGyro gyro;
 
   std::queue<DriveMovement> movements;
 
 public:
   Chassis(int frontLeft, int backLeft, int frontRight, int backRight, char gyroPort);
+  pros::Motor frontLeftDrive;
+  pros::Motor backLeftDrive;
+  pros::Motor frontRightDrive;
+  pros::Motor backRightDrive;
   void moveRightDrive(int value);
   void moveLeftDrive(int value);
   void driverControl();
   void moveRightDriveVoltage(int voltage);
   void moveLeftDriveVoltage(int voltage);
 
+  void setCurrentAngle(double angle);
   void printCoords();
   void addMovement(DriveMovement dm);
   DriveMovement getFirstMovement();
