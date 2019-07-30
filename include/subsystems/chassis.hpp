@@ -18,11 +18,7 @@ extern pros::Task chassisControl;
 class Chassis
 {
 private:
-  double currentX = 0;
-  double currentY = 0;
-  double currentAngle = (PI / 2);
-
-  pros::ADIGyro gyro;
+    pros::ADIGyro gyro;
 
   std::queue<DriveMovement> movements;
 
@@ -32,6 +28,9 @@ public:
   pros::Motor backLeftDrive;
   pros::Motor frontRightDrive;
   pros::Motor backRightDrive;
+  double currentX = 0;
+  double currentY = 0;
+  double currentAngle = (PI / 2.0);
   void moveRightDrive(int value);
   void moveLeftDrive(int value);
   void driverControl();

@@ -13,7 +13,7 @@ void initializeGUI()
 void initialize()
 {
   pros::lcd::initialize();
-  pros::delay(2000);
+  pros::delay(5000);
 }
 
 /**

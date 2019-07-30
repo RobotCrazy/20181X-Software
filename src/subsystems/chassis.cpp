@@ -11,7 +11,6 @@ double prevFRDrive = degreeToRadian(chassis.frontRightDrive.get_position() * -1)
 double prevBRDrive = degreeToRadian(chassis.backRightDrive.get_position() * -1) * DRIVE_BASE_GEARING;
 double prevFLDrive = degreeToRadian(chassis.frontLeftDrive.get_position()) * DRIVE_BASE_GEARING;
 double prevBLDrive = degreeToRadian(chassis.backLeftDrive.get_position()) * DRIVE_BASE_GEARING;
-chassis.setCurrentAngle(PI / 2);
 
 Chassis::Chassis(int frontLeft, int backLeft, int frontRight, int backRight, char gyroPort)
     : frontLeftDrive(frontLeft, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES),
@@ -134,7 +133,8 @@ void Chassis::sensorInit()
   backLeftDrive.tare_position();
   currentX = 0.0;
   currentY = 0.0;
-  currentAngle = PI / 2;
+  currentAngle = PI / 2.0;
+  setCurrentAngle(PI / 2.0);
   pros::lcd::print(7, "%f, %f", currentX, currentY);
   //reset encoders, gyros, etc for drive base here
 }
@@ -278,24 +278,22 @@ This function invokes all actions that belong to the chassis subsytem that need 
 void chassisTaskActions(void *param)
 {
   int i = 0;
-  //chassis.sensorInit();
-  //pros::lcd::print(6, "Initialized + waiting 1");
-  pros::delay(5000);
-  //chassis.sensorInit();
-  //pros::lcd::print(6, "Initialized 2");
-  // pros::delay(5000);
+  pros::delay(10000);
+  chassis.sensorInit();
   while (true)
   {
     // if (i < 3)
     // {
     //   chassis.sensorInit();
+    //   i++;
     // } //This worked, but it's a terrible way of doing it.
     //pros::lcd::print(7, "%d", pros::Task::get_count());
     chassis.trackPosition();
-    chassis.printCoords();
+    //chassis.printCoords();
     //chassis.completeMovements();
-    pros::lcd::print(6, "Task %d", i);
     i++;
+    pros::lcd::print(6, "Task %d", i);
+    pros::lcd::print(7, "%f", chassis.currentAngle);
     pros::delay(10);
   }
 }
