@@ -25,7 +25,7 @@ void opcontrol()
 	// Prereq p1;
 	// p1.setPrereqFunction(functionThing);
 	//chassisControl.remove();
-	pros::lcd::print(7, "%d", pros::Task::get_count());
+	//pros::lcd::print(7, "%d", pros::Task::get_count());
 	while (true)
 	{
 		chassis.driverControl();

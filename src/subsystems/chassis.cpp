@@ -134,8 +134,8 @@ void Chassis::sensorInit()
   currentX = 0.0;
   currentY = 0.0;
   currentAngle = PI / 2.0;
-  setCurrentAngle(PI / 2.0);
-  pros::lcd::print(7, "%f, %f", currentX, currentY);
+  //pros::delay(200);
+
   //reset encoders, gyros, etc for drive base here
 }
 
@@ -191,9 +191,9 @@ void Chassis::trackPosition()
   currentX += finalXTranslation;
   currentY += finalYTranslation;
 
-  pros::lcd::print(0, "%f", currentX);
-  pros::lcd::print(1, "%f", currentY);
-  pros::lcd::print(2, "%f", currentAngle);
+  pros::lcd::print(1, "%f", currentX);
+  pros::lcd::print(2, "%f", currentY);
+  pros::lcd::print(3, "%f", currentAngle);
 
   prevFRDrive = frDrive;
   prevBRDrive = brDrive;
@@ -275,28 +275,28 @@ bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, boo
 /*
 This function invokes all actions that belong to the chassis subsytem that need to be iterated over.  
  */
-void chassisTaskActions(void *param)
-{
-  int i = 0;
-  pros::delay(10000);
-  chassis.sensorInit();
-  while (true)
-  {
-    // if (i < 3)
-    // {
-    //   chassis.sensorInit();
-    //   i++;
-    // } //This worked, but it's a terrible way of doing it.
-    //pros::lcd::print(7, "%d", pros::Task::get_count());
-    chassis.trackPosition();
-    //chassis.printCoords();
-    //chassis.completeMovements();
-    i++;
-    pros::lcd::print(6, "Task %d", i);
-    pros::lcd::print(7, "%f", chassis.currentAngle);
-    pros::delay(10);
-  }
-}
+// void chassisTaskActions(void *param)
+// {
+//   int i = 0;
+//   pros::delay(10000);
+//   chassis.sensorInit();
+//   while (true)
+//   {
+//     // if (i < 3)
+//     // {
+//     //   chassis.sensorInit();
+//     //   i++;
+//     // } //This worked, but it's a terrible way of doing it.
+//     //pros::lcd::print(7, "%d", pros::Task::get_count());
+//     chassis.trackPosition();
+//     //chassis.printCoords();
+//     //chassis.completeMovements();
+//     i++;
+//     pros::lcd::print(6, "Task %d", i);
+//     pros::lcd::print(7, "%f", chassis.currentAngle);
+//     pros::delay(10);
+//   }
+// }
 
 /*void chassisAutonActions(void *param)
 {
@@ -310,4 +310,15 @@ void chassisTaskActions(void *param)
 }
 */
 
-pros::Task chassisControl(chassisTaskActions, param, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Chassis Subsystem Task");
+//pros::Task chassisControl(chassisTaskActions, param, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Chassis Subsystem Task");
+
+void chassisTaskActions(void *param)
+{
+  while (true)
+  {
+    chassis.trackPosition();
+    pros::delay(30);
+  }
+}
+
+pros::Task chassisControl(chassisTaskActions, param, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "ChassisTask");
