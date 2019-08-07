@@ -238,7 +238,8 @@ bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, boo
   //This function is still missing shortest path addition to choose which direction
   //is the quickest to reach desired angle
 
-  const double tolerance = .05;
+  const double tolerance = .005;
+  const double speedTolerance = 3;
   /*if (abs(targetAngle - currentAngle) > abs((targetAngle + ((targetAngle > 0) ? (-2 * PI) : (2 * PI)) - currentAngle)))
   {
     targetAngle = ((targetAngle > 0) ? (-2 * PI) : (2 * PI));
@@ -249,7 +250,7 @@ bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, boo
   pros::lcd::print(4, "%f", currentAngle);
   pros::lcd::print(5, "%f", fabs(error));
 
-  if (fabs(error) > tolerance)
+  if (fabs(error) > tolerance || chassis.frontRightDrive.get_actual_velocity() > speedTolerance)
   {
     error = targetAngle - currentAngle;
     driveSpeed = error * kp;
@@ -317,6 +318,7 @@ void chassisTaskActions(void *param)
   while (true)
   {
     chassis.trackPosition();
+    chassis.completeMovements();
     pros::delay(30);
   }
 }
