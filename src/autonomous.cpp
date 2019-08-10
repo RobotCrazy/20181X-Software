@@ -1,16 +1,32 @@
 #include "main.h"
+#include "utility/prereq.hpp"
 
 bool forwardToCubePFunc()
 {
   return (1 == 1);
 }
+bool drivingToPointPFunc()
+{
+  return (1 == 1);
+}
 void auto1()
 {
-  DriveMovement forwardToCube(PI);
+  DriveMovement forwardToCube(degreeToRadian(135));
   Prereq forwardToCubePrereq(forwardToCubePFunc);
   forwardToCube.setDrivePrereq(forwardToCubePrereq);
   forwardToCube.setStopOnCompletion(true);
   chassis.addMovement(forwardToCube);
+
+  DriveMovement forwardToCube2(degreeToRadian(30));
+  forwardToCube2.setDrivePrereq(forwardToCubePrereq);
+  forwardToCube2.setStopOnCompletion(true);
+  chassis.addMovement(forwardToCube2);
+
+  // DriveMovement drivingToPoint(10, 10);
+  // Prereq drivingToPointPrereq(drivingToPointPFunc);
+  // drivingToPoint.setDrivePrereq(drivingToPointPrereq);
+  // drivingToPoint.setStopOnCompletion(true);
+  // chassis.addMovement(drivingToPoint);
 }
 
 /**

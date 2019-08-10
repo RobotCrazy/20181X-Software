@@ -203,7 +203,8 @@ void Chassis::trackPosition()
 
 bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, int kp, bool stopOnCompletion)
 {
-  const double angleThreshold = (PI / 6.0);
+  pros::lcd::print(7, "Driving to point");
+  const double angleThreshold = degreeToRadian(5);
   const double angleKP = 1.0; //Tune these two constants as needed
   const double errorTolerance = .25;
   double xDistance = x - currentX;
@@ -211,20 +212,31 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
   double targetAngle = atan(yDistance / xDistance);
   double error = distance(currentX, currentY, x, y);
   double speed = error * kp;
+  if (abs(speed) < speedDeadband)
+  {
+    speed = sign(speed) * speedDeadband;
+  }
   if (abs(targetAngle - currentAngle) > angleThreshold)
   {
     turnToTarget(targetAngle, speedDeadband, kp, false);
     return false;
   }
-  else
+  else if (abs(error) < errorTolerance)
   {
     double angleDifference = currentAngle - targetAngle; //It might need to be flipped depending on
     //which angle is positive and which is negative (targetAngle - currentAngle)
     moveRightDriveVoltage((error * kp) + (angleDifference * angleKP));
     moveLeftDriveVoltage((error * kp) - (angleDifference * angleKP)); //It might need to be
     //addition instead of subtraction or vice versa
+    return false;
   }
-  return (abs(error) < errorTolerance);
+  else
+  {
+    moveRightDriveVoltage(0);
+    moveLeftDriveVoltage(0);
+    pros::lcd::print(7, "Done driving to point");
+    return true;
+  }
 
   //Insert code for driving to a point with odometry here
   //This code should dynamically update its path if external factors cause the robot to
@@ -238,6 +250,7 @@ bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, boo
   //This function is still missing shortest path addition to choose which direction
   //is the quickest to reach desired angle
 
+  pros::lcd::print(6, "%f   Turning to target", targetAngle);
   const double tolerance = .005;
   const double speedTolerance = 3;
   /*if (abs(targetAngle - currentAngle) > abs((targetAngle + ((targetAngle > 0) ? (-2 * PI) : (2 * PI)) - currentAngle)))
@@ -246,11 +259,11 @@ bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, boo
   } //find shortest direction to target angle*/
   double error = targetAngle - currentAngle;
   double driveSpeed = error * kp;
-  pros::lcd::print(3, "%f", driveSpeed);
-  pros::lcd::print(4, "%f", currentAngle);
-  pros::lcd::print(5, "%f", fabs(error));
+  // pros::lcd::print(3, "%f", driveSpeed);
+  // pros::lcd::print(4, "%f", currentAngle);
+  // pros::lcd::print(5, "%f", fabs(error));
 
-  if (fabs(error) > tolerance || chassis.frontRightDrive.get_actual_velocity() > speedTolerance)
+  if (fabs(error) > tolerance || frontRightDrive.get_actual_velocity() > speedTolerance)
   {
     error = targetAngle - currentAngle;
     driveSpeed = error * kp;
@@ -269,6 +282,7 @@ bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, boo
   {
     moveRightDriveVoltage(0);
     moveLeftDriveVoltage(0);
+    pros::lcd::print(6, "Done turning to position");
     return true;
   }
 }

@@ -29,6 +29,11 @@ private:
   Prereq drivePrereq;
 
 public:
+  static const double TURN_DEFAULT_SPEED_DEADBAND;
+  static const double TURN_DEFAULT_MAX_SPEED;
+  static const double TURN_DEFAULT_KP;
+  static const bool TURN_DEFAULT_COMPLETION_STOP;
+
   DriveMovement(double targetAngle);
   DriveMovement(double x, double y);
 

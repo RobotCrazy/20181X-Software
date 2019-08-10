@@ -3,14 +3,19 @@
 const int DRIVE_MOVEMENT_POINT = 1;
 const int DRIVE_MOVEMENT_TURN = 2;
 
+const double DriveMovement::TURN_DEFAULT_SPEED_DEADBAND = 2500.0;
+const double DriveMovement::TURN_DEFAULT_MAX_SPEED = 12000.0;
+const double DriveMovement::TURN_DEFAULT_KP = 8000.0;
+const bool DriveMovement::TURN_DEFAULT_COMPLETION_STOP = true;
+
 DriveMovement::DriveMovement(double angle)
 {
   movementType = DRIVE_MOVEMENT_TURN;
   targetAngle = angle;
-  speedDeadband = 1700;
-  maxSpeed = 12000;
-  kp = 8000.0;
-  stopOnCompletion = true;
+  speedDeadband = TURN_DEFAULT_SPEED_DEADBAND;
+  maxSpeed = TURN_DEFAULT_MAX_SPEED;
+  kp = TURN_DEFAULT_KP;
+  stopOnCompletion = TURN_DEFAULT_COMPLETION_STOP;
   //The values for speedDeadband and KP in this constructor are the default values.
   //These can be set using seperate methods for specific cases.
 }
@@ -20,7 +25,7 @@ DriveMovement::DriveMovement(double x, double y)
   movementType = DRIVE_MOVEMENT_POINT;
   targetX = x;
   targetY = y;
-  speedDeadband = 1700;
+  speedDeadband = 3000;
   maxSpeed = 12000;
   kp = 13;
   stopOnCompletion = true;
