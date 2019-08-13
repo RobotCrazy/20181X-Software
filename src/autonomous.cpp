@@ -11,13 +11,9 @@ bool drivingToPointPFunc()
 }
 void auto1()
 {
-  DriveMovement forwardToCube(degreeToRadian(135));
   Prereq forwardToCubePrereq(forwardToCubePFunc);
-  forwardToCube.setDrivePrereq(forwardToCubePrereq);
-  forwardToCube.setStopOnCompletion(true);
-  chassis.addMovement(forwardToCube);
 
-  DriveMovement forwardToCube2(degreeToRadian(30));
+  DriveMovement forwardToCube2(10, 0);
   forwardToCube2.setDrivePrereq(forwardToCubePrereq);
   forwardToCube2.setStopOnCompletion(true);
   chassis.addMovement(forwardToCube2);

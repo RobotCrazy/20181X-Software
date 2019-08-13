@@ -7,5 +7,5 @@ Intake::Intake(int intakePort)
 
 void Intake::driverControl()
 {
-  intake.move(master.get_digital(DIGITAL_R1) * 127);
+  intake.move(master.get_digital(DIGITAL_R1) * -127);
 }

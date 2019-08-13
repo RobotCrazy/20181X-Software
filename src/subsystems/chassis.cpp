@@ -201,32 +201,38 @@ void Chassis::trackPosition()
   prevBLDrive = blDrive;
 }
 
-bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, int kp, bool stopOnCompletion)
+bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion)
 {
   pros::lcd::print(7, "Driving to point");
   const double angleThreshold = degreeToRadian(5);
-  const double angleKP = 1.0; //Tune these two constants as needed
+  const double angleKP = 20000; //Tune these two constants as needed
   const double errorTolerance = .25;
   double xDistance = x - currentX;
   double yDistance = y - currentY;
   double targetAngle = atan(yDistance / xDistance);
   double error = distance(currentX, currentY, x, y);
-  double speed = error * kp;
+  double speed = 8000;
+
+  pros::lcd::print(4, "%f, %f, %f, %f", x, y, xDistance, yDistance);
+  pros::lcd::print(5, "%f, %f, %f", targetAngle, error, speed);
+
   if (abs(speed) < speedDeadband)
   {
     speed = sign(speed) * speedDeadband;
   }
-  if (abs(targetAngle - currentAngle) > angleThreshold)
+  turnToTarget(targetAngle, DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
+               DriveMovement::TURN_DEFAULT_KP, DriveMovement::TURN_DEFAULT_COMPLETION_STOP);
+  /*if (abs(targetAngle - currentAngle) > angleThreshold)
   {
     turnToTarget(targetAngle, speedDeadband, kp, false);
     return false;
-  }
-  else if (abs(error) < errorTolerance)
+  }*/
+  /*else if (abs(error) > errorTolerance)
   {
     double angleDifference = currentAngle - targetAngle; //It might need to be flipped depending on
     //which angle is positive and which is negative (targetAngle - currentAngle)
-    moveRightDriveVoltage((error * kp) + (angleDifference * angleKP));
-    moveLeftDriveVoltage((error * kp) - (angleDifference * angleKP)); //It might need to be
+    moveRightDriveVoltage(speed + (angleDifference * angleKP));
+    moveLeftDriveVoltage(speed - (angleDifference * angleKP)); //It might need to be
     //addition instead of subtraction or vice versa
     return false;
   }
@@ -236,7 +242,8 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
     moveLeftDriveVoltage(0);
     pros::lcd::print(7, "Done driving to point");
     return true;
-  }
+  }*/
+  return false;
 
   //Insert code for driving to a point with odometry here
   //This code should dynamically update its path if external factors cause the robot to

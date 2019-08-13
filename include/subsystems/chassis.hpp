@@ -18,7 +18,7 @@ extern pros::Task chassisControl;
 class Chassis
 {
 private:
-    pros::ADIGyro gyro;
+  pros::ADIGyro gyro;
 
   std::queue<DriveMovement> movements;
 
@@ -52,7 +52,7 @@ public:
    * Drives to a specified point
    * Returns whether the action is complete (true if complete; false otherwise)
    */
-  bool driveToPoint(double x, double y, int speedDeadband, int maxSpeed, int kp, bool stopOnCompletion);
+  bool driveToPoint(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion);
   bool turnToTarget(double targetAngle, int speedDeadband, double kp, bool stopOnCompletion);
 };
 
