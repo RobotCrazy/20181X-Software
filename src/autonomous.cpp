@@ -13,7 +13,7 @@ void auto1()
 {
   Prereq forwardToCubePrereq(forwardToCubePFunc);
 
-  DriveMovement forwardToCube2(10, 0);
+  DriveMovement forwardToCube2(0, 10);
   forwardToCube2.setDrivePrereq(forwardToCubePrereq);
   forwardToCube2.setStopOnCompletion(true);
   chassis.addMovement(forwardToCube2);

@@ -205,13 +205,14 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
 {
   pros::lcd::print(7, "Driving to point");
   const double angleThreshold = degreeToRadian(5);
-  const double angleKP = 20000; //Tune these two constants as needed
+  const double angleKP = 20000.0; //Tune these two constants as needed
   const double errorTolerance = .25;
   double xDistance = x - currentX;
   double yDistance = y - currentY;
   double targetAngle = atan(yDistance / xDistance);
   double error = distance(currentX, currentY, x, y);
-  double speed = 8000;
+  double speed = error * kp;
+  double angleDifference = currentAngle - targetAngle;
 
   pros::lcd::print(4, "%f, %f, %f, %f", x, y, xDistance, yDistance);
   pros::lcd::print(5, "%f, %f, %f", targetAngle, error, speed);
@@ -220,17 +221,15 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
   {
     speed = sign(speed) * speedDeadband;
   }
-  turnToTarget(targetAngle, DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
-               DriveMovement::TURN_DEFAULT_KP, DriveMovement::TURN_DEFAULT_COMPLETION_STOP);
-  /*if (abs(targetAngle - currentAngle) > angleThreshold)
+
+  if (fabs(angleDifference) > angleThreshold)
   {
-    turnToTarget(targetAngle, speedDeadband, kp, false);
+    turnToTarget(targetAngle, DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
+                 DriveMovement::TURN_DEFAULT_KP - 2000.0, DriveMovement::TURN_DEFAULT_COMPLETION_STOP);
     return false;
-  }*/
-  /*else if (abs(error) > errorTolerance)
+  }
+  else if (fabs(error) > errorTolerance)
   {
-    double angleDifference = currentAngle - targetAngle; //It might need to be flipped depending on
-    //which angle is positive and which is negative (targetAngle - currentAngle)
     moveRightDriveVoltage(speed + (angleDifference * angleKP));
     moveLeftDriveVoltage(speed - (angleDifference * angleKP)); //It might need to be
     //addition instead of subtraction or vice versa
@@ -242,7 +241,7 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
     moveLeftDriveVoltage(0);
     pros::lcd::print(7, "Done driving to point");
     return true;
-  }*/
+  }
   return false;
 
   //Insert code for driving to a point with odometry here
@@ -258,8 +257,8 @@ bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, boo
   //is the quickest to reach desired angle
 
   pros::lcd::print(6, "%f   Turning to target", targetAngle);
-  const double tolerance = .005;
-  const double speedTolerance = 3;
+  const double tolerance = .1;
+  const double speedTolerance = 5;
   /*if (abs(targetAngle - currentAngle) > abs((targetAngle + ((targetAngle > 0) ? (-2 * PI) : (2 * PI)) - currentAngle)))
   {
     targetAngle = ((targetAngle > 0) ? (-2 * PI) : (2 * PI));
