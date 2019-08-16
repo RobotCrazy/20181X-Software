@@ -1,5 +1,6 @@
 #include "api.h"
 #include <queue>
+#include <vector>
 #include "../utility/driveMovement.hpp"
 #include "../utility/prereq.hpp"
 #include "../utility/mathUtil.h"
@@ -21,6 +22,7 @@ private:
   pros::ADIGyro gyro;
 
   std::queue<DriveMovement> movements;
+  std::vector<DriveMovement> completedMovements;
 
 public:
   Chassis(int frontLeft, int backLeft, int frontRight, int backRight, char gyroPort);
@@ -40,6 +42,7 @@ public:
   void setCurrentAngle(double angle);
   void printCoords();
   void addMovement(DriveMovement dm);
+  bool movementIsCompleted(DriveMovement dm);
   DriveMovement getFirstMovement();
   void deleteFirstMovement();
   void completeMovements();

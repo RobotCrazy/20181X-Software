@@ -103,6 +103,7 @@ void Chassis::completeMovements()
       {
         if (turnToTarget(dm.getTargetAngle(), dm.getSpeedDeadband(), dm.getKP(), dm.getStopOnCompletion()) == true)
         {
+          completedMovements.push_back(dm);
           deleteFirstMovement();
         }
       }
@@ -110,6 +111,7 @@ void Chassis::completeMovements()
       {
         if (driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion()) == true)
         {
+          completedMovements.push_back(dm);
           deleteFirstMovement();
         }
       }

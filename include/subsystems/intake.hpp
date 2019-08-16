@@ -15,6 +15,8 @@ public:
   Intake(int intakePort);
   void driverControl();
 
+  void runIntake(int ticks);
+
   void addMovement(IntakeMovement im);
   IntakeMovement getFirstMovement();
   void deleteFirstMovement();

@@ -77,7 +77,7 @@ void DriveMovement::setComplete()
 
 bool DriveMovement::isComplete()
 {
-  return actionComplete;
+  return chassis.movementIsCompleted(this);
 }
 
 void DriveMovement::setDrivePrereq(Prereq p)

@@ -1,5 +1,6 @@
 #include "main.h"
 #include "utility/prereq.hpp"
+#include <functional>
 
 bool forwardToCubePFunc()
 {
@@ -9,14 +10,37 @@ bool drivingToPointPFunc()
 {
   return (1 == 1);
 }
+// bool runningIntakePFunc()
+// {
+//   return forwardToCube2.isComplete();
+// }
+
 void auto1()
 {
-  Prereq forwardToCubePrereq(forwardToCubePFunc);
 
-  DriveMovement forwardToCube2(0, 10);
-  forwardToCube2.setDrivePrereq(forwardToCubePrereq);
-  forwardToCube2.setStopOnCompletion(true);
-  chassis.addMovement(forwardToCube2);
+  //chassis.addMovement(forwardToCube2);
+
+  Prereq turnTo180Prereq([&]() {
+    return (1 == 1);
+  });
+
+  DriveMovement turnTo180(degreeToRadian(180));
+  turnTo180.setDrivePrereq(turnTo180Prereq);
+  turnTo180.setStopOnCompletion(true);
+  chassis.addMovement(turnTo180);
+
+  Prereq turnTo0Prereq([&]() {
+    return turnTo180.isComplete();
+  });
+  DriveMovement turnTo0(0);
+  turnTo0.setDrivePrereq(turnTo0Prereq);
+  turnTo0.setStopOnCompletion(true);
+  chassis.addMovement(turnTo0);
+
+  /*IntakeMovement runIntakeMovement(1000);
+  Prereq runIntakeMovementPrereq(forwardToCubePFunc);
+  runIntakeMovement.setIntakePrereq(runIntakeMovementPrereq);
+  intake.addMovement(runIntakeMovement);*/
 
   // DriveMovement drivingToPoint(10, 10);
   // Prereq drivingToPointPrereq(drivingToPointPFunc);
