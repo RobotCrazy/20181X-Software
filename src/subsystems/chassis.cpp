@@ -80,6 +80,11 @@ void Chassis::addMovement(DriveMovement dm)
   movements.push(dm);
 }
 
+bool Chassis::movementIsCompleted(DriveMovement *dm)
+{
+  return (std::find(completedMovements.begin(), completedMovements.end(), dm) != completedMovements.end());
+}
+
 DriveMovement Chassis::getFirstMovement()
 {
   return movements.front();
@@ -103,7 +108,7 @@ void Chassis::completeMovements()
       {
         if (turnToTarget(dm.getTargetAngle(), dm.getSpeedDeadband(), dm.getKP(), dm.getStopOnCompletion()) == true)
         {
-          completedMovements.push_back(dm);
+          completedMovements.push_back(&dm);
           deleteFirstMovement();
         }
       }
@@ -111,7 +116,7 @@ void Chassis::completeMovements()
       {
         if (driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion()) == true)
         {
-          completedMovements.push_back(dm);
+          completedMovements.push_back(&dm);
           deleteFirstMovement();
         }
       }
@@ -211,7 +216,7 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
   const double errorTolerance = .25;
   double xDistance = x - currentX;
   double yDistance = y - currentY;
-  double targetAngle = atan(yDistance / xDistance);
+  double targetAngle = atan(fabs(yDistance) / fabs(xDistance)) + angleQuadrantAdjustment(xDistance, yDistance);
   double error = distance(currentX, currentY, x, y);
   double speed = error * kp;
   double angleDifference = currentAngle - targetAngle;

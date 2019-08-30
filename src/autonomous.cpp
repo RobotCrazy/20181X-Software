@@ -30,6 +30,7 @@ void auto1()
   chassis.addMovement(turnTo180);
 
   Prereq turnTo0Prereq([&]() {
+    pros::lcd::print(7, "%d", turnTo180.isComplete());
     return turnTo180.isComplete();
   });
   DriveMovement turnTo0(0);

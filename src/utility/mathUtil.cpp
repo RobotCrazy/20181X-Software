@@ -33,3 +33,23 @@ double sign(double num)
     return 0;
   }
 }
+
+double angleQuadrantAdjustment(double x, double y)
+{
+  if (x >= 0 && y >= 0)
+  {
+    return 0;
+  }
+  else if (x < 0 && y > 0)
+  {
+    return (PI / 2);
+  }
+  else if (x < 0 && y < 0)
+  {
+    return PI;
+  }
+  else
+  {
+    return (3 * PI / 2);
+  }
+}
