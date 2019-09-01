@@ -24,30 +24,32 @@ void auto1()
     return (1 == 1);
   });
 
-  DriveMovement turnTo180(degreeToRadian(180));
-  turnTo180.setDrivePrereq(turnTo180Prereq);
-  turnTo180.setStopOnCompletion(true);
-  chassis.addMovement(turnTo180);
+  // DriveMovement turnTo180(degreeToRadian(180));
+  // turnTo180.setDrivePrereq(turnTo180Prereq);
+  // turnTo180.setStopOnCompletion(true);
+  // DriveMovement *action = &turnTo180;
+  // chassis.addMovement(&turnTo180);
+  // pros::lcd::print(5, "Adding movements %d %f", (&turnTo180), (*(&turnTo180)).getKP());
 
-  Prereq turnTo0Prereq([&]() {
-    pros::lcd::print(7, "%d", turnTo180.isComplete());
-    return turnTo180.isComplete();
-  });
-  DriveMovement turnTo0(0);
-  turnTo0.setDrivePrereq(turnTo0Prereq);
-  turnTo0.setStopOnCompletion(true);
-  chassis.addMovement(turnTo0);
+  // Prereq turnTo0Prereq([&]() {
+  //   pros::lcd::print(7, "%d", turnTo180.isComplete());
+  //   return turnTo180.isComplete();
+  // });
+  // DriveMovement turnTo0(0);
+  // turnTo0.setDrivePrereq(turnTo0Prereq);
+  // turnTo0.setStopOnCompletion(true);
+  // chassis.addMovement(&turnTo0);
 
   /*IntakeMovement runIntakeMovement(1000);
   Prereq runIntakeMovementPrereq(forwardToCubePFunc);
   runIntakeMovement.setIntakePrereq(runIntakeMovementPrereq);
   intake.addMovement(runIntakeMovement);*/
 
-  // DriveMovement drivingToPoint(10, 10);
-  // Prereq drivingToPointPrereq(drivingToPointPFunc);
-  // drivingToPoint.setDrivePrereq(drivingToPointPrereq);
-  // drivingToPoint.setStopOnCompletion(true);
-  // chassis.addMovement(drivingToPoint);
+  DriveMovement drivingToPoint(10, 10);
+  Prereq drivingToPointPrereq(drivingToPointPFunc);
+  drivingToPoint.setDrivePrereq(drivingToPointPrereq);
+  drivingToPoint.setStopOnCompletion(true);
+  chassis.addMovement(drivingToPoint);
 }
 
 /**

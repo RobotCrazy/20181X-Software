@@ -75,7 +75,7 @@ void Chassis::printCoords()
   pros::lcd::print(5, "%f", currentAngle);
 }
 
-void Chassis::addMovement(DriveMovement dm)
+void Chassis::addMovement(DriveMovement *dm)
 {
   movements.push(dm);
 }
@@ -85,7 +85,7 @@ bool Chassis::movementIsCompleted(DriveMovement *dm)
   return (std::find(completedMovements.begin(), completedMovements.end(), dm) != completedMovements.end());
 }
 
-DriveMovement Chassis::getFirstMovement()
+DriveMovement *Chassis::getFirstMovement()
 {
   return movements.front();
 }
@@ -100,9 +100,11 @@ void Chassis::completeMovements()
 
   if (movements.empty() == false)
   {
-    //pros::lcd::print(6, "Inside if statement");
-    DriveMovement dm = getFirstMovement();
-    if (dm.readyToOperate() == true)
+    //pros::lcd::print(5, "Inside if statement");
+    DriveMovement *dm = getFirstMovement();
+    pros::lcd::print(6, "%d  %f", dm, (*dm).getKP());
+    //pros::lcd::print(6, "%f", (*(dm)).getKP());
+    /*if (dm.readyToOperate() == true)
     {
       if (dm.getMovementType() == DRIVE_MOVEMENT_TURN)
       {
@@ -120,7 +122,7 @@ void Chassis::completeMovements()
           deleteFirstMovement();
         }
       }
-    }
+    }*/
   }
 }
 
