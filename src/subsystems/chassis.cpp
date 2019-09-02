@@ -75,7 +75,7 @@ void Chassis::printCoords()
   pros::lcd::print(5, "%f", currentAngle);
 }
 
-void Chassis::addMovement(DriveMovement *dm)
+void Chassis::addMovement(DriveMovement dm)
 {
   movements.push(dm);
 }
@@ -85,7 +85,7 @@ bool Chassis::movementIsCompleted(DriveMovement *dm)
   return (std::find(completedMovements.begin(), completedMovements.end(), dm) != completedMovements.end());
 }
 
-DriveMovement *Chassis::getFirstMovement()
+DriveMovement Chassis::getFirstMovement()
 {
   return movements.front();
 }
@@ -101,16 +101,16 @@ void Chassis::completeMovements()
   if (movements.empty() == false)
   {
     //pros::lcd::print(5, "Inside if statement");
-    DriveMovement *dm = getFirstMovement();
-    pros::lcd::print(6, "%d  %f", dm, (*dm).getKP());
+    DriveMovement dm = getFirstMovement();
+    //pros::lcd::print(6, "%d  %f", dm, (*dm).getKP());
     //pros::lcd::print(6, "%f", (*(dm)).getKP());
-    /*if (dm.readyToOperate() == true)
+    if (dm.readyToOperate() == true)
     {
       if (dm.getMovementType() == DRIVE_MOVEMENT_TURN)
       {
         if (turnToTarget(dm.getTargetAngle(), dm.getSpeedDeadband(), dm.getKP(), dm.getStopOnCompletion()) == true)
         {
-          completedMovements.push_back(&dm);
+          //completedMovements.push_back(&dm);
           deleteFirstMovement();
         }
       }
@@ -118,11 +118,11 @@ void Chassis::completeMovements()
       {
         if (driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion()) == true)
         {
-          completedMovements.push_back(&dm);
+          //completedMovements.push_back(&dm);
           deleteFirstMovement();
         }
       }
-    }*/
+    }
   }
 }
 
@@ -213,15 +213,18 @@ void Chassis::trackPosition()
 bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion)
 {
   pros::lcd::print(7, "Driving to point");
-  const double angleThreshold = degreeToRadian(5);
-  const double angleKP = 20000.0; //Tune these two constants as needed
+  const double angleThreshold = degreeToRadian(90);
+  const double defaultAngleKP = 2000.0;
   const double errorTolerance = .25;
+  const double velocityTolerance = 2.5;
+  double angleKP = 1000.0; //Tune these two constants as needed
   double xDistance = x - currentX;
   double yDistance = y - currentY;
   double targetAngle = atan(fabs(yDistance) / fabs(xDistance)) + angleQuadrantAdjustment(xDistance, yDistance);
   double error = distance(currentX, currentY, x, y);
   double speed = error * kp;
   double angleDifference = currentAngle - targetAngle;
+  double angleErrorThreshold = 6.0;
 
   pros::lcd::print(4, "%f, %f, %f, %f", x, y, xDistance, yDistance);
   pros::lcd::print(5, "%f, %f, %f", targetAngle, error, speed);
@@ -231,14 +234,24 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
     speed = sign(speed) * speedDeadband;
   }
 
-  if (fabs(angleDifference) > angleThreshold)
+  if (fabs(angleDifference) > angleThreshold && fabs(error) > angleErrorThreshold)
   {
     turnToTarget(targetAngle, DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
                  DriveMovement::TURN_DEFAULT_KP - 2000.0, DriveMovement::TURN_DEFAULT_COMPLETION_STOP);
     return false;
   }
-  else if (fabs(error) > errorTolerance)
+  else if (fabs(error) > errorTolerance ||
+           fabs(frontLeftDrive.get_actual_velocity()) > velocityTolerance ||
+           fabs(frontLeftDrive.get_actual_velocity() > velocityTolerance))
   {
+    if (fabs(error) < angleErrorThreshold - 2.0)
+    {
+      angleKP = 0;
+    }
+    else
+    {
+      angleKP = defaultAngleKP;
+    }
     moveRightDriveVoltage(speed + (angleDifference * angleKP));
     moveLeftDriveVoltage(speed - (angleDifference * angleKP)); //It might need to be
     //addition instead of subtraction or vice versa
