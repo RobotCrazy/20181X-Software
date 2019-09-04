@@ -45,7 +45,7 @@ void auto1()
   runIntakeMovement.setIntakePrereq(runIntakeMovementPrereq);
   intake.addMovement(runIntakeMovement);*/
 
-  DriveMovement drivingToPoint(10, 25);
+  DriveMovement drivingToPoint(20, 10);
   Prereq drivingToPointPrereq(drivingToPointPFunc);
   drivingToPoint.setDrivePrereq(drivingToPointPrereq);
   drivingToPoint.setStopOnCompletion(true);

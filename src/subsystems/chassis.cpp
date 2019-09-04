@@ -229,7 +229,7 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
   pros::lcd::print(4, "%f, %f, %f, %f", x, y, xDistance, yDistance);
   pros::lcd::print(5, "%f, %f, %f", targetAngle, error, speed);
 
-  if (abs(speed) < speedDeadband)
+  /*if (abs(speed) < speedDeadband)
   {
     speed = sign(speed) * speedDeadband;
   }
@@ -240,18 +240,8 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
                  DriveMovement::TURN_DEFAULT_KP - 2000.0, DriveMovement::TURN_DEFAULT_COMPLETION_STOP);
     return false;
   }
-  else if (fabs(error) > errorTolerance ||
-           fabs(frontLeftDrive.get_actual_velocity()) > velocityTolerance ||
-           fabs(frontLeftDrive.get_actual_velocity() > velocityTolerance))
+  else if (fabs(error) > errorTolerance)
   {
-    if (fabs(error) < angleErrorThreshold - 2.0)
-    {
-      angleKP = 0;
-    }
-    else
-    {
-      angleKP = defaultAngleKP;
-    }
     moveRightDriveVoltage(speed + (angleDifference * angleKP));
     moveLeftDriveVoltage(speed - (angleDifference * angleKP)); //It might need to be
     //addition instead of subtraction or vice versa
@@ -263,7 +253,7 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
     moveLeftDriveVoltage(0);
     pros::lcd::print(7, "Done driving to point");
     return true;
-  }
+  }*/
   return false;
 
   //Insert code for driving to a point with odometry here
