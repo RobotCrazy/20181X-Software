@@ -57,6 +57,7 @@ public:
    * Returns whether the action is complete (true if complete; false otherwise)
    */
   bool driveToPoint(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion);
+  bool driveToPointSync(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion);
   bool turnToTarget(double targetAngle, int speedDeadband, double kp, bool stopOnCompletion);
 };
 
