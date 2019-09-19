@@ -1,6 +1,7 @@
 #include "main.h"
 #include "utility/prereq.hpp"
 #include <functional>
+#include <memory>
 
 bool forwardToCubePFunc()
 {
@@ -49,7 +50,10 @@ void auto1()
   Prereq drivingToPointPrereq(drivingToPointPFunc);
   drivingToPoint.setDrivePrereq(drivingToPointPrereq);
   drivingToPoint.setStopOnCompletion(true);
-  chassis.addMovement(drivingToPoint);
+  chassis.addMovement(&drivingToPoint);
+
+  std::shared_ptr<DriveMovement> drivingToPoint2 = std::make_shared<DriveMovement>(20, 10);
+  pros::lcd::print(6, "%d", drivingToPoint2.get()->getKP());
 }
 
 /**

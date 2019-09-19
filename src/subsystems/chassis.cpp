@@ -75,7 +75,7 @@ void Chassis::printCoords()
   pros::lcd::print(5, "%f", currentAngle);
 }
 
-void Chassis::addMovement(DriveMovement dm)
+void Chassis::addMovement(DriveMovement *dm)
 {
   movements.push(dm);
 }
@@ -85,7 +85,7 @@ bool Chassis::movementIsCompleted(DriveMovement *dm)
   return (std::find(completedMovements.begin(), completedMovements.end(), dm) != completedMovements.end());
 }
 
-DriveMovement Chassis::getFirstMovement()
+DriveMovement *Chassis::getFirstMovement()
 {
   return movements.front();
 }
@@ -101,7 +101,7 @@ void Chassis::completeMovements()
   if (movements.empty() == false)
   {
     //pros::lcd::print(5, "Inside if statement");
-    DriveMovement dm = getFirstMovement();
+    DriveMovement dm = (*(getFirstMovement()));
     //pros::lcd::print(6, "%d  %f", dm, (*dm).getKP());
     //pros::lcd::print(6, "%f", (*(dm)).getKP());
     if (dm.readyToOperate() == true)
@@ -116,7 +116,7 @@ void Chassis::completeMovements()
       }
       else if (dm.getMovementType() == DRIVE_MOVEMENT_POINT)
       {
-        driveToPointSync(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion());
+        driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion());
         //completedMovements.push_back(&dm);
         deleteFirstMovement();
       }
@@ -227,7 +227,7 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
   pros::lcd::print(4, "%f, %f, %f, %f", x, y, xDistance, yDistance);
   pros::lcd::print(5, "%f, %f, %f", targetAngle, error, speed);
 
-  /*if (abs(speed) < speedDeadband)
+  if (abs(speed) < speedDeadband)
   {
     speed = sign(speed) * speedDeadband;
   }
@@ -251,7 +251,7 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
     moveLeftDriveVoltage(0);
     pros::lcd::print(7, "Done driving to point");
     return true;
-  }*/
+  }
   return false;
 
   //Insert code for driving to a point with odometry here

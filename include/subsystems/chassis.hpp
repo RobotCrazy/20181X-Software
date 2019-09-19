@@ -2,6 +2,7 @@
 #include <queue>
 #include <vector>
 #include <algorithm>
+#include <memory>
 #include "../utility/driveMovement.hpp"
 #include "../utility/prereq.hpp"
 #include "../utility/mathUtil.h"
@@ -22,7 +23,8 @@ class Chassis
 private:
   pros::ADIGyro gyro;
 
-  std::queue<DriveMovement> movements;
+  std::queue<DriveMovement *> movements;
+  std::queue<std::shared_ptr<DriveMovement>> ms;
   std::vector<DriveMovement *> completedMovements;
 
 public:
@@ -42,9 +44,9 @@ public:
 
   void setCurrentAngle(double angle);
   void printCoords();
-  void addMovement(DriveMovement dm);
+  void addMovement(DriveMovement *dm);
   bool movementIsCompleted(DriveMovement *dm);
-  DriveMovement getFirstMovement();
+  DriveMovement *getFirstMovement();
   void deleteFirstMovement();
   void completeMovements();
   void initialize();
