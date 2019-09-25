@@ -26,7 +26,7 @@ private:
   bool actionComplete = false;
   bool stopOnCompletion;
 
-  Prereq drivePrereq;
+  std::shared_ptr<Prereq> drivePrereq;
 
 public:
   static const double TURN_DEFAULT_SPEED_DEADBAND;

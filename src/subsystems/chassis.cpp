@@ -75,7 +75,7 @@ void Chassis::printCoords()
   pros::lcd::print(5, "%f", currentAngle);
 }
 
-void Chassis::addMovement(DriveMovement *dm)
+void Chassis::addMovement(std::shared_ptr<DriveMovement> dm)
 {
   movements.push(dm);
 }
@@ -85,7 +85,7 @@ bool Chassis::movementIsCompleted(DriveMovement *dm)
   return (std::find(completedMovements.begin(), completedMovements.end(), dm) != completedMovements.end());
 }
 
-DriveMovement *Chassis::getFirstMovement()
+std::shared_ptr<DriveMovement> Chassis::getFirstMovement()
 {
   return movements.front();
 }
@@ -100,27 +100,33 @@ void Chassis::completeMovements()
 
   if (movements.empty() == false)
   {
-    //pros::lcd::print(5, "Inside if statement");
-    DriveMovement dm = (*(getFirstMovement()));
-    //pros::lcd::print(6, "%d  %f", dm, (*dm).getKP());
-    //pros::lcd::print(6, "%f", (*(dm)).getKP());
-    if (dm.readyToOperate() == true)
+    std::shared_ptr<DriveMovement> dm = getFirstMovement();
+    pros::lcd::print(4, "KP: %f", dm->getKP());
+    pros::lcd::print(5, "%d", dm->getMovementType());
+    if (dm->readyToOperate() == true)
     {
-      if (dm.getMovementType() == DRIVE_MOVEMENT_TURN)
+      if (dm->getMovementType() == DRIVE_MOVEMENT_POINT)
       {
-        if (turnToTarget(dm.getTargetAngle(), dm.getSpeedDeadband(), dm.getKP(), dm.getStopOnCompletion()) == true)
-        {
-          //completedMovements.push_back(&dm);
-          deleteFirstMovement();
-        }
-      }
-      else if (dm.getMovementType() == DRIVE_MOVEMENT_POINT)
-      {
-        driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion());
-        //completedMovements.push_back(&dm);
-        deleteFirstMovement();
+        pros::lcd::print(5, "%d", dm->getMovementType());
       }
     }
+    // if (dm->readyToOperate() == true)
+    // {
+    //   if (dm->getMovementType() == DRIVE_MOVEMENT_TURN)
+    //   {
+    //     if (turnToTarget(dm->getTargetAngle(), dm->getSpeedDeadband(), dm->getKP(), dm->getStopOnCompletion()) == true)
+    //     {
+    //       //completedMovements.push_back(&dm);
+    //       deleteFirstMovement();
+    //     }
+    //   }
+    //   else if (dm->getMovementType() == DRIVE_MOVEMENT_POINT)
+    //   {
+    //     driveToPoint(dm->getTargetX(), dm->getTargetY(), dm->getSpeedDeadband(), dm->getMaxSpeed(), dm->getKP(), dm->getStopOnCompletion());
+    //     //completedMovements.push_back(&dm);
+    //     deleteFirstMovement();
+    //   }
+    // }
   }
 }
 

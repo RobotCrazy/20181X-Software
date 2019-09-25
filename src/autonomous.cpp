@@ -18,42 +18,13 @@ bool drivingToPointPFunc()
 
 void auto1()
 {
-
-  //chassis.addMovement(forwardToCube2);
-
-  Prereq turnTo180Prereq([&]() {
+  std::shared_ptr<DriveMovement> drivingToPoint2 = std::make_shared<DriveMovement>(20, 10);
+  std::shared_ptr<Prereq> drivingToPoint2Prereq = std::make_shared<Prereq>([&]() {
     return (1 == 1);
   });
+  drivingToPoint2.get()->setDrivePrereq(drivingToPoint2Prereq);
 
-  // DriveMovement turnTo180(degreeToRadian(180));
-  // turnTo180.setDrivePrereq(turnTo180Prereq);
-  // turnTo180.setStopOnCompletion(true);
-  // DriveMovement *action = &turnTo180;
-  // chassis.addMovement(&turnTo180);
-  // pros::lcd::print(5, "Adding movements %d %f", (&turnTo180), (*(&turnTo180)).getKP());
-
-  // Prereq turnTo0Prereq([&]() {
-  //   pros::lcd::print(7, "%d", turnTo180.isComplete());
-  //   return turnTo180.isComplete();
-  // });
-  // DriveMovement turnTo0(0);
-  // turnTo0.setDrivePrereq(turnTo0Prereq);
-  // turnTo0.setStopOnCompletion(true);
-  // chassis.addMovement(&turnTo0);
-
-  /*IntakeMovement runIntakeMovement(1000);
-  Prereq runIntakeMovementPrereq(forwardToCubePFunc);
-  runIntakeMovement.setIntakePrereq(runIntakeMovementPrereq);
-  intake.addMovement(runIntakeMovement);*/
-
-  DriveMovement drivingToPoint(20, 10);
-  Prereq drivingToPointPrereq(drivingToPointPFunc);
-  drivingToPoint.setDrivePrereq(drivingToPointPrereq);
-  drivingToPoint.setStopOnCompletion(true);
-  chassis.addMovement(&drivingToPoint);
-
-  std::shared_ptr<DriveMovement> drivingToPoint2 = std::make_shared<DriveMovement>(20, 10);
-  pros::lcd::print(6, "%d", drivingToPoint2.get()->getKP());
+  chassis.addMovement(drivingToPoint2);
 }
 
 /**
