@@ -1,5 +1,6 @@
 #include "api.h"
 #include <vector>
+#include <memory>
 #include "prereq.hpp"
 
 #ifndef _DRIVEMOVEMENT_HPP_
@@ -27,6 +28,7 @@ private:
   bool stopOnCompletion;
 
   std::shared_ptr<Prereq> drivePrereq;
+  std::vector<std::shared_ptr<DriveMovement>> prereqMovements;
 
 public:
   static const double TURN_DEFAULT_SPEED_DEADBAND;
@@ -52,7 +54,8 @@ public:
   void setComplete();
   bool isComplete();
 
-  void setDrivePrereq(Prereq p);
+  void setDrivePrereq(std::shared_ptr<Prereq> p);
+  void setPrereqMovements(std::vector<std::shared_ptr<DriveMovement>> actions);
 
   bool readyToOperate();
 

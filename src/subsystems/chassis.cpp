@@ -82,7 +82,7 @@ void Chassis::addMovement(std::shared_ptr<DriveMovement> dm)
 
 bool Chassis::movementIsCompleted(DriveMovement *dm)
 {
-  return (std::find(completedMovements.begin(), completedMovements.end(), dm) != completedMovements.end());
+  return false; //(std::find(completedMovements.begin(), completedMovements.end(), dm) != completedMovements.end());
 }
 
 std::shared_ptr<DriveMovement> Chassis::getFirstMovement()
@@ -100,14 +100,32 @@ void Chassis::completeMovements()
 
   if (movements.empty() == false)
   {
-    std::shared_ptr<DriveMovement> dm = getFirstMovement();
-    pros::lcd::print(4, "KP: %f", dm->getKP());
-    pros::lcd::print(5, "%d", dm->getMovementType());
-    if (dm->readyToOperate() == true)
+    std::shared_ptr<DriveMovement> dmPointer = getFirstMovement();
+    DriveMovement dm = *(dmPointer.get());
+    pros::lcd::print(4, "KP: %f", dm.getKP());
+    //pros::lcd::print(5, "%d", dm->getMovementType());
+    if (dm.readyToOperate() == true)
     {
-      if (dm->getMovementType() == DRIVE_MOVEMENT_POINT)
+      if (dm.getMovementType() == DRIVE_MOVEMENT_POINT)
       {
-        pros::lcd::print(5, "%d", dm->getMovementType());
+        pros::lcd::print(5, "Type: %d", dm.getMovementType());
+        if (driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion()) == true)
+        {
+          dmPointer.get()->setComplete();
+          completedMovements.push_back(dmPointer);
+          deleteFirstMovement();
+        }
+      }
+
+      else if (dm.getMovementType() == DRIVE_MOVEMENT_TURN)
+      {
+        pros::lcd::print(5, "%d", dm.getMovementType());
+        if (turnToTarget(dm.getTargetAngle(), dm.getSpeedDeadband(), dm.getKP(), dm.getStopOnCompletion()) == true)
+        {
+          dmPointer.get()->setComplete();
+          completedMovements.push_back(dmPointer);
+          deleteFirstMovement();
+        }
       }
     }
     // if (dm->readyToOperate() == true)
@@ -216,7 +234,6 @@ void Chassis::trackPosition()
 
 bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion)
 {
-  pros::lcd::print(7, "Driving to point");
   const double angleThreshold = degreeToRadian(90);
   const double defaultAngleKP = 2000.0;
   const double errorTolerance = .25;

@@ -1,6 +1,6 @@
 #include "api.h"
 #include <queue>
-#include <vector>
+#include <list>
 #include <algorithm>
 #include <memory>
 #include "../utility/driveMovement.hpp"
@@ -24,7 +24,7 @@ private:
   pros::ADIGyro gyro;
 
   std::queue<std::shared_ptr<DriveMovement>> movements;
-  std::vector<DriveMovement *> completedMovements;
+  std::list<std::shared_ptr<DriveMovement>> completedMovements;
 
 public:
   Chassis(int frontLeft, int backLeft, int frontRight, int backRight, char gyroPort);
@@ -43,14 +43,35 @@ public:
 
   void setCurrentAngle(double angle);
   void printCoords();
+
+  /**
+   * Adds movement to queue of chassis actions
+   * Param dm - shared_ptr to DriveMovement object
+   */
   void addMovement(std::shared_ptr<DriveMovement> dm);
+
   bool movementIsCompleted(DriveMovement *dm);
+
+  /**
+   * Returns shared_ptr to first movement in queue of chassis actions
+   */
   std::shared_ptr<DriveMovement> getFirstMovement();
+
+  /**
+   * Deletes first movement in queue of chassis actions
+   */
   void deleteFirstMovement();
+
+  /**
+   * Completes work to complete actions in chassis actions queue
+   */
   void completeMovements();
   void initialize();
   void sensorInit();
 
+  /**
+  * Keeps track of absolute robot position
+  */
   void trackPosition();
 
   /**
@@ -59,6 +80,11 @@ public:
    */
   bool driveToPoint(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion);
   bool driveToPointSync(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion);
+
+  /**
+   * Turns to a specified angle
+   * Returns whether the action is complete (true of complete; false otherwise)
+   */
   bool turnToTarget(double targetAngle, int speedDeadband, double kp, bool stopOnCompletion);
 };
 

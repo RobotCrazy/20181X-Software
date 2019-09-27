@@ -18,13 +18,34 @@ bool drivingToPointPFunc()
 
 void auto1()
 {
-  std::shared_ptr<DriveMovement> drivingToPoint2 = std::make_shared<DriveMovement>(20, 10);
-  std::shared_ptr<Prereq> drivingToPoint2Prereq = std::make_shared<Prereq>([&]() {
-    return (1 == 1);
-  });
-  drivingToPoint2.get()->setDrivePrereq(drivingToPoint2Prereq);
+  // std::shared_ptr<DriveMovement> drivingToPoint2 = std::make_shared<DriveMovement>(20, 10);
+  // std::shared_ptr<Prereq> drivingToPoint2Prereq = std::make_shared<Prereq>([&]() {
+  //   return (1 == 1);
+  // });
+  // drivingToPoint2.get()->setDrivePrereq(drivingToPoint2Prereq);
 
+  // chassis.addMovement(drivingToPoint2);
+
+  // std::shared_ptr<DriveMovement> turnMovement = std::make_shared<DriveMovement>(10);
+  // std::shared_ptr<Prereq> turnMovementPrereq = std::make_shared<Prereq>(std::list<std::shared_ptr<DriveMovement>>({drivingToPoint2}));
+
+  // turnMovement.get()->setDrivePrereq(turnMovementPrereq);
+  // chassis.addMovement(turnMovement);
+
+  // Prereq p([&]() {
+  //   return drivingToPoint2.isComplete();
+  // }, drivingToPoint2)
+
+  std::shared_ptr<DriveMovement> drivingToPoint2 = std::make_shared<DriveMovement>(degreeToRadian(180));
   chassis.addMovement(drivingToPoint2);
+
+  std::shared_ptr<DriveMovement> drivingToPoint3 = std::make_shared<DriveMovement>(degreeToRadian(-720));
+  chassis.addMovement(drivingToPoint3);
+
+  std::shared_ptr<DriveMovement> driveToPoint = std::make_shared<DriveMovement>(20, 10);
+  std::vector<std::shared_ptr<DriveMovement>> driveToPointPrereqMovements({drivingToPoint2});
+  driveToPoint.get()->setPrereqMovements(driveToPointPrereqMovements);
+  chassis.addMovement(driveToPoint);
 }
 
 /**

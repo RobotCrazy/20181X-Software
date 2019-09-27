@@ -16,6 +16,7 @@ DriveMovement::DriveMovement(double angle)
   maxSpeed = TURN_DEFAULT_MAX_SPEED;
   kp = TURN_DEFAULT_KP;
   stopOnCompletion = TURN_DEFAULT_COMPLETION_STOP;
+  prereqMovements = std::vector<std::shared_ptr<DriveMovement>>({});
   //The values for speedDeadband and KP in this constructor are the default values.
   //These can be set using seperate methods for specific cases.
 }
@@ -77,17 +78,29 @@ void DriveMovement::setComplete()
 
 bool DriveMovement::isComplete()
 {
-  return chassis.movementIsCompleted(this);
+  return actionComplete;
 }
 
-void DriveMovement::setDrivePrereq(Prereq p)
+void DriveMovement::setDrivePrereq(std::shared_ptr<Prereq> p)
 {
   drivePrereq = p;
 }
 
+void DriveMovement::setPrereqMovements(std::vector<std::shared_ptr<DriveMovement>> actions)
+{
+  prereqMovements = actions;
+}
+
 bool DriveMovement::readyToOperate()
 {
-  return drivePrereq.isComplete();
+  for (int i = 0; i < prereqMovements.size(); i++)
+  {
+    if (prereqMovements.at(i).get()->isComplete() == false)
+    {
+      return false;
+    }
+  }
+  return true;
 }
 
 void DriveMovement::setStopOnCompletion(bool stop)
