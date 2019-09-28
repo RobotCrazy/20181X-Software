@@ -8,6 +8,11 @@ double degreeToRadian(double degrees)
   return degrees * (PI / 180.0);
 }
 
+double radianToDegree(double radians)
+{
+  return radians * (180.0 / PI);
+}
+
 double distance(double x1, double y1, double x2, double y2)
 {
   return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));

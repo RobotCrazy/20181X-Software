@@ -128,23 +128,6 @@ void Chassis::completeMovements()
         }
       }
     }
-    // if (dm->readyToOperate() == true)
-    // {
-    //   if (dm->getMovementType() == DRIVE_MOVEMENT_TURN)
-    //   {
-    //     if (turnToTarget(dm->getTargetAngle(), dm->getSpeedDeadband(), dm->getKP(), dm->getStopOnCompletion()) == true)
-    //     {
-    //       //completedMovements.push_back(&dm);
-    //       deleteFirstMovement();
-    //     }
-    //   }
-    //   else if (dm->getMovementType() == DRIVE_MOVEMENT_POINT)
-    //   {
-    //     driveToPoint(dm->getTargetX(), dm->getTargetY(), dm->getSpeedDeadband(), dm->getMaxSpeed(), dm->getKP(), dm->getStopOnCompletion());
-    //     //completedMovements.push_back(&dm);
-    //     deleteFirstMovement();
-    //   }
-    // }
   }
 }
 
@@ -245,29 +228,37 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
   double error = distance(currentX, currentY, x, y);
   double speed = error * kp;
   double angleDifference = currentAngle - targetAngle;
-  double angleErrorThreshold = 6.0;
+  double angleErrorThreshold = PI / 12.0;
 
   pros::lcd::print(4, "%f, %f, %f, %f", x, y, xDistance, yDistance);
   pros::lcd::print(5, "%f, %f, %f", targetAngle, error, speed);
+  pros::lcd::print(6, "%f", angleDifference);
 
-  if (abs(speed) < speedDeadband)
-  {
-    speed = sign(speed) * speedDeadband;
-  }
-
-  if (fabs(angleDifference) > angleThreshold && fabs(error) > angleErrorThreshold)
+  if (fabs(angleDifference) > angleErrorThreshold)
   {
     turnToTarget(targetAngle, DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
-                 DriveMovement::TURN_DEFAULT_KP - 2000.0, DriveMovement::TURN_DEFAULT_COMPLETION_STOP);
+                 DriveMovement::TURN_DEFAULT_KP - 2000.0, false);
     return false;
   }
-  else if (fabs(error) > errorTolerance)
-  {
-    moveRightDriveVoltage(speed + (angleDifference * angleKP));
-    moveLeftDriveVoltage(speed - (angleDifference * angleKP)); //It might need to be
-    //addition instead of subtraction or vice versa
-    return false;
-  }
+
+  // if (abs(speed) < speedDeadband)
+  // {
+  //   speed = sign(speed) * speedDeadband;
+  // }
+
+  // if (fabs(angleDifference) > angleThreshold && fabs(error) > angleErrorThreshold)
+  // {
+  //   turnToTarget(targetAngle, DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
+  //                DriveMovement::TURN_DEFAULT_KP - 2000.0, DriveMovement::TURN_DEFAULT_COMPLETION_STOP);
+  //   return false;
+  // }
+  // else if (fabs(error) > errorTolerance)
+  // {
+  //   moveRightDriveVoltage(speed + (angleDifference * angleKP));
+  //   moveLeftDriveVoltage(speed - (angleDifference * angleKP)); //It might need to be
+  //   //addition instead of subtraction or vice versa
+  //   return false;
+  // }
   else
   {
     moveRightDriveVoltage(0);
@@ -281,90 +272,6 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
   //This code should dynamically update its path if external factors cause the robot to
   //get off course.
   // Look at motion profiling concepts for this
-}
-
-bool Chassis::driveToPointSync(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion)
-{
-
-  const double angleThreshold = degreeToRadian(90);
-  const double defaultAngleKP = 2000.0;
-  const double errorTolerance = .25;
-  const double velocityTolerance = 2.5;
-  const double angleKP = 1000.0; //Tune these two constants as needed
-  double xDistance = x - currentX;
-  double yDistance = y - currentY;
-  double targetAngle = atan(fabs(yDistance) / fabs(xDistance)) + angleQuadrantAdjustment(xDistance, yDistance);
-  double error = distance(currentX, currentY, x, y);
-  double speed = error * kp;
-  double angleDifference = currentAngle - targetAngle;
-  double angleErrorThreshold = 6.0;
-
-  while (fabs(error) > errorTolerance)
-  {
-    pros::lcd::print(7, "Driving to point");
-    xDistance = x - currentX;
-    yDistance = y - currentY;
-    targetAngle = atan(fabs(yDistance) / fabs(xDistance)) + angleQuadrantAdjustment(xDistance, yDistance);
-    error = distance(currentX, currentY, x, y);
-    speed = error * kp;
-    angleDifference = currentAngle - targetAngle;
-    angleErrorThreshold = 6.0;
-
-    pros::lcd::print(4, "%f, %f, %f, %f", x, y, xDistance, yDistance);
-    pros::lcd::print(5, "%f, %f, %f", targetAngle, error, speed);
-
-    if (abs(speed) < speedDeadband)
-    {
-      speed = sign(speed) * speedDeadband;
-    }
-
-    if (fabs(angleDifference) > angleThreshold && fabs(error) > angleErrorThreshold)
-    {
-      turnToTarget(targetAngle, DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
-                   DriveMovement::TURN_DEFAULT_KP - 2000.0, DriveMovement::TURN_DEFAULT_COMPLETION_STOP);
-    }
-    else if (fabs(error) > errorTolerance)
-    {
-      moveRightDriveVoltage(speed + (angleDifference * angleKP));
-      moveLeftDriveVoltage(speed - (angleDifference * angleKP)); //It might need to be
-      //addition instead of subtraction or vice versa
-    }
-    else
-    {
-      moveRightDriveVoltage(0);
-      moveLeftDriveVoltage(0);
-      pros::lcd::print(7, "Done driving to point");
-    }
-
-    pros::delay(50);
-  }
-
-  /*if (abs(speed) < speedDeadband)
-  {
-    speed = sign(speed) * speedDeadband;
-  }
-
-  if (fabs(angleDifference) > angleThreshold && fabs(error) > angleErrorThreshold)
-  {
-    turnToTarget(targetAngle, DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
-                 DriveMovement::TURN_DEFAULT_KP - 2000.0, DriveMovement::TURN_DEFAULT_COMPLETION_STOP);
-    return false;
-  }
-  else if (fabs(error) > errorTolerance)
-  {
-    moveRightDriveVoltage(speed + (angleDifference * angleKP));
-    moveLeftDriveVoltage(speed - (angleDifference * angleKP)); //It might need to be
-    //addition instead of subtraction or vice versa
-    return false;
-  }
-  else
-  {
-    moveRightDriveVoltage(0);
-    moveLeftDriveVoltage(0);
-    pros::lcd::print(7, "Done driving to point");
-    return true;
-  }*/
-  return true;
 }
 
 bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, bool stopOnCompletion)

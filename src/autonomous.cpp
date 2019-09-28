@@ -36,15 +36,13 @@ void auto1()
   //   return drivingToPoint2.isComplete();
   // }, drivingToPoint2)
 
-  std::shared_ptr<DriveMovement> drivingToPoint2 = std::make_shared<DriveMovement>(degreeToRadian(180));
+  /*std::shared_ptr<DriveMovement> drivingToPoint2 = std::make_shared<DriveMovement>(degreeToRadian(180));
   chassis.addMovement(drivingToPoint2);
 
   std::shared_ptr<DriveMovement> drivingToPoint3 = std::make_shared<DriveMovement>(degreeToRadian(-720));
-  chassis.addMovement(drivingToPoint3);
+  chassis.addMovement(drivingToPoint3);*/
 
   std::shared_ptr<DriveMovement> driveToPoint = std::make_shared<DriveMovement>(20, 10);
-  std::vector<std::shared_ptr<DriveMovement>> driveToPointPrereqMovements({drivingToPoint2});
-  driveToPoint.get()->setPrereqMovements(driveToPointPrereqMovements);
   chassis.addMovement(driveToPoint);
 }
 
