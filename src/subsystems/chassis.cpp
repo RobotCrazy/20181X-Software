@@ -1,5 +1,6 @@
 #include "main.h"
 #include "utility/mathUtil.h"
+#include "utility/angle.hpp"
 
 const double WHEEL_RADIUS = 2.0;
 const double WHEEL_CIRCUMFERENCE = WHEEL_RADIUS * 2.0 * PI;
@@ -70,9 +71,6 @@ void Chassis::setCurrentAngle(double angle)
 
 void Chassis::printCoords()
 {
-  pros::lcd::print(3, "%f", currentX);
-  pros::lcd::print(4, "%f", currentY);
-  pros::lcd::print(5, "%f", currentAngle);
 }
 
 void Chassis::addMovement(std::shared_ptr<DriveMovement> dm)
@@ -102,24 +100,23 @@ void Chassis::completeMovements()
   {
     std::shared_ptr<DriveMovement> dmPointer = getFirstMovement();
     DriveMovement dm = *(dmPointer.get());
-    pros::lcd::print(4, "KP: %f", dm.getKP());
+    //pros::lcd::print(4, "Point: (%f, %f) %d", dm.getTargetX(), dm.getTargetY(), movements.size());
     //pros::lcd::print(5, "%d", dm->getMovementType());
     if (dm.readyToOperate() == true)
     {
       if (dm.getMovementType() == DRIVE_MOVEMENT_POINT)
       {
-        pros::lcd::print(5, "Type: %d", dm.getMovementType());
         if (driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion()) == true)
         {
           dmPointer.get()->setComplete();
           completedMovements.push_back(dmPointer);
           deleteFirstMovement();
+          pros::lcd::print(5, "Deleting movement");
         }
       }
 
       else if (dm.getMovementType() == DRIVE_MOVEMENT_TURN)
       {
-        pros::lcd::print(5, "%d", dm.getMovementType());
         if (turnToTarget(dm.getTargetAngle(), dm.getSpeedDeadband(), dm.getKP(), dm.getStopOnCompletion()) == true)
         {
           dmPointer.get()->setComplete();
@@ -224,49 +221,47 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
   double angleKP = 1000.0; //Tune these two constants as needed
   double xDistance = x - currentX;
   double yDistance = y - currentY;
-  double targetAngle = atan(fabs(yDistance) / fabs(xDistance)) + angleQuadrantAdjustment(xDistance, yDistance);
+  Angle targetAngle(atan(fabs(yDistance) / fabs(xDistance)) + angleQuadrantAdjustment(xDistance, yDistance));
+  //double targetAngle = atan(fabs(yDistance) / fabs(xDistance)) + angleQuadrantAdjustment(xDistance, yDistance);
   double error = distance(currentX, currentY, x, y);
   double speed = error * kp;
-  double angleDifference = currentAngle - targetAngle;
+  double angleDifference = currentAngle - targetAngle.getAngle();
   double angleErrorThreshold = PI / 12.0;
 
-  pros::lcd::print(4, "%f, %f, %f, %f", x, y, xDistance, yDistance);
-  pros::lcd::print(5, "%f, %f, %f", targetAngle, error, speed);
-  pros::lcd::print(6, "%f", angleDifference);
+  if (fabs(angleDifference) >= (PI / 2.0))
+  {
+    targetAngle.setAngle(targetAngle.getAngle() + PI);
+    error *= -1.0;
+    speed = error * kp;
+  }
 
   if (fabs(angleDifference) > angleErrorThreshold)
   {
-    turnToTarget(targetAngle, DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
+    turnToTarget(targetAngle.getAngle(), DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
                  DriveMovement::TURN_DEFAULT_KP - 2000.0, false);
     return false;
   }
 
-  // if (abs(speed) < speedDeadband)
-  // {
-  //   speed = sign(speed) * speedDeadband;
-  // }
-
-  // if (fabs(angleDifference) > angleThreshold && fabs(error) > angleErrorThreshold)
-  // {
-  //   turnToTarget(targetAngle, DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
-  //                DriveMovement::TURN_DEFAULT_KP - 2000.0, DriveMovement::TURN_DEFAULT_COMPLETION_STOP);
-  //   return false;
-  // }
-  // else if (fabs(error) > errorTolerance)
-  // {
-  //   moveRightDriveVoltage(speed + (angleDifference * angleKP));
-  //   moveLeftDriveVoltage(speed - (angleDifference * angleKP)); //It might need to be
-  //   //addition instead of subtraction or vice versa
-  //   return false;
-  // }
-  else
+  if (fabs(speed) < speedDeadband)
   {
-    moveRightDriveVoltage(0);
-    moveLeftDriveVoltage(0);
-    pros::lcd::print(7, "Done driving to point");
-    return true;
+    speed = sign(speed) * speedDeadband;
   }
-  return false;
+
+  pros::lcd::print(4, "%f, %f, %f, %f", x, y, xDistance, yDistance);
+  pros::lcd::print(5, "%f, %f, %f", targetAngle.getAngle(), error, speed);
+  pros::lcd::print(6, "%f", angleDifference);
+
+  if (fabs(error) > errorTolerance)
+  {
+    moveRightDriveVoltage(speed /* + (angleDifference * angleKP)*/);
+    moveLeftDriveVoltage(speed /* - (angleDifference * angleKP)*/);
+    return false;
+  }
+
+  moveRightDriveVoltage(0);
+  moveLeftDriveVoltage(0);
+  pros::lcd::print(7, "Done driving to point");
+  return true;
 
   //Insert code for driving to a point with odometry here
   //This code should dynamically update its path if external factors cause the robot to
@@ -280,7 +275,6 @@ bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, boo
   //This function is still missing shortest path addition to choose which direction
   //is the quickest to reach desired angle
 
-  pros::lcd::print(6, "%f   Turning to target", targetAngle);
   const double tolerance = .1;
   const double speedTolerance = 5;
   /*if (abs(targetAngle - currentAngle) > abs((targetAngle + ((targetAngle > 0) ? (-2 * PI) : (2 * PI)) - currentAngle)))
@@ -312,7 +306,6 @@ bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, boo
   {
     moveRightDriveVoltage(0);
     moveLeftDriveVoltage(0);
-    pros::lcd::print(6, "Done turning to position");
     return true;
   }
 }

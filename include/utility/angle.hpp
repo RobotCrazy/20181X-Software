@@ -14,5 +14,6 @@ public:
   double determinePositiveEquivalent(double a);
   double getAngle();
   double getAngleDegrees();
+  void setAngle(double a);
 };
 #endif

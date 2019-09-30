@@ -44,6 +44,12 @@ void auto1()
 
   std::shared_ptr<DriveMovement> driveToPoint = std::make_shared<DriveMovement>(20, 10);
   chassis.addMovement(driveToPoint);
+
+  std::shared_ptr<DriveMovement> driveToPoint2 = std::make_shared<DriveMovement>(0, 0);
+  chassis.addMovement(driveToPoint2);
+
+  std::shared_ptr<DriveMovement> driveToPoint3 = std::make_shared<DriveMovement>(0, 35);
+  chassis.addMovement(driveToPoint2);
 }
 
 /**
