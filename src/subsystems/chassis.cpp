@@ -2,6 +2,8 @@
 #include "utility/mathUtil.h"
 #include "utility/angle.hpp"
 
+Logger l("/usd/chassisLog.txt");
+
 const double WHEEL_RADIUS = 2.0;
 const double WHEEL_CIRCUMFERENCE = WHEEL_RADIUS * 2.0 * PI;
 const double GYRO_SCALE = .78;
@@ -214,6 +216,7 @@ void Chassis::trackPosition()
 
 bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion)
 {
+  l.writeFile("Iteration:");
   const double angleThreshold = degreeToRadian(90);
   const double defaultAngleKP = 2000.0;
   const double errorTolerance = .25;
@@ -228,15 +231,25 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
   double angleDifference = currentAngle - targetAngle.getAngle();
   double angleErrorThreshold = PI / 12.0;
 
+  l.writeFile("xDistance", std::to_string(xDistance));
+  l.writeFile("yDistance", std::to_string(yDistance));
+  l.writeFile("Target Angle", std::to_string(targetAngle.getAngle()));
+  l.writeFile("Error", std::to_string(error));
+  l.writeFile("Speed", std::to_string(speed));
+  l.writeFile("Angle Difference", std::to_string(angleDifference));
+
   if (fabs(angleDifference) >= (PI / 2.0))
   {
     targetAngle.setAngle(targetAngle.getAngle() + PI);
     error *= -1.0;
     speed = error * kp;
+    l.writeFile("Modified angle difference to " + std::to_string(targetAngle.getAngle()));
   }
 
   if (fabs(angleDifference) > angleErrorThreshold)
   {
+    l.writeFile("Turning", std::to_string(targetAngle.getAngle()));
+    l.writeFile("");
     turnToTarget(targetAngle.getAngle(), DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
                  DriveMovement::TURN_DEFAULT_KP - 2000.0, false);
     return false;
@@ -245,6 +258,7 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
   if (fabs(speed) < speedDeadband)
   {
     speed = sign(speed) * speedDeadband;
+    l.writeFile("Speed Deadband", "New Speed " + std::to_string(speed));
   }
 
   pros::lcd::print(4, "%f, %f, %f, %f", x, y, xDistance, yDistance);
@@ -253,6 +267,9 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
 
   if (fabs(error) > errorTolerance)
   {
+    l.writeFile("Error", std::to_string(error));
+    l.writeFile("Speed", std::to_string(speed));
+    l.writeFile("");
     moveRightDriveVoltage(speed /* + (angleDifference * angleKP)*/);
     moveLeftDriveVoltage(speed /* - (angleDifference * angleKP)*/);
     return false;
