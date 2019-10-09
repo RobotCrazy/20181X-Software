@@ -58,3 +58,8 @@ double angleQuadrantAdjustment(double x, double y)
     return (3 * PI / 2);
   }
 }
+
+double calculateShortestAngleDiff(Angle a1, Angle a2)
+{
+  return a1.getAngle() - a2.getAngle();
+}

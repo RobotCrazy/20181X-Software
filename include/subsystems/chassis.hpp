@@ -6,6 +6,7 @@
 #include "../utility/driveMovement.hpp"
 #include "../utility/prereq.hpp"
 #include "../utility/mathUtil.h"
+#include "../utility/angle.hpp"
 
 #ifndef _CHASSIS_HPP_
 #define _CHASSIS_HPP_
@@ -34,7 +35,7 @@ public:
   pros::Motor backRightDrive;
   double currentX = 0;
   double currentY = 0;
-  double currentAngle = (PI / 2.0);
+  Angle currentAngle;
   void moveRightDrive(int value);
   void moveLeftDrive(int value);
   void driverControl();

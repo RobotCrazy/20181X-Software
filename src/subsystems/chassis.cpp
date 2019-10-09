@@ -20,7 +20,7 @@ Chassis::Chassis(int frontLeft, int backLeft, int frontRight, int backRight, cha
       backLeftDrive(backLeft, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES),
       frontRightDrive(frontRight, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES),
       backRightDrive(backRight, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES),
-      gyro(gyroPort)
+      gyro(gyroPort), currentAngle(PI / 2.0)
 {
   sensorInit();
   initialize();
@@ -68,7 +68,7 @@ void Chassis::moveLeftDriveVoltage(int voltage)
 
 void Chassis::setCurrentAngle(double angle)
 {
-  currentAngle = angle;
+  currentAngle.setAngle(angle);
 }
 
 void Chassis::printCoords()
@@ -134,7 +134,7 @@ void Chassis::initialize()
 {
   currentX = 0.0;
   currentY = 0.0;
-  currentAngle = PI / 2;
+  currentAngle.setAngle(PI / 2);
   pros::lcd::print(7, "initing %f", currentX);
 }
 
@@ -146,7 +146,7 @@ void Chassis::sensorInit()
   backLeftDrive.tare_position();
   currentX = 0.0;
   currentY = 0.0;
-  currentAngle = PI / 2.0;
+  currentAngle.setAngle(PI / 2.0);
   //pros::delay(200);
 
   //reset encoders, gyros, etc for drive base here
@@ -175,7 +175,7 @@ void Chassis::trackPosition()
   double flDriveInches = (flDrive - prevFLDrive) * WHEEL_RADIUS;
 
   double angleChange = (flDriveInches - frDriveInches) / (leftTWheelDistance + rightTWheelDistance);
-  currentAngle += angleChange;
+  currentAngle.setAngle(currentAngle.getAngle() + angleChange);
   //The problem with the angle change may be that the drive is geared.  We need to scale everything
   //by the gearing to make sure the motor's encoder readings are correct.  We should scale the ticks
   //that the encoders read by (I think 1.25)
@@ -192,11 +192,11 @@ void Chassis::trackPosition()
     traveledDistanceR = ((frDriveInches / angleChange) * sin(angleChange)) / sin((PI - angleChange) / 2.0);
     traveledDistanceL = ((flDriveInches / angleChange) * sin(angleChange)) / sin((PI - angleChange) / 2.0);
   }
-  double xTranslationR = cos(currentAngle) * traveledDistanceR;
-  double yTranslationR = sin(currentAngle) * traveledDistanceR;
+  double xTranslationR = cos(currentAngle.getAngle()) * traveledDistanceR;
+  double yTranslationR = sin(currentAngle.getAngle()) * traveledDistanceR;
 
-  double xTranslationL = cos(currentAngle) * traveledDistanceL;
-  double yTranslationL = sin(currentAngle) * traveledDistanceL;
+  double xTranslationL = cos(currentAngle.getAngle()) * traveledDistanceL;
+  double yTranslationL = sin(currentAngle.getAngle()) * traveledDistanceL;
 
   double finalXTranslation = (xTranslationR + xTranslationL) / 2.0;
   double finalYTranslation = (yTranslationR + yTranslationL) / 2.0;
@@ -206,7 +206,7 @@ void Chassis::trackPosition()
 
   pros::lcd::print(1, "%f", currentX);
   pros::lcd::print(2, "%f", currentY);
-  pros::lcd::print(3, "%f", currentAngle);
+  pros::lcd::print(3, "%f", currentAngle.getAngle());
 
   prevFRDrive = frDrive;
   prevBRDrive = brDrive;
@@ -228,7 +228,7 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
   //double targetAngle = atan(fabs(yDistance) / fabs(xDistance)) + angleQuadrantAdjustment(xDistance, yDistance);
   double error = distance(currentX, currentY, x, y);
   double speed = error * kp;
-  double angleDifference = currentAngle - targetAngle.getAngle();
+  double angleDifference = calculateShortestAngleDiff(currentAngle.getAngle(), targetAngle.getAngle());
   double angleErrorThreshold = PI / 12.0;
 
   l.writeFile("xDistance", std::to_string(xDistance));
@@ -243,7 +243,7 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
     targetAngle.setAngle(targetAngle.getAngle() + PI);
     error *= -1.0;
     speed = error * kp;
-    l.writeFile("Modified angle difference to " + std::to_string(targetAngle.getAngle()));
+    l.writeFile("Modified target angle to " + std::to_string(targetAngle.getAngle()));
   }
 
   if (fabs(angleDifference) > angleErrorThreshold)
@@ -267,8 +267,7 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
 
   if (fabs(error) > errorTolerance)
   {
-    l.writeFile("Error", std::to_string(error));
-    l.writeFile("Speed", std::to_string(speed));
+    l.writeFile("Moving based on error");
     l.writeFile("");
     moveRightDriveVoltage(speed /* + (angleDifference * angleKP)*/);
     moveLeftDriveVoltage(speed /* - (angleDifference * angleKP)*/);
@@ -298,7 +297,7 @@ bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, boo
   {
     targetAngle = ((targetAngle > 0) ? (-2 * PI) : (2 * PI));
   } //find shortest direction to target angle*/
-  double error = targetAngle - currentAngle;
+  double error = targetAngle - currentAngle.getAngle();
   double driveSpeed = error * kp;
   // pros::lcd::print(3, "%f", driveSpeed);
   // pros::lcd::print(4, "%f", currentAngle);
@@ -306,7 +305,7 @@ bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, boo
 
   if (fabs(error) > tolerance || frontRightDrive.get_actual_velocity() > speedTolerance)
   {
-    error = targetAngle - currentAngle;
+    error = targetAngle - currentAngle.getAngle();
     driveSpeed = error * kp;
 
     if (abs(driveSpeed) < speedDeadband)

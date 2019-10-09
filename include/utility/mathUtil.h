@@ -1,3 +1,5 @@
+#include "angle.hpp"
+
 #ifndef _MATHUTIL_H_
 #define _MATHUTIL_H_
 
@@ -10,5 +12,6 @@ extern bool isBetween(float number, float rangeLower, float rangeUpper);
 extern double sign(double num);
 
 extern double angleQuadrantAdjustment(double x, double y);
+extern double calculateShortestAngleDiff(Angle a1, Angle a2);
 
 #endif
