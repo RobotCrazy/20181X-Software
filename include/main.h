@@ -51,6 +51,9 @@
 
 extern pros::Controller master;
 extern Logger l;
+extern Logger errorlogger;
+extern Logger targetAngleLogger;
+extern Logger angleDifferenceLogger;
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do

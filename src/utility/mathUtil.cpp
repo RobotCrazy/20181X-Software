@@ -1,5 +1,7 @@
 #include "mathUtil.h"
 #include <cmath>
+#include <algorithm>
+#include "debug/logger.hpp"
 
 const double PI = atan(1) * 4.0;
 
@@ -39,6 +41,30 @@ double sign(double num)
   }
 }
 
+double minDouble(double num1, double num2)
+{
+  if (num1 < num2)
+  {
+    return num1;
+  }
+  else
+  {
+    return num2;
+  }
+}
+
+double maxDouble(double num1, double num2)
+{
+  if (num1 > num2)
+  {
+    return num1;
+  }
+  else
+  {
+    return num2;
+  }
+}
+
 double angleQuadrantAdjustment(double x, double y)
 {
   if (x >= 0 && y >= 0)
@@ -61,5 +87,20 @@ double angleQuadrantAdjustment(double x, double y)
 
 double calculateShortestAngleDiff(Angle a1, Angle a2)
 {
-  return a1.getAngle() - a2.getAngle();
+  Logger angleDiffLoggger("/usd/angleDiffLog.txt");
+
+  angleDiffLoggger.writeFile("Angle 1", std::to_string(a1.getAngle()));
+  angleDiffLoggger.writeFile("Angle 2", std::to_string(a2.getAngle()));
+
+  double largerAngle = maxDouble(a1.getAngle(), a2.getAngle());
+  angleDiffLoggger.writeFile("Larger Angle", std::to_string(largerAngle));
+  double smallerAngle = minDouble(a1.getAngle(), a2.getAngle());
+  angleDiffLoggger.writeFile("Smaller Angle", std::to_string(smallerAngle));
+  double angleOption1 = fabs(a1.getAngle() - a2.getAngle());
+  angleDiffLoggger.writeFile("Angle Option 1", std::to_string(angleOption1));
+  double angleOption2 = fabs(0 - smallerAngle) + ((2 * PI) - largerAngle);
+  angleDiffLoggger.writeFile("Angle Option 2", std::to_string(angleOption2));
+  angleDiffLoggger.closeFile();
+
+  return minDouble(angleOption1, angleOption2);
 }

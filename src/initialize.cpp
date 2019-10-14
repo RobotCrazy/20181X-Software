@@ -30,6 +30,9 @@ void initialize()
 void disabled()
 {
   l.closeFile();
+  errorlogger.closeFile();
+  targetAngleLogger.closeFile();
+  angleDifferenceLogger.closeFile();
 }
 
 /**

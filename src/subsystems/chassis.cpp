@@ -3,6 +3,9 @@
 #include "utility/angle.hpp"
 
 Logger l("/usd/chassisLog.txt");
+Logger errorlogger("/usd/errorLog.txt");
+Logger targetAngleLogger("/usd/targetAngleLog.txt");
+Logger angleDifferenceLogger("/usd/angleDifferenceLog.txt");
 
 const double WHEEL_RADIUS = 2.0;
 const double WHEEL_CIRCUMFERENCE = WHEEL_RADIUS * 2.0 * PI;
@@ -124,6 +127,7 @@ void Chassis::completeMovements()
           dmPointer.get()->setComplete();
           completedMovements.push_back(dmPointer);
           deleteFirstMovement();
+          pros::lcd::print(5, "Deleting movement");
         }
       }
     }
@@ -216,73 +220,27 @@ void Chassis::trackPosition()
 
 bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion)
 {
-  l.writeFile("Iteration:");
-  const double angleThreshold = degreeToRadian(90);
-  const double defaultAngleKP = 2000.0;
-  const double errorTolerance = .25;
-  const double velocityTolerance = 2.5;
-  double angleKP = 1000.0; //Tune these two constants as needed
+  const double errorTolerance = 5.0;
+  const double angleErrorTolerance = PI / 12.0;
   double xDistance = x - currentX;
   double yDistance = y - currentY;
+
+  double error = distance(x, y, currentX, currentY);
   Angle targetAngle(atan(fabs(yDistance) / fabs(xDistance)) + angleQuadrantAdjustment(xDistance, yDistance));
-  //double targetAngle = atan(fabs(yDistance) / fabs(xDistance)) + angleQuadrantAdjustment(xDistance, yDistance);
-  double error = distance(currentX, currentY, x, y);
-  double speed = error * kp;
+
   double angleDifference = calculateShortestAngleDiff(currentAngle.getAngle(), targetAngle.getAngle());
-  double angleErrorThreshold = PI / 12.0;
+  pros::lcd::print(4, "%f", angleDifference);
 
-  l.writeFile("xDistance", std::to_string(xDistance));
-  l.writeFile("yDistance", std::to_string(yDistance));
-  l.writeFile("Target Angle", std::to_string(targetAngle.getAngle()));
-  l.writeFile("Error", std::to_string(error));
-  l.writeFile("Speed", std::to_string(speed));
-  l.writeFile("Angle Difference", std::to_string(angleDifference));
-
-  if (fabs(angleDifference) >= (PI / 2.0))
+  if (fabs(angleDifference) > angleErrorTolerance)
   {
-    targetAngle.setAngle(targetAngle.getAngle() + PI);
-    error *= -1.0;
-    speed = error * kp;
-    l.writeFile("Modified target angle to " + std::to_string(targetAngle.getAngle()));
-  }
-
-  if (fabs(angleDifference) > angleErrorThreshold)
-  {
-    l.writeFile("Turning", std::to_string(targetAngle.getAngle()));
-    l.writeFile("");
-    turnToTarget(targetAngle.getAngle(), DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
-                 DriveMovement::TURN_DEFAULT_KP - 2000.0, false);
+    // turnToTarget(targetAngle.getAngle(), DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
+    //              DriveMovement::TURN_DEFAULT_KP - 2000.0, false);
     return false;
   }
-
-  if (fabs(speed) < speedDeadband)
+  else
   {
-    speed = sign(speed) * speedDeadband;
-    l.writeFile("Speed Deadband", "New Speed " + std::to_string(speed));
+    return true;
   }
-
-  pros::lcd::print(4, "%f, %f, %f, %f", x, y, xDistance, yDistance);
-  pros::lcd::print(5, "%f, %f, %f", targetAngle.getAngle(), error, speed);
-  pros::lcd::print(6, "%f", angleDifference);
-
-  if (fabs(error) > errorTolerance)
-  {
-    l.writeFile("Moving based on error");
-    l.writeFile("");
-    moveRightDriveVoltage(speed /* + (angleDifference * angleKP)*/);
-    moveLeftDriveVoltage(speed /* - (angleDifference * angleKP)*/);
-    return false;
-  }
-
-  moveRightDriveVoltage(0);
-  moveLeftDriveVoltage(0);
-  pros::lcd::print(7, "Done driving to point");
-  return true;
-
-  //Insert code for driving to a point with odometry here
-  //This code should dynamically update its path if external factors cause the robot to
-  //get off course.
-  // Look at motion profiling concepts for this
 }
 
 bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, bool stopOnCompletion)
