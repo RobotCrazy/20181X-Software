@@ -229,7 +229,8 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
   Angle targetAngle(atan(fabs(yDistance) / fabs(xDistance)) + angleQuadrantAdjustment(xDistance, yDistance));
 
   double angleDifference = calculateShortestAngleDiff(currentAngle.getAngle(), targetAngle.getAngle());
-  pros::lcd::print(4, "%f", angleDifference);
+  pros::lcd::print(0, "X %f Y %f %f", xDistance, yDistance, angleQuadrantAdjustment(xDistance, yDistance));
+  pros::lcd::print(4, "TA: %f, AD: %f", targetAngle.getAngle(), angleDifference);
 
   if (fabs(angleDifference) > angleErrorTolerance)
   {
@@ -239,7 +240,9 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
   }
   else
   {
-    return true;
+    moveRightDriveVoltage(0);
+    moveLeftDriveVoltage(0);
+    return false;
   }
 }
 
