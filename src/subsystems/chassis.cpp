@@ -220,30 +220,53 @@ void Chassis::trackPosition()
 
 bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion)
 {
-  const double errorTolerance = 5.0;
+  const double xTolerance = .2;
+  const double yTolerance = .2;
+  const double errorTolerance = .5;
   const double angleErrorTolerance = PI / 12.0;
+  const double angleAdjustmentKP = 4000.0;
+  const double errorInnerRange = 3.0; //Minimum distance the robot can be for anglePID to be turned on
+
   double xDistance = x - currentX;
   double yDistance = y - currentY;
 
   double error = distance(x, y, currentX, currentY);
-  Angle targetAngle(atan(fabs(yDistance) / fabs(xDistance)) + angleQuadrantAdjustment(xDistance, yDistance));
+  double speed = error * kp;
+  Angle targetAngle(atan2(yDistance, xDistance));
 
   double angleDifference = calculateShortestAngleDiff(currentAngle.getAngle(), targetAngle.getAngle());
-  pros::lcd::print(0, "X %f Y %f %f", xDistance, yDistance, angleQuadrantAdjustment(xDistance, yDistance));
-  pros::lcd::print(4, "TA: %f, AD: %f", targetAngle.getAngle(), angleDifference);
 
-  if (fabs(angleDifference) > angleErrorTolerance)
+  if (fabs(speed) < speedDeadband)
   {
-    // turnToTarget(targetAngle.getAngle(), DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
-    //              DriveMovement::TURN_DEFAULT_KP - 2000.0, false);
-    return false;
+    speed = speedDeadband * sign(speed);
+  }
+  errorlogger.writeFile(std::to_string(error));
+
+  if (fabs(error) > errorInnerRange)
+  {
+    if (fabs(angleDifference) > angleErrorTolerance)
+    {
+      turnToTarget(targetAngle.getAngle(), DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
+                   DriveMovement::TURN_DEFAULT_KP - 2000.0, false);
+      return false;
+    }
+    else
+    {
+      moveRightDriveVoltage(speed + (angleDifference * angleAdjustmentKP));
+      moveLeftDriveVoltage(speed - (angleDifference * angleAdjustmentKP));
+      return false;
+    }
   }
   else
   {
-    moveRightDriveVoltage(0);
-    moveLeftDriveVoltage(0);
+    moveRightDriveVoltage(speed);
+    moveLeftDriveVoltage(speed);
     return false;
   }
+
+  moveRightDriveVoltage(0);
+  moveLeftDriveVoltage(0);
+  return true;
 }
 
 bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, bool stopOnCompletion)

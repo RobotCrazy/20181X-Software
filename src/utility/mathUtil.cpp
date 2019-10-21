@@ -87,20 +87,11 @@ double angleQuadrantAdjustment(double x, double y)
 
 double calculateShortestAngleDiff(Angle a1, Angle a2)
 {
-  Logger angleDiffLoggger("/usd/angleDiffLog.txt");
 
-  angleDiffLoggger.writeFile("Angle 1", std::to_string(a1.getAngle()));
-  angleDiffLoggger.writeFile("Angle 2", std::to_string(a2.getAngle()));
-
-  double largerAngle = maxDouble(a1.getAngle(), a2.getAngle());
-  angleDiffLoggger.writeFile("Larger Angle", std::to_string(largerAngle));
+    double largerAngle = maxDouble(a1.getAngle(), a2.getAngle());
   double smallerAngle = minDouble(a1.getAngle(), a2.getAngle());
-  angleDiffLoggger.writeFile("Smaller Angle", std::to_string(smallerAngle));
   double angleOption1 = fabs(a1.getAngle() - a2.getAngle());
-  angleDiffLoggger.writeFile("Angle Option 1", std::to_string(angleOption1));
   double angleOption2 = fabs(0 - smallerAngle) + ((2 * PI) - largerAngle);
-  angleDiffLoggger.writeFile("Angle Option 2", std::to_string(angleOption2));
-  angleDiffLoggger.closeFile();
 
   return minDouble(angleOption1, angleOption2);
 }
