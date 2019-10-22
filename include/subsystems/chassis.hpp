@@ -7,6 +7,7 @@
 #include "../utility/prereq.hpp"
 #include "../utility/mathUtil.h"
 #include "../utility/angle.hpp"
+#include "../utility/driveMovementData.hpp"
 
 #ifndef _CHASSIS_HPP_
 #define _CHASSIS_HPP_
@@ -81,6 +82,7 @@ public:
    */
   bool driveToPoint(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion);
 
+  bool driveToPoint(DriveMovementData movementData);
   /**
    * Turns to a specified angle
    * Returns whether the action is complete (true of complete; false otherwise)

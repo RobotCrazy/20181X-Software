@@ -218,11 +218,16 @@ void Chassis::trackPosition()
   prevBLDrive = blDrive;
 }
 
+bool Chassis::driveToPoint(DriveMovementData movementData)
+{
+  //In this method, we will calculate targetAngle once and turn to the correct angle and then just drive the specified distanc - no autocorrection or fancy formatting
+}
+
 bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion)
 {
   const double xTolerance = .2;
   const double yTolerance = .2;
-  const double errorTolerance = .5;
+  const double errorTolerance = 1.5;
   const double angleErrorTolerance = PI / 12.0;
   const double angleAdjustmentKP = 4000.0;
   const double errorInnerRange = 3.0; //Minimum distance the robot can be for anglePID to be turned on

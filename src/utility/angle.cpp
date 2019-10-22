@@ -3,6 +3,8 @@
 #include <functional>
 #include "utility/mathUtil.h"
 
+Angle::Angle() {}
+
 Angle::Angle(double a)
 {
   angle = determinePositiveEquivalent(a);

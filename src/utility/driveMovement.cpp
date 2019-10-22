@@ -8,6 +8,10 @@ const double DriveMovement::TURN_DEFAULT_MAX_SPEED = 12000.0;
 const double DriveMovement::TURN_DEFAULT_KP = 8000.0;
 const bool DriveMovement::TURN_DEFAULT_COMPLETION_STOP = true;
 
+DriveMovement::DriveMovement()
+{
+}
+
 DriveMovement::DriveMovement(double angle)
 {
   movementType = DRIVE_MOVEMENT_TURN;

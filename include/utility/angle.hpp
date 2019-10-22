@@ -10,6 +10,7 @@ private:
   double angle;
 
 public:
+  Angle();
   Angle(double a);
   double determinePositiveEquivalent(double a);
   double getAngle();
