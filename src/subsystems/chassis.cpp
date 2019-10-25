@@ -111,20 +111,13 @@ void Chassis::completeMovements()
     {
       if (dm.getMovementType() == DRIVE_MOVEMENT_POINT)
       {
-        if (driveToPoint(dmPointer) == true)
+        if (driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion()) == true)
         {
           dmPointer.get()->setComplete();
           completedMovements.push_back(dmPointer);
           deleteFirstMovement();
           pros::lcd::print(5, "Deleting movement");
         }
-        /*if (driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion()) == true)
-        {
-          dmPointer.get()->setComplete();
-          completedMovements.push_back(dmPointer);
-          deleteFirstMovement();
-          pros::lcd::print(5, "Deleting movement");
-        }*/
       }
 
       else if (dm.getMovementType() == DRIVE_MOVEMENT_TURN)
@@ -215,9 +208,8 @@ void Chassis::trackPosition()
   currentX += finalXTranslation;
   currentY += finalYTranslation;
 
-  pros::lcd::print(1, "%f", currentX);
-  pros::lcd::print(2, "%f", currentY);
-  pros::lcd::print(3, "%f", currentAngle.getAngle());
+  pros::lcd::print(0, "(%f, %f", currentX, currentY);
+  pros::lcd::print(1, "Cur Angle: %f", currentAngle.getAngle());
 
   prevFRDrive = frDrive;
   prevBRDrive = brDrive;
@@ -225,33 +217,11 @@ void Chassis::trackPosition()
   prevBLDrive = blDrive;
 }
 
-bool Chassis::driveToPoint(std::shared_ptr<DriveMovement> movement)
-{
-  //In this method, we will calculate targetAngle once and turn to the correct angle and then just drive the specified distanc - no autocorrection or fancy formatting
-  const double xTolerance = .2;
-  const double yTolerance = .2;
-  const double errorTolerance = 1.5;
-  const double errorInnerRange = 3.0;
-
-  DriveMovement m = *(movement.get());
-
-  if (m.getCurrentPhase() == DriveMovement::TURN_PHASE &&
-      turnToTarget(m.getTargAngle().getAngle(), DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
-                   DriveMovement::TURN_DEFAULT_KP - 2000.0, false) == true)
-  {
-    movement.get()->setCurrentPhase(DriveMovement::LINE_PHASE);
-  }
-  else
-  {
-    //Drive a certain distance here
-    double xDistance = m.getTargetX() - currentX;
-    double yDistance = m.getTargetY() - currentY;
-
-  }
-}
-
 bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion)
 {
+  std::shared_ptr<DriveMovement> currentMovementPointer = getFirstMovement();
+  DriveMovement currentMovement = *(currentMovementPointer.get());
+
   const double xTolerance = .2;
   const double yTolerance = .2;
   const double errorTolerance = 1.5;
@@ -264,41 +234,82 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
 
   double error = distance(x, y, currentX, currentY);
   double speed = error * kp;
+
+  if (fabs(xDistance) < .25)
+  {
+    xDistance = 0.0;
+  }
+  if (fabs(yDistance) < .25)
+  {
+    yDistance = 0.0;
+  }
+
   Angle targetAngle(atan2(yDistance, xDistance));
 
-  double angleDifference = calculateShortestAngleDiff(currentAngle.getAngle(), targetAngle.getAngle());
+  if (currentMovement.turnTargetAngleIsSet == false)
+  {
+    currentMovementPointer.get()->setTargetAngle(targetAngle.getAngle());
+    currentMovementPointer.get()->turnTargetAngleIsSet = true;
+  }
+
+  if (fabs(targetAngle.getAngle()) < .09)
+  {
+    targetAngle.setAngle(0.0);
+  }
+
+  double angleDifference = calculateShortestAngleDiff(currentAngle.getAngle(), currentMovementPointer.get()->getTargetAngle());
+
+  pros::lcd::print(2, "%f, %f", xDistance, yDistance);
+  pros::lcd::print(3, "%f, %f, %f", targetAngle.getAngle(), currentMovementPointer.get()->getTargetAngle(), angleDifference);
 
   if (fabs(speed) < speedDeadband)
   {
     speed = speedDeadband * sign(speed);
   }
-  errorlogger.writeFile(std::to_string(error));
 
   if (fabs(error) > errorInnerRange)
   {
     if (fabs(angleDifference) > angleErrorTolerance)
     {
-      turnToTarget(targetAngle.getAngle(), DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
+      turnToTarget(currentMovementPointer.get()->getTargetAngle(), DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
                    DriveMovement::TURN_DEFAULT_KP - 2000.0, false);
       return false;
     }
     else
     {
-      moveRightDriveVoltage(speed + (angleDifference * angleAdjustmentKP));
-      moveLeftDriveVoltage(speed - (angleDifference * angleAdjustmentKP));
+      currentMovementPointer.get()->turnTargetAngleIsSet = false;
+      moveRightDriveVoltage(0);
+      moveLeftDriveVoltage(0);
+      return true;
+    }
+  }
+  else if (error > errorTolerance)
+  {
+    if (angleDifference > degreeToRadian(85) && angleDifference < degreeToRadian(95))
+    {
+      moveRightDriveVoltage(0);
+      moveLeftDriveVoltage(0);
+      return true;
+    }
+    else if (targetAngle.getAngle() > 0 && targetAngle.getAngle() < PI)
+    {
+      moveRightDriveVoltage(abs(speed));
+      moveLeftDriveVoltage(abs(speed));
+      return false;
+    }
+    else
+    {
+      moveRightDriveVoltage(abs(speed) * -1);
+      moveLeftDriveVoltage(abs(speed) * -1);
       return false;
     }
   }
   else
   {
-    moveRightDriveVoltage(speed);
-    moveLeftDriveVoltage(speed);
-    return false;
+    moveRightDriveVoltage(0);
+    moveLeftDriveVoltage(0);
+    return true;
   }
-
-  moveRightDriveVoltage(0);
-  moveLeftDriveVoltage(0);
-  return true;
 }
 
 bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, bool stopOnCompletion)

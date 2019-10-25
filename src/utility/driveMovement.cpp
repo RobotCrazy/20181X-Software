@@ -34,13 +34,16 @@ DriveMovement::DriveMovement(double x, double y)
   maxSpeed = 12000;
   kp = 200.0;
   stopOnCompletion = true;
-  currentPhase = TURN_PHASE;
-  targAngle = computeTargetAngle();
 }
 
 double DriveMovement::getTargetAngle()
 {
   return targetAngle;
+}
+
+void DriveMovement::setTargetAngle(double newAngle)
+{
+  targetAngle = newAngle;
 }
 
 int DriveMovement::getMovementType()
@@ -127,31 +130,6 @@ void DriveMovement::setMaxSpeed(int voltage)
 int DriveMovement::getMaxSpeed()
 {
   return maxSpeed;
-}
-
-int DriveMovement::getCurrentPhase()
-{
-  return currentPhase;
-}
-
-void DriveMovement::setCurrentPhase(int phase)
-{
-  currentPhase = phase;
-}
-
-Angle DriveMovement::computeTargetAngle()
-{
-
-  double xDistance = targetX - initialX;
-  double yDistance = targetY - initialY;
-
-  Angle a(atan2(yDistance, xDistance));
-  return a;
-}
-
-Angle DriveMovement::getTargAngle()
-{
-  return targAngle;
 }
 
 /*void DriveMovement::addIntakePrereq(IntakeMovement im)

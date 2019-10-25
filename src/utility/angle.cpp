@@ -17,7 +17,7 @@ double Angle::determinePositiveEquivalent(double a)
   double angleValue = fmod(a, (2.0 * PI));
   if (angleValue < 0)
   {
-    angleValue + (2.0 * PI);
+    angleValue += (2.0 * PI);
   }
   return angleValue;
 }

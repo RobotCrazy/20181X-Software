@@ -7,7 +7,6 @@
 #include "../utility/prereq.hpp"
 #include "../utility/mathUtil.h"
 #include "../utility/angle.hpp"
-#include "../utility/driveMovementData.hpp"
 
 #ifndef _CHASSIS_HPP_
 #define _CHASSIS_HPP_
@@ -27,8 +26,6 @@ private:
 
   std::queue<std::shared_ptr<DriveMovement>> movements;
   std::list<std::shared_ptr<DriveMovement>> completedMovements;
-
-  std::shared_ptr<DriveMovement> currentMovement;
 
 public:
   Chassis(int frontLeft, int backLeft, int frontRight, int backRight, char gyroPort);
@@ -77,8 +74,6 @@ public:
   * Keeps track of absolute robot position
   */
   void trackPosition();
-
-  bool driveToPoint(std::shared_ptr<DriveMovement> movement);
 
   /**
    * Drives to a specified point

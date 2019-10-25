@@ -22,8 +22,6 @@ private:
   int maxSpeed;
   double kp;
 
-  double intialX;
-  double initialY;
   double targetX;
   double targetY;
 
@@ -33,7 +31,6 @@ private:
   std::shared_ptr<Prereq> drivePrereq;
   std::vector<std::shared_ptr<DriveMovement>> prereqMovements;
 
-  int currentPhase;
   Angle targAngle;
 
 public:
@@ -42,14 +39,14 @@ public:
   static const double TURN_DEFAULT_KP;
   static const bool TURN_DEFAULT_COMPLETION_STOP;
 
-  static const int TURN_PHASE = 1;
-  static const int LINE_PHASE = 2;
+  bool turnTargetAngleIsSet = false;
 
   DriveMovement();
   DriveMovement(double targetAngle);
   DriveMovement(double x, double y);
 
   double getTargetAngle();
+  void setTargetAngle(double newAngle);
 
   int getMovementType();
   int getSpeedDeadband();
@@ -74,12 +71,6 @@ public:
 
   void setMaxSpeed(int voltage);
   int getMaxSpeed();
-
-  int getCurrentPhase();
-  void setCurrentPhase(int phase);
-
-  Angle computeTargetAngle();
-  Angle getTargAngle();
 };
 
 #endif

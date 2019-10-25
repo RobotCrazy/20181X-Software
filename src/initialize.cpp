@@ -16,10 +16,9 @@ void initialize()
   pros::delay(2000);
   chassis.sensorInit();
   pros::delay(300);
-  pros::lcd::print(0, "%f, %f, %f, %f", chassis.frontRightDrive.get_position(), chassis.frontLeftDrive.get_position(), chassis.currentX, chassis.currentY);
+
   chassis.sensorInit();
   pros::delay(300);
-  pros::lcd::print(0, "%f, %f, %f, %f", chassis.frontRightDrive.get_position(), chassis.frontLeftDrive.get_position(), chassis.currentX, chassis.currentY);
 }
 
 /**
