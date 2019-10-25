@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include "prereq.hpp"
+#include "angle.hpp"
 
 #ifndef _DRIVEMOVEMENT_HPP_
 #define _DRIVEMOVEMENT_HPP_
@@ -21,6 +22,8 @@ private:
   int maxSpeed;
   double kp;
 
+  double intialX;
+  double initialY;
   double targetX;
   double targetY;
 
@@ -30,11 +33,17 @@ private:
   std::shared_ptr<Prereq> drivePrereq;
   std::vector<std::shared_ptr<DriveMovement>> prereqMovements;
 
+  int currentPhase;
+  Angle targAngle;
+
 public:
   static const double TURN_DEFAULT_SPEED_DEADBAND;
   static const double TURN_DEFAULT_MAX_SPEED;
   static const double TURN_DEFAULT_KP;
   static const bool TURN_DEFAULT_COMPLETION_STOP;
+
+  static const int TURN_PHASE = 1;
+  static const int LINE_PHASE = 2;
 
   DriveMovement();
   DriveMovement(double targetAngle);
@@ -65,6 +74,12 @@ public:
 
   void setMaxSpeed(int voltage);
   int getMaxSpeed();
+
+  int getCurrentPhase();
+  void setCurrentPhase(int phase);
+
+  Angle computeTargetAngle();
+  Angle getTargAngle();
 };
 
 #endif

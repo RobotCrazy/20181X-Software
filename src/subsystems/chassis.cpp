@@ -111,13 +111,20 @@ void Chassis::completeMovements()
     {
       if (dm.getMovementType() == DRIVE_MOVEMENT_POINT)
       {
-        if (driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion()) == true)
+        if (driveToPoint(dmPointer) == true)
         {
           dmPointer.get()->setComplete();
           completedMovements.push_back(dmPointer);
           deleteFirstMovement();
           pros::lcd::print(5, "Deleting movement");
         }
+        /*if (driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion()) == true)
+        {
+          dmPointer.get()->setComplete();
+          completedMovements.push_back(dmPointer);
+          deleteFirstMovement();
+          pros::lcd::print(5, "Deleting movement");
+        }*/
       }
 
       else if (dm.getMovementType() == DRIVE_MOVEMENT_TURN)
@@ -218,9 +225,29 @@ void Chassis::trackPosition()
   prevBLDrive = blDrive;
 }
 
-bool Chassis::driveToPoint(DriveMovementData movementData)
+bool Chassis::driveToPoint(std::shared_ptr<DriveMovement> movement)
 {
   //In this method, we will calculate targetAngle once and turn to the correct angle and then just drive the specified distanc - no autocorrection or fancy formatting
+  const double xTolerance = .2;
+  const double yTolerance = .2;
+  const double errorTolerance = 1.5;
+  const double errorInnerRange = 3.0;
+
+  DriveMovement m = *(movement.get());
+
+  if (m.getCurrentPhase() == DriveMovement::TURN_PHASE &&
+      turnToTarget(m.getTargAngle().getAngle(), DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
+                   DriveMovement::TURN_DEFAULT_KP - 2000.0, false) == true)
+  {
+    movement.get()->setCurrentPhase(DriveMovement::LINE_PHASE);
+  }
+  else
+  {
+    //Drive a certain distance here
+    double xDistance = m.getTargetX() - currentX;
+    double yDistance = m.getTargetY() - currentY;
+
+  }
 }
 
 bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion)

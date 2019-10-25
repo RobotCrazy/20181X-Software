@@ -28,6 +28,8 @@ private:
   std::queue<std::shared_ptr<DriveMovement>> movements;
   std::list<std::shared_ptr<DriveMovement>> completedMovements;
 
+  std::shared_ptr<DriveMovement> currentMovement;
+
 public:
   Chassis(int frontLeft, int backLeft, int frontRight, int backRight, char gyroPort);
   pros::Motor frontLeftDrive;
@@ -76,13 +78,14 @@ public:
   */
   void trackPosition();
 
+  bool driveToPoint(std::shared_ptr<DriveMovement> movement);
+
   /**
    * Drives to a specified point
    * Returns whether the action is complete (true if complete; false otherwise)
    */
   bool driveToPoint(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion);
 
-  bool driveToPoint(DriveMovementData movementData);
   /**
    * Turns to a specified angle
    * Returns whether the action is complete (true of complete; false otherwise)
