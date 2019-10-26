@@ -32,7 +32,7 @@ DriveMovement::DriveMovement(double x, double y)
   targetY = y;
   speedDeadband = 3000;
   maxSpeed = 12000;
-  kp = 200.0;
+  kp = 400.0;
   stopOnCompletion = true;
 }
 

@@ -111,24 +111,36 @@ void Chassis::completeMovements()
     {
       if (dm.getMovementType() == DRIVE_MOVEMENT_POINT)
       {
-        if (driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion()) == true)
-        {
-          dmPointer.get()->setComplete();
-          completedMovements.push_back(dmPointer);
-          deleteFirstMovement();
-          pros::lcd::print(5, "Deleting movement");
-        }
+        driveToPointSync(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion());
+        completedMovements.push_back(dmPointer);
+        deleteFirstMovement();
+        pros::lcd::print(5, "Deleting movement");
+
+        // if (driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion()) == true)
+        // {
+        //   dmPointer.get()->setComplete();
+        //   completedMovements.push_back(dmPointer);
+        //   deleteFirstMovement();
+        //   pros::lcd::print(5, "Deleting movement");
+        // }
       }
 
       else if (dm.getMovementType() == DRIVE_MOVEMENT_TURN)
       {
-        if (turnToTarget(dm.getTargetAngle(), dm.getSpeedDeadband(), dm.getKP(), dm.getStopOnCompletion()) == true)
-        {
-          dmPointer.get()->setComplete();
-          completedMovements.push_back(dmPointer);
-          deleteFirstMovement();
-          pros::lcd::print(5, "Deleting movement");
-        }
+
+        turnToTargetSync(dm.getTargetAngle(), dm.getSpeedDeadband(), dm.getKP(), dm.getStopOnCompletion());
+        dmPointer.get()->setComplete();
+        completedMovements.push_back(dmPointer);
+        deleteFirstMovement();
+        pros::lcd::print(5, "Deleting movement");
+
+        // if (turnToTarget(dm.getTargetAngle(), dm.getSpeedDeadband(), dm.getKP(), dm.getStopOnCompletion()) == true)
+        // {
+        //   dmPointer.get()->setComplete();
+        //   completedMovements.push_back(dmPointer);
+        //   deleteFirstMovement();
+        //   pros::lcd::print(5, "Deleting movement");
+        // }
       }
     }
   }
@@ -312,6 +324,88 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
   }
 }
 
+void Chassis::driveToPointSync(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion)
+{
+  const double xTolerance = .2;
+  const double yTolerance = .2;
+  const double errorTolerance = .75;
+  const double angleErrorTolerance = degreeToRadian(7);
+  const double angleAdjustmentKP = 4000.0;
+  const double errorInnerRange = 3.0; //Minimum distance the robot can be for anglePID to be turned on
+
+  double xDistance = x - currentX;
+  double yDistance = y - currentY;
+
+  double error = distance(x, y, currentX, currentY);
+  double speed = error * kp;
+
+  Angle targetAngle(atan2(yDistance, xDistance));
+  double angleDifference = calculateShortestAngleDiff(targetAngle.getAngle(), currentAngle.getAngle());
+
+  while (fabs(error) > errorTolerance)
+  {
+    xDistance = x - currentX;
+    yDistance = y - currentY;
+
+    error = distance(x, y, currentX, currentY);
+    speed = error * kp;
+
+    targetAngle.setAngle(atan2(yDistance, xDistance));
+    angleDifference = calculateShortestAngleDiff(targetAngle.getAngle(), currentAngle.getAngle());
+
+    if (fabs(speed) < speedDeadband)
+    {
+      speed = speedDeadband * sign(speed);
+    }
+
+    pros::lcd::print(2, "%f, %f, %f", xDistance, yDistance, error);
+    pros::lcd::print(3, "%f, %f, %f", speed, targetAngle.getAngle(), angleDifference);
+
+    if (fabs(error) > errorInnerRange)
+    {
+
+      if (fabs(angleDifference) > angleErrorTolerance)
+      {
+        turnToTargetSync(targetAngle.getAngle(), DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
+                         DriveMovement::TURN_DEFAULT_KP - 2000.0, false);
+      }
+      else
+      {
+        pros::lcd::print(4, "Outer range");
+        moveRightDriveVoltage(speed);
+        moveLeftDriveVoltage(speed);
+      }
+    }
+    else
+    {
+      if (angleDifference > degreeToRadian(85) && angleDifference < degreeToRadian(95))
+      {
+        pros::lcd::print(4, "Inner range 1");
+        moveRightDriveVoltage(0);
+        moveLeftDriveVoltage(0);
+        break;
+      }
+      else if (calculateShortestAngleDiff(currentAngle, targetAngle) < (PI / 2.0))
+      {
+        //If the robot is facing an angle where forwards will get closer to the target
+        pros::lcd::print(4, "Inner range 2");
+        moveRightDriveVoltage(abs(speed));
+        moveLeftDriveVoltage(abs(speed));
+      }
+      else
+      {
+        //If the robot is facing an angle where backwards will get closer to the target
+        pros::lcd::print(4, "Inner range 3");
+        moveRightDriveVoltage(abs(speed) * -1);
+        moveLeftDriveVoltage(abs(speed) * -1);
+      }
+    }
+    pros::delay(30);
+  }
+  moveRightDriveVoltage(0);
+  moveLeftDriveVoltage(0);
+}
+
 bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, bool stopOnCompletion)
 {
 
@@ -351,6 +445,41 @@ bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, boo
     moveLeftDriveVoltage(0);
     return true;
   }
+}
+
+void Chassis::turnToTargetSync(Angle targetAngle, int speedDeadband, double kp, bool stopOnCompletion)
+{
+
+  const double tolerance = .1;
+  const double speedTolerance = 5;
+
+  double angleDifference = calculateShortestAngleDiff(targetAngle.getAngle(), currentAngle.getAngle());
+  double error = targetAngle.getAngle() - currentAngle.getAngle();
+  double speed = error * kp;
+
+  while (fabs(error) > tolerance)
+  {
+    angleDifference = calculateShortestAngleDiff(targetAngle.getAngle(), currentAngle.getAngle());
+    error = targetAngle.getAngle() - currentAngle.getAngle();
+    if (fabs(error) != angleDifference)
+    {
+      error = angleDifference * sign(error) * -1.0;
+    }
+    pros::lcd::print(4, "%f, %f", angleDifference, error);
+    speed = error * kp;
+
+    if (fabs(speed) < speedDeadband)
+    {
+      speed = speedDeadband * sign(speed);
+    }
+
+    moveRightDriveVoltage(speed * -1.0);
+    moveLeftDriveVoltage(speed);
+
+    pros::delay(30);
+  }
+  moveRightDriveVoltage(0);
+  moveLeftDriveVoltage(0);
 }
 
 /*
@@ -397,10 +526,19 @@ void chassisTaskActions(void *param)
 {
   while (true)
   {
-    chassis.trackPosition();
     chassis.completeMovements();
     pros::delay(30);
   }
 }
 
+void chassisOdometry(void *param)
+{
+  while (true)
+  {
+    chassis.trackPosition();
+    pros::delay(30);
+  }
+} //run odometry code seperately from complete movements to allow complete Movements to sometimes be blocking and not prevent position tracking from running
+
+pros::Task chassisOdometryTask(chassisOdometry, param, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "ChassisOdom");
 pros::Task chassisControl(chassisTaskActions, param, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "ChassisTask");

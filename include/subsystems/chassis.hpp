@@ -81,11 +81,15 @@ public:
    */
   bool driveToPoint(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion);
 
+  void driveToPointSync(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion);
+
   /**
    * Turns to a specified angle
    * Returns whether the action is complete (true of complete; false otherwise)
    */
   bool turnToTarget(double targetAngle, int speedDeadband, double kp, bool stopOnCompletion);
+
+  void turnToTargetSync(Angle targetAngle, int speedDeadband, double kp, bool stopOnCompletion);
 };
 
 extern void chassisTaskActions(void *param);

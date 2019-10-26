@@ -42,8 +42,26 @@ void auto1()
   std::shared_ptr<DriveMovement> drivingToPoint3 = std::make_shared<DriveMovement>(degreeToRadian(-720));
   chassis.addMovement(drivingToPoint3);*/
 
-  std::shared_ptr<DriveMovement> driveToPoint = std::make_shared<DriveMovement>(10, 0);
+  std::shared_ptr<DriveMovement> driveToPoint = std::make_shared<DriveMovement>(0, 20);
   chassis.addMovement(driveToPoint);
+
+  std::shared_ptr<DriveMovement> turn1 = std::make_shared<DriveMovement>(PI / 4.0);
+  chassis.addMovement(turn1);
+
+  std::shared_ptr<DriveMovement> driveToPoint2 = std::make_shared<DriveMovement>(10, 15);
+  chassis.addMovement(driveToPoint2);
+
+  std::shared_ptr<DriveMovement> driveToPoint3 = std::make_shared<DriveMovement>(22, 40);
+  chassis.addMovement(driveToPoint3);
+
+  std::shared_ptr<DriveMovement> turn2 = std::make_shared<DriveMovement>(degreeToRadian(330));
+  chassis.addMovement(turn2);
+
+  std::shared_ptr<DriveMovement> driveToPoint4 = std::make_shared<DriveMovement>(0, 0);
+  chassis.addMovement(driveToPoint4);
+
+  // std::shared_ptr<DriveMovement> turn1 = std::make_shared<DriveMovement>(degreeToRadian(330));
+  // chassis.addMovement(turn1);
 }
 
 /**
