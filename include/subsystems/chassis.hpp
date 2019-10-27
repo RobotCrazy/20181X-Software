@@ -1,8 +1,12 @@
 #include "api.h"
 #include <queue>
+#include <list>
+#include <algorithm>
+#include <memory>
 #include "../utility/driveMovement.hpp"
 #include "../utility/prereq.hpp"
 #include "../utility/mathUtil.h"
+#include "../utility/angle.hpp"
 
 #ifndef _CHASSIS_HPP_
 #define _CHASSIS_HPP_
@@ -18,34 +22,77 @@ extern pros::Task chassisControl;
 class Chassis
 {
 private:
-  double currentX = 0;
-  double currentY = 0;
-  double currentAngle = (PI / 2);
+  pros::ADIGyro gyro;
+
+  std::queue<std::shared_ptr<DriveMovement>> movements;
+  std::list<std::shared_ptr<DriveMovement>> completedMovements;
+
+public:
+  Chassis(int frontLeft, int backLeft, int frontRight, int backRight, char gyroPort);
   pros::Motor frontLeftDrive;
   pros::Motor backLeftDrive;
   pros::Motor frontRightDrive;
   pros::Motor backRightDrive;
-  pros::ADIGyro gyro;
-
-  std::queue<DriveMovement> movements;
-
-public:
-  Chassis(int frontLeft, int backLeft, int frontRight, int backRight, char gyroPort);
+  double currentX = 0;
+  double currentY = 0;
+  Angle currentAngle;
   void moveRightDrive(int value);
   void moveLeftDrive(int value);
   void driverControl();
   void moveRightDriveVoltage(int voltage);
   void moveLeftDriveVoltage(int voltage);
 
-  void addMovement(DriveMovement dm);
-  DriveMovement getFirstMovement();
+  void setCurrentAngle(double angle);
+  void printCoords();
+
+  /**
+   * Adds movement to queue of chassis actions
+   * Param dm - shared_ptr to DriveMovement object
+   */
+  void addMovement(std::shared_ptr<DriveMovement> dm);
+
+  bool movementIsCompleted(DriveMovement *dm);
+
+  /**
+   * Returns shared_ptr to first movement in queue of chassis actions
+   */
+  std::shared_ptr<DriveMovement> getFirstMovement();
+
+  /**
+   * Deletes first movement in queue of chassis actions
+   */
   void deleteFirstMovement();
+
+  /**
+   * Completes work to complete actions in chassis actions queue
+   */
   void completeMovements();
+  void initialize();
   void sensorInit();
 
+  /**
+  * Keeps track of absolute robot position
+  */
   void trackPosition();
-  bool driveToPoint(double x, double y, int speedDeadband, int kp);
-  bool turnToTarget(double targetAngle, int speedDeadband, int kp);
+
+  /**
+   * Drives to a specified point
+   * Returns whether the action is complete (true if complete; false otherwise)
+   */
+  bool driveToPoint(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion);
+
+  void driveToPointSync(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion);
+
+  /**
+   * Turns to a specified angle
+   * Returns whether the action is complete (true of complete; false otherwise)
+   */
+  bool turnToTarget(double targetAngle, int speedDeadband, double kp, bool stopOnCompletion);
+
+  void turnToTargetSync(Angle targetAngle, int speedDeadband, double kp, bool stopOnCompletion);
 };
+
+extern void chassisTaskActions(void *param);
+extern pros::Task chassisControl;
 
 #endif

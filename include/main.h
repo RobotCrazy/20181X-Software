@@ -41,6 +41,7 @@
 #include "utility/driveMovement.hpp"
 #include "utility/globals.h"
 #include "utility/prereq.hpp"
+#include "utility/debug/logger.hpp"
 
 /**
  * You should add more #includes here
@@ -49,6 +50,10 @@
 //#include "pros/api_legacy.h"
 
 extern pros::Controller master;
+extern Logger l;
+extern Logger errorlogger;
+extern Logger targetAngleLogger;
+extern Logger angleDifferenceLogger;
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do

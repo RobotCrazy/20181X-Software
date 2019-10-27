@@ -23,6 +23,8 @@
             "-g",
             "-D_POSIX_THREADS",
             "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+<<<<<<< HEAD
+            "-Wno-psabi",
             "-ffunction-sections",
             "-fdata-sections",
             "-fdiagnostics-color",
@@ -59,10 +61,101 @@
             "-g",
             "-D_POSIX_THREADS",
             "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+            "-Wno-psabi",
+=======
+>>>>>>> master
             "-ffunction-sections",
             "-fdata-sections",
             "-fdiagnostics-color",
             "-funwind-tables",
+            "--std=gnu++17",
+            "-o",
+<<<<<<< HEAD
+            "bin/autonomous.cpp.o",
+            "src\\autonomous.cpp"
+        ],
+        "directory": "C:\\Singh\\VexRobotics\\VEXTowerTakeover\\Programs\\20181X-Software",
+        "file": "src\\autonomous.cpp"
+=======
+            "bin/utility/driveMovement.cpp.o",
+            "src\\utility\\driveMovement.cpp"
+        ],
+        "directory": "C:\\Singh\\VexRobotics\\VEXTowerTakeover\\Programs\\20181X-Software",
+        "file": "src\\utility\\driveMovement.cpp"
+>>>>>>> master
+    },
+    {
+        "arguments": [
+            "clang++",
+            "-c",
+            "-target",
+            "armv7ar-none-none-eabi",
+            "-fno-ms-extensions",
+            "-fno-ms-compatibility",
+            "-fno-delayed-template-parsing",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/arm-none-eabi/thumb/v7-ar/fpv3/softfp",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/backward",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include-fixed",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include",
+            "-iquote./include",
+            "-iquote./include/./",
+            "-mcpu=cortex-a9",
+            "-mfpu=neon-fp16",
+            "-mfloat-abi=softfp",
+            "-Os",
+            "-g",
+            "-D_POSIX_THREADS",
+            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+<<<<<<< HEAD
+            "-Wno-psabi",
+=======
+>>>>>>> master
+            "-ffunction-sections",
+            "-fdata-sections",
+            "-fdiagnostics-color",
+            "-funwind-tables",
+<<<<<<< HEAD
+            "--std=gnu++17",
+            "-o",
+            "bin/initialize.cpp.o",
+            "src\\initialize.cpp"
+        ],
+        "directory": "C:\\Singh\\VexRobotics\\VEXTowerTakeover\\Programs\\20181X-Software",
+        "file": "src\\initialize.cpp"
+    },
+    {
+        "arguments": [
+            "clang++",
+            "-c",
+            "-target",
+            "armv7ar-none-none-eabi",
+            "-fno-ms-extensions",
+            "-fno-ms-compatibility",
+            "-fno-delayed-template-parsing",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/arm-none-eabi/thumb/v7-ar/fpv3/softfp",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/backward",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include-fixed",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include",
+            "-iquote./include",
+            "-iquote./include/utility/",
+            "-mcpu=cortex-a9",
+            "-mfpu=neon-fp16",
+            "-mfloat-abi=softfp",
+            "-Os",
+            "-g",
+            "-D_POSIX_THREADS",
+            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+            "-Wno-psabi",
+            "-ffunction-sections",
+            "-fdata-sections",
+            "-fdiagnostics-color",
+            "-funwind-tables",
+=======
+>>>>>>> master
             "--std=gnu++17",
             "-o",
             "bin/autonomous.cpp.o",
@@ -87,7 +180,7 @@
             "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include-fixed",
             "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include",
             "-iquote./include",
-            "-iquote./include/utility/",
+            "-iquote./include/utility/debug/",
             "-mcpu=cortex-a9",
             "-mfpu=neon-fp16",
             "-mfloat-abi=softfp",
@@ -95,17 +188,21 @@
             "-g",
             "-D_POSIX_THREADS",
             "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+<<<<<<< HEAD
+            "-Wno-psabi",
+=======
+>>>>>>> master
             "-ffunction-sections",
             "-fdata-sections",
             "-fdiagnostics-color",
             "-funwind-tables",
             "--std=gnu++17",
             "-o",
-            "bin/utility/prereq.cpp.o",
-            "src\\utility\\prereq.cpp"
+            "bin/utility/debug/logger.cpp.o",
+            "src\\utility\\debug\\logger.cpp"
         ],
         "directory": "C:\\Singh\\VexRobotics\\VEXTowerTakeover\\Programs\\20181X-Software",
-        "file": "src\\utility\\prereq.cpp"
+        "file": "src\\utility\\debug\\logger.cpp"
     },
     {
         "arguments": [
@@ -131,6 +228,10 @@
             "-g",
             "-D_POSIX_THREADS",
             "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+<<<<<<< HEAD
+            "-Wno-psabi",
+=======
+>>>>>>> master
             "-ffunction-sections",
             "-fdata-sections",
             "-fdiagnostics-color",
@@ -167,42 +268,10 @@
             "-g",
             "-D_POSIX_THREADS",
             "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
-            "-ffunction-sections",
-            "-fdata-sections",
-            "-fdiagnostics-color",
-            "-funwind-tables",
-            "--std=gnu++17",
-            "-o",
-            "bin/subsystems/intake.cpp.o",
-            "src\\subsystems\\intake.cpp"
-        ],
-        "directory": "C:\\Singh\\VexRobotics\\VEXTowerTakeover\\Programs\\20181X-Software",
-        "file": "src\\subsystems\\intake.cpp"
-    },
-    {
-        "arguments": [
-            "clang++",
-            "-c",
-            "-target",
-            "armv7ar-none-none-eabi",
-            "-fno-ms-extensions",
-            "-fno-ms-compatibility",
-            "-fno-delayed-template-parsing",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/arm-none-eabi/thumb/v7-ar/fpv3/softfp",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/backward",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include-fixed",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include",
-            "-iquote./include",
-            "-iquote./include/subsystems/",
-            "-mcpu=cortex-a9",
-            "-mfpu=neon-fp16",
-            "-mfloat-abi=softfp",
-            "-Os",
-            "-g",
-            "-D_POSIX_THREADS",
-            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+<<<<<<< HEAD
+            "-Wno-psabi",
+=======
+>>>>>>> master
             "-ffunction-sections",
             "-fdata-sections",
             "-fdiagnostics-color",
@@ -231,7 +300,7 @@
             "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include-fixed",
             "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include",
             "-iquote./include",
-            "-iquote./include/./",
+            "-iquote./include/subsystems/",
             "-mcpu=cortex-a9",
             "-mfpu=neon-fp16",
             "-mfloat-abi=softfp",
@@ -239,17 +308,29 @@
             "-g",
             "-D_POSIX_THREADS",
             "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+<<<<<<< HEAD
+            "-Wno-psabi",
+=======
+>>>>>>> master
             "-ffunction-sections",
             "-fdata-sections",
             "-fdiagnostics-color",
             "-funwind-tables",
             "--std=gnu++17",
             "-o",
-            "bin/main.cpp.o",
-            "src\\main.cpp"
+<<<<<<< HEAD
+            "bin/subsystems/intake.cpp.o",
+            "src\\subsystems\\intake.cpp"
         ],
         "directory": "C:\\Singh\\VexRobotics\\VEXTowerTakeover\\Programs\\20181X-Software",
-        "file": "src\\main.cpp"
+        "file": "src\\subsystems\\intake.cpp"
+=======
+            "bin/subsystems/chassis.cpp.o",
+            "src\\subsystems\\chassis.cpp"
+        ],
+        "directory": "C:\\Singh\\VexRobotics\\VEXTowerTakeover\\Programs\\20181X-Software",
+        "file": "src\\subsystems\\chassis.cpp"
+>>>>>>> master
     },
     {
         "arguments": [
@@ -275,53 +356,29 @@
             "-g",
             "-D_POSIX_THREADS",
             "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+<<<<<<< HEAD
+            "-Wno-psabi",
+=======
+>>>>>>> master
             "-ffunction-sections",
             "-fdata-sections",
             "-fdiagnostics-color",
             "-funwind-tables",
             "--std=gnu++17",
             "-o",
+<<<<<<< HEAD
             "bin/opcontrol.cpp.o",
             "src\\opcontrol.cpp"
         ],
         "directory": "C:\\Singh\\VexRobotics\\VEXTowerTakeover\\Programs\\20181X-Software",
         "file": "src\\opcontrol.cpp"
-    },
-    {
-        "arguments": [
-            "clang++",
-            "-c",
-            "-target",
-            "armv7ar-none-none-eabi",
-            "-fno-ms-extensions",
-            "-fno-ms-compatibility",
-            "-fno-delayed-template-parsing",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/arm-none-eabi/thumb/v7-ar/fpv3/softfp",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/backward",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include-fixed",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include",
-            "-iquote./include",
-            "-iquote./include/./",
-            "-mcpu=cortex-a9",
-            "-mfpu=neon-fp16",
-            "-mfloat-abi=softfp",
-            "-Os",
-            "-g",
-            "-D_POSIX_THREADS",
-            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
-            "-ffunction-sections",
-            "-fdata-sections",
-            "-fdiagnostics-color",
-            "-funwind-tables",
-            "--std=gnu++17",
-            "-o",
-            "bin/initialize.cpp.o",
-            "src\\initialize.cpp"
+=======
+            "bin/main.cpp.o",
+            "src\\main.cpp"
         ],
         "directory": "C:\\Singh\\VexRobotics\\VEXTowerTakeover\\Programs\\20181X-Software",
-        "file": "src\\initialize.cpp"
+        "file": "src\\main.cpp"
+>>>>>>> master
     },
     {
         "arguments": [
@@ -347,16 +404,116 @@
             "-g",
             "-D_POSIX_THREADS",
             "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+<<<<<<< HEAD
+            "-Wno-psabi",
+=======
+>>>>>>> master
             "-ffunction-sections",
             "-fdata-sections",
             "-fdiagnostics-color",
             "-funwind-tables",
             "--std=gnu++17",
             "-o",
+            "bin/utility/angle.cpp.o",
+            "src\\utility\\angle.cpp"
+        ],
+        "directory": "C:\\Singh\\VexRobotics\\VEXTowerTakeover\\Programs\\20181X-Software",
+        "file": "src\\utility\\angle.cpp"
+    },
+    {
+        "arguments": [
+            "clang++",
+            "-c",
+            "-target",
+            "armv7ar-none-none-eabi",
+            "-fno-ms-extensions",
+            "-fno-ms-compatibility",
+            "-fno-delayed-template-parsing",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/arm-none-eabi/thumb/v7-ar/fpv3/softfp",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/backward",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include-fixed",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include",
+            "-iquote./include",
+            "-iquote./include/./",
+            "-mcpu=cortex-a9",
+            "-mfpu=neon-fp16",
+            "-mfloat-abi=softfp",
+            "-Os",
+            "-g",
+            "-D_POSIX_THREADS",
+            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+<<<<<<< HEAD
+            "-Wno-psabi",
+=======
+>>>>>>> master
+            "-ffunction-sections",
+            "-fdata-sections",
+            "-fdiagnostics-color",
+            "-funwind-tables",
+            "--std=gnu++17",
+            "-o",
+<<<<<<< HEAD
+            "bin/utility/IntakeMovement.cpp.o",
+            "src\\utility\\IntakeMovement.cpp"
+        ],
+        "directory": "C:\\Singh\\VexRobotics\\VEXTowerTakeover\\Programs\\20181X-Software",
+        "file": "src\\utility\\IntakeMovement.cpp"
+=======
+            "bin/initialize.cpp.o",
+            "src\\initialize.cpp"
+        ],
+        "directory": "C:\\Singh\\VexRobotics\\VEXTowerTakeover\\Programs\\20181X-Software",
+        "file": "src\\initialize.cpp"
+>>>>>>> master
+    },
+    {
+        "arguments": [
+            "clang++",
+            "-c",
+            "-target",
+            "armv7ar-none-none-eabi",
+            "-fno-ms-extensions",
+            "-fno-ms-compatibility",
+            "-fno-delayed-template-parsing",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/arm-none-eabi/thumb/v7-ar/fpv3/softfp",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/backward",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include-fixed",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include",
+            "-iquote./include",
+            "-iquote./include/utility/",
+            "-mcpu=cortex-a9",
+            "-mfpu=neon-fp16",
+            "-mfloat-abi=softfp",
+            "-Os",
+            "-g",
+            "-D_POSIX_THREADS",
+            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+<<<<<<< HEAD
+            "-Wno-psabi",
+=======
+>>>>>>> master
+            "-ffunction-sections",
+            "-fdata-sections",
+            "-fdiagnostics-color",
+            "-funwind-tables",
+            "--std=gnu++17",
+            "-o",
+<<<<<<< HEAD
+            "bin/utility/prereq.cpp.o",
+            "src\\utility\\prereq.cpp"
+        ],
+        "directory": "C:\\Singh\\VexRobotics\\VEXTowerTakeover\\Programs\\20181X-Software",
+        "file": "src\\utility\\prereq.cpp"
+=======
             "bin/utility/globals.cpp.o",
             "src\\utility\\globals.cpp"
         ],
         "directory": "C:\\Singh\\VexRobotics\\VEXTowerTakeover\\Programs\\20181X-Software",
         "file": "src\\utility\\globals.cpp"
+>>>>>>> master
     }
 ]

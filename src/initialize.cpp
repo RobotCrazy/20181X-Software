@@ -1,5 +1,9 @@
 #include "main.h"
 
+void initializeGUI()
+{
+}
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -9,7 +13,12 @@
 void initialize()
 {
   pros::lcd::initialize();
+  pros::delay(2000);
   chassis.sensorInit();
+  pros::delay(300);
+
+  chassis.sensorInit();
+  pros::delay(300);
 }
 
 /**
@@ -17,7 +26,13 @@ void initialize()
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
  */
-void disabled() {}
+void disabled()
+{
+  l.closeFile();
+  errorlogger.closeFile();
+  targetAngleLogger.closeFile();
+  angleDifferenceLogger.closeFile();
+}
 
 /**
  * Runs after initialize(), and before autonomous when connected to the Field
