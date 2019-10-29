@@ -331,7 +331,7 @@ void Chassis::driveToPointSync(double x, double y, int speedDeadband, int maxSpe
   const double errorTolerance = .75;
   const double angleErrorTolerance = degreeToRadian(7);
   const double angleAdjustmentKP = 4000.0;
-  const double errorInnerRange = 3.0; //Minimum distance the robot can be for anglePID to be turned on
+  const double errorInnerRange = 2.5; //Minimum distance the robot can be for anglePID to be turned on
 
   double xDistance = x - currentX;
   double yDistance = y - currentY;
