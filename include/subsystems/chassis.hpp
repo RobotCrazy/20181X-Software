@@ -83,6 +83,8 @@ public:
 
   void driveToPointSync(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion);
 
+  void driveBackward(double inches, int speedDeadband, int maxSpeed, pros::controller_digital_e_t);
+
   /**
    * Turns to a specified angle
    * Returns whether the action is complete (true of complete; false otherwise)

@@ -38,6 +38,8 @@
 
 #include "subsystems/chassis.hpp"
 #include "subsystems/intake.hpp"
+#include "subsystems/trayTilter.hpp"
+#include "subsystems/lift.hpp"
 #include "utility/driveMovement.hpp"
 #include "utility/globals.h"
 #include "utility/prereq.hpp"

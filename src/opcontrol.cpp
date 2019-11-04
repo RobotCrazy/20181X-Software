@@ -15,12 +15,17 @@
  * task, not resume it from where it left off.
  */
 
+const int MACROID_CUBE_DEPLOY = 1;
+
 bool functionThing()
 {
 	return true;
 }
 void opcontrol()
 {
+	bool macroInitiated = false;
+	bool macroID = 0;
+	pros::controller_digital_e_t macroButton;
 	//Syntax for setting a prereq function
 	// Prereq p1;
 	// p1.setPrereqFunction(functionThing);
@@ -28,8 +33,25 @@ void opcontrol()
 	//pros::lcd::print(7, "%d", pros::Task::get_count());
 	while (true)
 	{
-		chassis.driverControl();
-		intake.driverControl();
+		if (macroInitiated)
+		{
+			if (macroID = MACROID_CUBE_DEPLOY && master.get_digital(macroButton))
+			{
+				trayTilter.deployCubesOP(macroButton);
+				chassis.driveBackward(8, 2500, 12000, macroButton);
+
+				//Code to deploy cube here
+			}
+		}
+		else
+		{
+			chassis.driverControl();
+			intake.driverControl();
+			if (master.get_digital(DIGITAL_A))
+			{
+				macroInitiated = true;
+			}
+		}
 		pros::delay(20);
 	}
 }
