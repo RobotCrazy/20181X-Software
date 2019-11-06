@@ -33,25 +33,31 @@ void opcontrol()
 	//pros::lcd::print(7, "%d", pros::Task::get_count());
 	while (true)
 	{
-		if (macroInitiated)
-		{
-			if (macroID = MACROID_CUBE_DEPLOY && master.get_digital(macroButton))
-			{
-				trayTilter.deployCubesOP(macroButton);
-				chassis.driveBackward(8, 2500, 12000, macroButton);
+		// if (macroInitiated)
+		// {
+		// 	if (macroID = MACROID_CUBE_DEPLOY && master.get_digital(macroButton))
+		// 	{
+		// 		trayTilter.deployCubesOP(macroButton);
+		// 		chassis.driveBackward(8, 2500, 12000, macroButton);
 
-				//Code to deploy cube here
-			}
-		}
-		else
-		{
-			chassis.driverControl();
-			intake.driverControl();
-			if (master.get_digital(DIGITAL_A))
-			{
-				macroInitiated = true;
-			}
-		}
+		// 		//Code to deploy cube here
+		// 	}
+		// }
+		// else
+		// {
+		chassis.driverControl();
+		intake.driverControl();
+		trayTilter.driverControl();
+		lift.driverControl();
+		// 	if (master.get_digital(DIGITAL_A))
+		// 	{
+		// 		macroInitiated = true;
+		// 	}
+		//else
+		//{
+		//	macroInitiated = false;
+		//}
+		// }
 		pros::delay(20);
 	}
 }

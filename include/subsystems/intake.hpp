@@ -8,11 +8,12 @@
 class Intake
 {
 private:
-  pros::Motor intake;
+  pros::Motor intakeLeft;
+  pros::Motor intakeRight;
   std::queue<IntakeMovement> movements;
 
 public:
-  Intake(int intakePort);
+  Intake(int intakePortLeft, int intakePortRight);
   void driverControl();
 
   void runIntake(int ticks);

@@ -1,4 +1,5 @@
 #include "main.h"
+#include "customDisplay/autonSelector.h"
 
 void initializeGUI()
 {
@@ -12,7 +13,10 @@ void initializeGUI()
  */
 void initialize()
 {
-  pros::lcd::initialize();
+  //initializeDisplay();
+  //runAutonSelector();
+  lift.init();
+  trayTilter.init();
   pros::delay(2000);
   chassis.sensorInit();
   pros::delay(300);

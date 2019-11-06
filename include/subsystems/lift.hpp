@@ -8,6 +8,7 @@ private:
 
 public:
   Lift(int liftPort);
+  void init();
   void driverControl();
 };
 

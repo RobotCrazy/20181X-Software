@@ -2,16 +2,34 @@
 
 TrayTilter::TrayTilter(int tilterPort) : tilter(tilterPort)
 {
+  tilter.tare_position();
+}
+
+void TrayTilter::init()
+{
+  tilter.tare_position();
 }
 
 void TrayTilter::driverControl()
 {
-  tilter.tare_position();
+  /* if (moveTilterRequested == true)
+  {
+    moveToTargetPos();
+  }
+  else
+  {*/
+  tilter.move((master.get_digital(DIGITAL_A) * -100) - (master.get_digital(DIGITAL_B) * -100));
+  /*}*/
 }
 
 int TrayTilter::getPosition()
 {
   return tilter.get_position();
+}
+
+void TrayTilter::move(int speed)
+{
+  tilter.move(speed);
 }
 
 void TrayTilter::deployCubesOP(pros::controller_digital_e_t button)
@@ -37,4 +55,27 @@ void TrayTilter::deployCubesOP(pros::controller_digital_e_t button)
     pros::delay(30);
   }
   tilter.move_voltage(0);
+}
+
+void TrayTilter::setTargetPos(int target)
+{
+  moveTilterRequested = true;
+  targetPos = target;
+}
+
+void TrayTilter::moveToTargetPos()
+{
+  int error = targetPos - tilter.get_position();
+  if (error > 10)
+  {
+    tilter.move(-80);
+  }
+  else if (error < 10)
+  {
+    tilter.move(80);
+  }
+  else
+  {
+    tilter.move(0);
+  }
 }

@@ -1,21 +1,22 @@
 #include "main.h"
 
 pros::Motor intake2(16);
-Intake::Intake(int intakePort)
-    : intake(intakePort)
+Intake::Intake(int intakePortLeft, int intakePortRight)
+    : intakeLeft(intakePortLeft), intakeRight(intakePortRight)
 {
 }
 
 void Intake::driverControl()
 {
-  intake.move(master.get_digital(DIGITAL_R1) * -127);
-  intake2.move(master.get_digital(DIGITAL_R1) * 127);
+  intakeLeft.move(master.get_digital(DIGITAL_R1) * 127 - (master.get_digital(DIGITAL_R2) * 127));
+  intakeRight.move(master.get_digital(DIGITAL_R1) * -127 - (master.get_digital(DIGITAL_R2) * -127));
 }
 
 void Intake::runIntake(int ticks)
 {
-  intake.move_relative(ticks, 80);
-  while (!(intake.is_stopped()))
+  intakeLeft.move_relative(ticks, 80);
+  intakeRight.move_relative(ticks, 80);
+  while (!(intakeLeft.is_stopped()) || !(intakeRight.is_stopped()))
   {
     pros::delay(40);
   }

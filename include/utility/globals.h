@@ -10,6 +10,7 @@ extern pros::Controller master;
 extern Chassis chassis;
 extern Intake intake;
 extern TrayTilter trayTilter;
+extern Lift lift;
 extern char *param;
 
 #endif
