@@ -3,6 +3,7 @@
 #include <memory>
 #include "prereq.hpp"
 #include "angle.hpp"
+#include "movement.hpp"
 
 #ifndef _DRIVEMOVEMENT_HPP_
 #define _DRIVEMOVEMENT_HPP_
@@ -13,7 +14,7 @@ extern const int DRIVE_MOVEMENT_POINT;
 extern const int DRIVE_MOVEMENT_TURN;
 //Movement type for turning to a target angle
 
-class DriveMovement
+class DriveMovement : public Movement
 {
 private:
   int movementType;
@@ -25,11 +26,9 @@ private:
   double targetX;
   double targetY;
 
-  bool actionComplete = false;
   bool stopOnCompletion;
 
   std::shared_ptr<Prereq> drivePrereq;
-  std::vector<std::shared_ptr<DriveMovement>> prereqMovements;
 
   Angle targAngle;
 
@@ -58,13 +57,7 @@ public:
   void setSpeedDeadband(int deadband);
   void setKP(double value);
 
-  void setComplete();
-  bool isComplete();
-
   void setDrivePrereq(std::shared_ptr<Prereq> p);
-  void setPrereqMovements(std::vector<std::shared_ptr<DriveMovement>> actions);
-
-  bool readyToOperate();
 
   void setStopOnCompletion(bool stop);
   bool getStopOnCompletion();

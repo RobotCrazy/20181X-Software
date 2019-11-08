@@ -1,15 +1,17 @@
-class IntakeMovement
+#include "api.h"
+
+#ifndef _INTAKE_MOVEMENT_HPP_
+#define _INTAKE_MOVEMENT_HPP_
+
+class IntakeMovement : public Movement
 {
 private:
-  int targetPosition;
-  bool actionComplete = false;
-  Prereq intakePrereq;
+  int degrees;
 
 public:
-  IntakeMovement(int targetPos);
-
-  void setComplete();
-  bool isComplete();
-  void setIntakePrereq(Prereq p);
-  bool readyToOperate();
+  IntakeMovement(int targetDegrees);
+  void setDegrees(int targetDegrees);
+  int getDegrees();
 };
+
+#endif

@@ -10,8 +10,8 @@ Logger angleDifferenceLogger("/usd/angleDifferenceLog.txt");
 const double WHEEL_RADIUS = 2.0;
 const double WHEEL_CIRCUMFERENCE = WHEEL_RADIUS * 2.0 * PI;
 const double GYRO_SCALE = .78;
-const double leftTWheelDistance = 6.0;
-const double rightTWheelDistance = 6.0;
+const double leftTWheelDistance = 7.17;
+const double rightTWheelDistance = 7.17;
 const double DRIVE_BASE_GEARING = 1.25;
 double prevFRDrive = degreeToRadian(chassis.frontRightDrive.get_position() * -1) * DRIVE_BASE_GEARING;
 double prevBRDrive = degreeToRadian(chassis.backRightDrive.get_position() * -1) * DRIVE_BASE_GEARING;
@@ -187,8 +187,8 @@ void Chassis::trackPosition()
   // float leftEncAverage = ((flDrive - prevFLDrive) +
   //                         (blDrive - prevBLDrive)) /
   //                        2;
-  double frDriveInches = (frDrive - prevFRDrive) * WHEEL_RADIUS;
-  double flDriveInches = (flDrive - prevFLDrive) * WHEEL_RADIUS;
+  double frDriveInches = (brDrive - prevBRDrive) * WHEEL_RADIUS;
+  double flDriveInches = (blDrive - prevBLDrive) * WHEEL_RADIUS;
 
   double angleChange = (flDriveInches - frDriveInches) / (leftTWheelDistance + rightTWheelDistance);
   currentAngle.setAngle(currentAngle.getAngle() + angleChange);
@@ -406,6 +406,78 @@ void Chassis::driveToPointSync(double x, double y, int speedDeadband, int maxSpe
   moveLeftDriveVoltage(0);
 }
 
+void Chassis::driveBackward(double inches, int speedDeadband, int maxSpeed)
+{
+  frontRightDrive.tare_position();
+  backRightDrive.tare_position();
+  frontLeftDrive.tare_position();
+  backLeftDrive.tare_position();
+
+  int ticks = (int)((inches / (PI * WHEEL_RADIUS)) * 180);
+
+  //P Variables Here//
+  int error = ticks - ((frontRightDrive.get_position() +
+                        backRightDrive.get_position() +
+                        frontLeftDrive.get_position() +
+                        backLeftDrive.get_position()) /
+                       4);
+  int lastError = 0;
+  float driveSpeed = 0;
+  float lastDriveSpeed = 0;
+
+  //Constants here//
+  float kp = 28;
+  float kd = 3;
+  float increaseFactor = 200;
+
+  //Tolerance Variables Here//
+  int speedTolerance = 6;
+  int positionTolerance = 10;
+
+  while (abs(error) > positionTolerance)
+  {
+    error = ((frontRightDrive.get_position() + backRightDrive.get_position() +
+              frontLeftDrive.get_position() + backLeftDrive.get_position()) /
+             4) -
+            ticks;
+
+    driveSpeed = (error * kp + ((error - lastError) * kd));
+
+    if (isBetween(driveSpeed, -1 * speedDeadband, 0))
+    {
+      driveSpeed = -1 * speedDeadband;
+    }
+    if (isBetween(driveSpeed, 0, speedDeadband))
+    {
+      driveSpeed = speedDeadband;
+    }
+
+    if (driveSpeed > 0 && lastDriveSpeed >= 0 && driveSpeed > lastDriveSpeed)
+    {
+      moveLeftDriveVoltage(lastDriveSpeed + increaseFactor);
+      moveRightDriveVoltage(lastDriveSpeed + increaseFactor);
+      lastDriveSpeed += increaseFactor;
+    }
+    else if (driveSpeed < 0 && lastDriveSpeed <= 0 && driveSpeed < lastDriveSpeed)
+    {
+      moveLeftDriveVoltage(lastDriveSpeed - increaseFactor);
+      moveRightDriveVoltage(lastDriveSpeed - increaseFactor);
+      lastDriveSpeed -= increaseFactor;
+    }
+    else
+    {
+      moveLeftDriveVoltage(driveSpeed);
+      moveRightDriveVoltage(driveSpeed);
+      lastDriveSpeed = driveSpeed;
+    }
+    lastError = error;
+    pros::delay(30);
+  }
+
+  moveRightDriveVoltage(0);
+  moveLeftDriveVoltage(0);
+}
+
 void Chassis::driveBackward(double inches, int speedDeadband, int maxSpeed, pros::controller_digital_e_t button)
 {
   frontRightDrive.tare_position();
@@ -551,6 +623,14 @@ void Chassis::turnToTargetSync(Angle targetAngle, int speedDeadband, double kp, 
   }
   moveRightDriveVoltage(0);
   moveLeftDriveVoltage(0);
+}
+
+void Chassis::waitUntilSettled()
+{
+  while (movements.empty() == false)
+  {
+    pros::delay(30);
+  }
 }
 
 /*

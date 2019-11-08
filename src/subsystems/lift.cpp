@@ -28,3 +28,23 @@ void Lift::driverControl()
     liftMotor.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
   }
 }
+
+void Lift::deploy()
+{
+  liftMotor.tare_position();
+  int target = 2000;
+  while (abs(liftMotor.get_position()) < target)
+  {
+    liftMotor.move(100);
+    pros::delay(30);
+  }
+
+  pros::delay(250);
+
+  while (liftMotor.get_position() > 20)
+  {
+    liftMotor.move(-100);
+    pros::delay(30);
+  }
+  liftMotor.move(0);
+}

@@ -16,7 +16,7 @@ bool drivingToPointPFunc()
 //   return forwardToCube2.isComplete();
 // }
 
-void auto1()
+void autoTest()
 {
   // std::shared_ptr<DriveMovement> drivingToPoint2 = std::make_shared<DriveMovement>(20, 10);
   // std::shared_ptr<Prereq> drivingToPoint2Prereq = std::make_shared<Prereq>([&]() {
@@ -62,6 +62,23 @@ void auto1()
 
   // std::shared_ptr<DriveMovement> turn1 = std::make_shared<DriveMovement>(degreeToRadian(330));
   // chassis.addMovement(turn1);
+}
+
+void auto1()
+{
+  std::shared_ptr<DriveMovement> deployMovement = std::make_shared<DriveMovement>(0, 20);
+  deployMovement->setStopOnCompletion(false);
+  chassis.addMovement(deployMovement);
+
+  std::shared_ptr<DriveMovement> deployMovementBackup = std::make_shared<DriveMovement>(0, 19);
+  deployMovement->setStopOnCompletion(false);
+  chassis.addMovement(deployMovementBackup);
+
+  chassis.waitUntilSettled();
+
+  lift.deploy();
+
+  intake.startIntake();
 }
 
 /**

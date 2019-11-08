@@ -83,6 +83,8 @@ public:
 
   void driveToPointSync(double x, double y, int speedDeadband, int maxSpeed, double kp, bool stopOnCompletion);
 
+  void driveBackward(double inches, int speedDeadband, int maxSpeed);
+
   void driveBackward(double inches, int speedDeadband, int maxSpeed, pros::controller_digital_e_t);
 
   /**
@@ -92,6 +94,8 @@ public:
   bool turnToTarget(double targetAngle, int speedDeadband, double kp, bool stopOnCompletion);
 
   void turnToTargetSync(Angle targetAngle, int speedDeadband, double kp, bool stopOnCompletion);
+
+  void waitUntilSettled();
 };
 
 extern void chassisTaskActions(void *param);

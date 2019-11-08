@@ -43,6 +43,7 @@
 #include "utility/movement.hpp"
 #include "utility/driveMovement.hpp"
 #include "utility/liftMovement.hpp"
+#include "utility/intakeMovement.hpp"
 #include "utility/globals.h"
 #include "utility/prereq.hpp"
 #include "utility/debug/logger.hpp"

@@ -1,26 +1,16 @@
 #include "main.h"
 
-IntakeMovement::IntakeMovement(int targetPos)
+IntakeMovement::IntakeMovement(int targetDegrees)
 {
-  targetPosition = targetPos;
+  degrees = targetDegrees;
 }
 
-void IntakeMovement::setComplete()
+void IntakeMovement::setDegrees(int targetDegrees)
 {
-  actionComplete = true;
+  degrees = targetDegrees;
 }
 
-bool IntakeMovement::isComplete()
+int IntakeMovement::getDegrees()
 {
-  return actionComplete;
-}
-
-void IntakeMovement::setIntakePrereq(Prereq p)
-{
-  intakePrereq = p;
-}
-
-bool IntakeMovement::readyToOperate()
-{
-  return intakePrereq.isComplete();
+  return degrees;
 }

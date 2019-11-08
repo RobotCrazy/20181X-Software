@@ -18,7 +18,7 @@ void TrayTilter::driverControl()
   }
   else
   {*/
-  tilter.move((master.get_digital(DIGITAL_A) * -100) - (master.get_digital(DIGITAL_B) * -100));
+  tilter.move((master.get_digital(DIGITAL_A) * -70) - (master.get_digital(DIGITAL_B) * -100));
   /*}*/
 }
 

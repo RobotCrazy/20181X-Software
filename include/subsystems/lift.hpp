@@ -10,6 +10,7 @@ public:
   Lift(int liftPort);
   void init();
   void driverControl();
+  void deploy();
 };
 
 #endif

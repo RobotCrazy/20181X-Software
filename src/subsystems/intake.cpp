@@ -45,9 +45,21 @@ void Intake::completeMovements()
     IntakeMovement im = getFirstMovement();
     if (im.readyToOperate() == true)
     {
-      runIntake(5000);
+      runIntake(im.getDegrees());
     }
   }
+}
+
+void Intake::startIntake()
+{
+  intakeLeft.move(127);
+  intakeRight.move(-127);
+}
+
+void Intake::stopIntake()
+{
+  intakeLeft.move(0);
+  intakeRight.move(0);
 }
 
 void intakeTaskActions(void *param)

@@ -1,4 +1,20 @@
 #include "main.h"
 
-const int LiftMovement::LIFT_MOVEMENT_DEPLOY = 1;
-const int LiftMovement::LIFT_MOVEMENT_MOVEARM = 2;
+LiftMovement::LiftMovement()
+{
+}
+
+LiftMovement::LiftMovement(int target)
+{
+  targetPos = target;
+}
+
+void LiftMovement::setTargetPos(int target)
+{
+  targetPos = target;
+}
+
+int LiftMovement::getTargetPos()
+{
+  return targetPos;
+}

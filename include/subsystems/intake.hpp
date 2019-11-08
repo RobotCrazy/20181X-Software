@@ -22,6 +22,9 @@ public:
   IntakeMovement getFirstMovement();
   void deleteFirstMovement();
   void completeMovements();
+
+  void startIntake();
+  void stopIntake();
 };
 
 extern void intakeTaskActions(void *param);
