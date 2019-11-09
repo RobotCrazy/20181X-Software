@@ -39,7 +39,7 @@ void runAutonSelector()
     pros::lcd::print(3, "Current Auton: %d", currentAutonMode);
     pros::lcd::print(4, autonNames[currentAutonMode]);
 
-    pros::delay(20);
+    pros::delay(50);
   }
 
   pros::lcd::print(5, autonNames[currentAutonMode]);

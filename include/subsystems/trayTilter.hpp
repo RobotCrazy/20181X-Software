@@ -11,7 +11,7 @@ private:
   int targetPos;
 
 public:
-  static const int DEPLOYED_POSITION = 720;
+  static const int DEPLOYED_POSITION = 3000;
 
   bool moveTilterRequested;
 
@@ -20,6 +20,7 @@ public:
   void driverControl();
   int getPosition();
   void move(int speed);
+  void deployCubes();
   void deployCubesOP(pros::controller_digital_e_t button);
   void setTargetPos(int target);
   void moveToTargetPos();

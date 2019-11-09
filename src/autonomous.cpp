@@ -66,19 +66,39 @@ void autoTest()
 
 void auto1()
 {
-  std::shared_ptr<DriveMovement> deployMovement = std::make_shared<DriveMovement>(0, 20);
+  std::shared_ptr<DriveMovement> deployMovement = std::make_shared<DriveMovement>(0, 12);
   deployMovement->setStopOnCompletion(false);
   chassis.addMovement(deployMovement);
-
-  std::shared_ptr<DriveMovement> deployMovementBackup = std::make_shared<DriveMovement>(0, 19);
-  deployMovement->setStopOnCompletion(false);
-  chassis.addMovement(deployMovementBackup);
 
   chassis.waitUntilSettled();
 
   lift.deploy();
 
   intake.startIntake();
+
+  std::shared_ptr<DriveMovement> pickUpCubes = std::make_shared<DriveMovement>(0, 55);
+  pickUpCubes->setMaxSpeed(5000);
+  chassis.addMovement(pickUpCubes);
+
+  std::shared_ptr<DriveMovement> pickUpCubes2 = std::make_shared<DriveMovement>(0, 65);
+  pickUpCubes->setMaxSpeed(6000);
+  chassis.addMovement(pickUpCubes2);
+
+  chassis.waitUntilSettled();
+
+  intake.stopIntake();
+
+  std::shared_ptr<DriveMovement> deployCubesDrive = std::make_shared<DriveMovement>(-13.25, 5);
+  pickUpCubes->setMaxSpeed(6000);
+  pickUpCubes->setStopOnCompletion(true);
+  chassis.addMovement(deployCubesDrive);
+
+  chassis.waitUntilSettled();
+  pros::lcd::print(6, "About to deploy cubes");
+
+  trayTilter.deployCubes();
+
+  pros::lcd::print(6, "Done deploying");
 }
 
 /**

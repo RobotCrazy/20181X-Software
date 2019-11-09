@@ -357,6 +357,10 @@ void Chassis::driveToPointSync(double x, double y, int speedDeadband, int maxSpe
     {
       speed = speedDeadband * sign(speed);
     }
+    if (fabs(speed) > maxSpeed)
+    {
+      speed = maxSpeed * sign(speed);
+    }
 
     pros::lcd::print(2, "%f, %f, %f", xDistance, yDistance, error);
     pros::lcd::print(3, "%f, %f, %f", speed, targetAngle.getAngle(), angleDifference);

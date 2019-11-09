@@ -18,7 +18,7 @@ void TrayTilter::driverControl()
   }
   else
   {*/
-  tilter.move((master.get_digital(DIGITAL_A) * -70) - (master.get_digital(DIGITAL_B) * -100));
+  tilter.move((master.get_digital(DIGITAL_A) * -85) - (master.get_digital(DIGITAL_B) * -100));
   /*}*/
 }
 
@@ -30,6 +30,19 @@ int TrayTilter::getPosition()
 void TrayTilter::move(int speed)
 {
   tilter.move(speed);
+}
+
+void TrayTilter::deployCubes()
+{
+  tilter.tare_position();
+  pros::lcd::print(7, "Deploying cubes");
+  while (abs(tilter.get_position()) < DEPLOYED_POSITION)
+  {
+    tilter.move(-85);
+    pros::delay(30);
+  }
+  tilter.move(0);
+  tilter.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
 }
 
 void TrayTilter::deployCubesOP(pros::controller_digital_e_t button)
