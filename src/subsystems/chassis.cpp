@@ -43,6 +43,11 @@ void Chassis::moveLeftDrive(int value)
 
 void Chassis::driverControl()
 {
+  frontRightDrive.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
+  backRightDrive.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
+  frontLeftDrive.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
+  backLeftDrive.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
+
   moveLeftDrive(master.get_analog(ANALOG_LEFT_Y));
   moveRightDrive(master.get_analog(ANALOG_RIGHT_Y) * -1);
 }

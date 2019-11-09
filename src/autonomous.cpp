@@ -88,7 +88,7 @@ void auto1()
 
   intake.stopIntake();
 
-  std::shared_ptr<DriveMovement> deployCubesDrive = std::make_shared<DriveMovement>(-13.25, 5);
+  std::shared_ptr<DriveMovement> deployCubesDrive = std::make_shared<DriveMovement>(-7.0, 13.0);
   pickUpCubes->setMaxSpeed(6000);
   pickUpCubes->setStopOnCompletion(true);
   chassis.addMovement(deployCubesDrive);
@@ -99,6 +99,8 @@ void auto1()
   trayTilter.deployCubes();
 
   pros::lcd::print(6, "Done deploying");
+
+  chassis.driveBackward(10, 3000, 12000);
 }
 
 /**
