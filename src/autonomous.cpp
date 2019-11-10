@@ -3,6 +3,8 @@
 #include <functional>
 #include <memory>
 
+int autoMode = 1;
+
 bool forwardToCubePFunc()
 {
   return (1 == 1);
@@ -64,7 +66,7 @@ void autoTest()
   // chassis.addMovement(turn1);
 }
 
-void auto1()
+void auto1() //Red Auton
 {
   std::shared_ptr<DriveMovement> deployMovement = std::make_shared<DriveMovement>(0, 12);
   deployMovement->setStopOnCompletion(false);
@@ -103,6 +105,45 @@ void auto1()
   chassis.driveBackward(10, 3000, 12000);
 }
 
+void auto2() //Blue Auton
+{
+  std::shared_ptr<DriveMovement> deployMovement = std::make_shared<DriveMovement>(0, 12);
+  deployMovement->setStopOnCompletion(false);
+  chassis.addMovement(deployMovement);
+
+  chassis.waitUntilSettled();
+
+  lift.deploy();
+
+  intake.startIntake();
+
+  std::shared_ptr<DriveMovement> pickUpCubes = std::make_shared<DriveMovement>(0, 55);
+  pickUpCubes->setMaxSpeed(5000);
+  chassis.addMovement(pickUpCubes);
+
+  std::shared_ptr<DriveMovement> pickUpCubes2 = std::make_shared<DriveMovement>(0, 65);
+  pickUpCubes->setMaxSpeed(6000);
+  chassis.addMovement(pickUpCubes2);
+
+  chassis.waitUntilSettled();
+
+  intake.stopIntake();
+
+  std::shared_ptr<DriveMovement> deployCubesDrive = std::make_shared<DriveMovement>(7.0, 13.0);
+  pickUpCubes->setMaxSpeed(6000);
+  pickUpCubes->setStopOnCompletion(true);
+  chassis.addMovement(deployCubesDrive);
+
+  chassis.waitUntilSettled();
+  pros::lcd::print(6, "About to deploy cubes");
+
+  trayTilter.deployCubes();
+
+  pros::lcd::print(6, "Done deploying");
+
+  chassis.driveBackward(10, 3000, 12000);
+}
+
 /**
  * Runs the user autonomous code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -116,5 +157,13 @@ void auto1()
  */
 void autonomous()
 {
-  auto1();
+  autoMode = 1;
+  if (autoMode == 1)
+  {
+    auto1();
+  }
+  else
+  {
+    auto2();
+  }
 }

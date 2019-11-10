@@ -47,24 +47,26 @@ void Lift::deploy()
   }
   elapsedTime = 0;
 
-  while (liftMotor.get_position() > 20)
-  {
-    liftMotor.move(-100);
-    pros::delay(30);
-  }
-
   pros::delay(250);
 
-  while (abs(liftMotor.get_position()) < target)
-  {
-    liftMotor.move(100);
-    pros::delay(30);
-  }
   while (liftMotor.get_position() > 20)
   {
     liftMotor.move(-100);
     pros::delay(30);
   }
+
+  // pros::delay(250);
+
+  // while (abs(liftMotor.get_position()) < target)
+  // {
+  //   liftMotor.move(100);
+  //   pros::delay(30);
+  // }
+  // while (liftMotor.get_position() > 20)
+  // {
+  //   liftMotor.move(-100);
+  //   pros::delay(30);
+  // }
 
   liftMotor.move(0);
 }
