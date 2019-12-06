@@ -68,13 +68,13 @@ void autoTest()
 
 void auto1() //Red Auton
 {
-  std::shared_ptr<DriveMovement> deployMovement = std::make_shared<DriveMovement>(0, 12);
-  deployMovement->setStopOnCompletion(false);
-  chassis.addMovement(deployMovement);
+  // std::shared_ptr<DriveMovement> deployMovement = std::make_shared<DriveMovement>(0, 12);
+  // deployMovement->setStopOnCompletion(false);
+  // chassis.addMovement(deployMovement);
 
-  chassis.waitUntilSettled();
+  // chassis.waitUntilSettled();
 
-  lift.deploy();
+  // lift.deploy();
 
   intake.startIntake();
 
@@ -90,7 +90,7 @@ void auto1() //Red Auton
 
   intake.stopIntake();
 
-  std::shared_ptr<DriveMovement> deployCubesDrive = std::make_shared<DriveMovement>(-7.0, 13.0);
+  std::shared_ptr<DriveMovement> deployCubesDrive = std::make_shared<DriveMovement>(-6.5, 12.5);
   pickUpCubes->setMaxSpeed(6000);
   pickUpCubes->setStopOnCompletion(true);
   chassis.addMovement(deployCubesDrive);
@@ -112,8 +112,6 @@ void auto2() //Blue Auton
   chassis.addMovement(deployMovement);
 
   chassis.waitUntilSettled();
-
-  lift.deploy();
 
   intake.startIntake();
 
