@@ -22,7 +22,7 @@ extern pros::Task chassisControl;
 class Chassis
 {
 private:
-  pros::ADIGyro gyro;
+  int globalTargetAngle;
 
   std::queue<std::shared_ptr<DriveMovement>> movements;
   std::list<std::shared_ptr<DriveMovement>> completedMovements;
@@ -33,6 +33,7 @@ public:
   pros::Motor backLeftDrive;
   pros::Motor frontRightDrive;
   pros::Motor backRightDrive;
+  pros::ADIGyro gyro;
   double currentX = 0;
   double currentY = 0;
   Angle currentAngle;
@@ -42,6 +43,7 @@ public:
   void moveRightDriveVoltage(int voltage);
   void moveLeftDriveVoltage(int voltage);
 
+  void setGlobalTargetAngle(int newAngle);
   void setCurrentAngle(double angle);
   void printCoords();
 
@@ -87,11 +89,19 @@ public:
 
   void driveBackward(double inches, int speedDeadband, int maxSpeed, pros::controller_digital_e_t);
 
+  void driveRampUp(char dir, float inches, float increaseFactor = 18, int maxSpeed = 12000);
+
+  void applyBrakeForDrive(int power, int speedTolerance);
+
   /**
    * Turns to a specified angle
    * Returns whether the action is complete (true of complete; false otherwise)
    */
-  bool turnToTarget(double targetAngle, int speedDeadband, double kp, bool stopOnCompletion);
+  void turnToTarget(float targetAngle, int maxSpeed = 12000);
+
+  float getRotationalVelocity();
+
+  void applyBrakeForTurn(int leftPower, int rightPower, int speedTolerance);
 
   void turnToTargetSync(Angle targetAngle, int speedDeadband, double kp, bool stopOnCompletion);
 

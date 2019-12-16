@@ -74,6 +74,11 @@ void Chassis::moveLeftDriveVoltage(int voltage)
   }
 }
 
+void Chassis::setGlobalTargetAngle(int newAngle)
+{
+  globalTargetAngle = newAngle;
+}
+
 void Chassis::setCurrentAngle(double angle)
 {
   currentAngle.setAngle(angle);
@@ -288,8 +293,8 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
   {
     if (fabs(angleDifference) > angleErrorTolerance)
     {
-      turnToTarget(currentMovementPointer.get()->getTargetAngle(), DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
-                   DriveMovement::TURN_DEFAULT_KP - 2000.0, false);
+      // turnToTarget(currentMovementPointer.get()->getTargetAngle(), DriveMovement::TURN_DEFAULT_SPEED_DEADBAND,
+      //              DriveMovement::TURN_DEFAULT_KP - 2000.0, false);
       return false;
     }
     else
@@ -558,45 +563,258 @@ void Chassis::driveBackward(double inches, int speedDeadband, int maxSpeed, pros
   moveLeftDriveVoltage(0);
 }
 
-bool Chassis::turnToTarget(double targetAngle, int speedDeadband, double kp, bool stopOnCompletion)
+void Chassis::driveRampUp(char dir, float inches, float increaseFactor, int maxSpeed)
 {
 
-  //This function is still missing shortest path addition to choose which direction
-  //is the quickest to reach desired angle
+  frontRightDrive.tare_position();
+  backRightDrive.tare_position();
+  frontLeftDrive.tare_position();
+  backLeftDrive.tare_position();
 
-  const double tolerance = .1;
-  const double speedTolerance = 5;
-  /*if (abs(targetAngle - currentAngle) > abs((targetAngle + ((targetAngle > 0) ? (-2 * PI) : (2 * PI)) - currentAngle)))
+  int ticks = (int)((inches / (PI * WHEEL_RADIUS)) * 180);
+  int maxAngleCorrectionFactor = 100;
+  int angleCorrectionFactor = 40;
+  float velocityCorrectionFactor = 40;
+  float angleCorrectionFactorD = 2;
+  int startingAngle = globalTargetAngle;
+
+  float percentOfFullSpeed = 0;
+
+  //P Variables Here//
+  int error = ticks - ((frontRightDrive.get_position() * -1 +
+                        backRightDrive.get_position() * -1 +
+                        frontLeftDrive.get_position() +
+                        backLeftDrive.get_position()) /
+                       4);
+  int lastError = 0;
+  float driveSpeed = 0;
+  float lastDriveSpeed = 0;
+  int angleError = 0;
+  int lastAngleError = 0;
+  float velocityError = 0;
+  int brakePower = 5000;
+
+  //Constants here//
+  float kp = 28;
+  float kd = 3;
+
+  //Tolerance Variables Here//
+  int speedTolerance = 6;
+  int positionTolerance = 10;
+
+  //Deadbands//
+  int speedDeadband = 2500;
+
+  if (dir == 'b')
   {
-    targetAngle = ((targetAngle > 0) ? (-2 * PI) : (2 * PI));
-  } //find shortest direction to target angle*/
-  double error = targetAngle - currentAngle.getAngle();
-  double driveSpeed = error * kp;
-  // pros::lcd::print(3, "%f", driveSpeed);
-  // pros::lcd::print(4, "%f", currentAngle);
-  // pros::lcd::print(5, "%f", fabs(error));
-
-  if (fabs(error) > tolerance || frontRightDrive.get_actual_velocity() > speedTolerance)
-  {
-    error = targetAngle - currentAngle.getAngle();
-    driveSpeed = error * kp;
-
-    if (abs(driveSpeed) < speedDeadband)
-    {
-      driveSpeed = speedDeadband * sign(driveSpeed);
-    }
-
-    moveRightDriveVoltage(driveSpeed * -1.0);
-    moveLeftDriveVoltage(driveSpeed);
-
-    return false;
+    ticks *= -1;
   }
   else
   {
-    moveRightDriveVoltage(0);
-    moveLeftDriveVoltage(0);
-    return true;
+    brakePower *= -1;
   }
+
+  while (abs(error) > positionTolerance /* ||
+         abs(frontRight.get_actual_velocity()) > speedTolerance ||
+         abs(backRight.get_actual_velocity()) > speedTolerance ||
+         abs(frontLeft.get_actual_velocity()) > speedTolerance ||
+         abs(backLeft.get_actual_velocity()) > speedTolerance*/
+  )
+  {
+    angleError = startingAngle - gyro.get_value();
+    if (angleError > 4)
+    {
+      velocityError = 0;
+    }
+    else
+    {
+      velocityError = ((frontRightDrive.get_actual_velocity() * -1.0 + backRightDrive.get_actual_velocity() * -1.0) / 2) -
+                      ((frontLeftDrive.get_actual_velocity() + backLeftDrive.get_actual_velocity()) / 2);
+    }
+    error = ticks - ((frontRightDrive.get_position() * -1 + backRightDrive.get_position() * -1 + frontLeftDrive.get_position() + backLeftDrive.get_position()) / 4);
+
+    driveSpeed = error * kp + ((error - lastError) * kd);
+
+    if (isBetween(driveSpeed, -1 * speedDeadband, 0))
+    {
+      driveSpeed = -1 * speedDeadband;
+    }
+    if (isBetween(driveSpeed, 0, speedDeadband))
+    {
+      driveSpeed = speedDeadband;
+    }
+
+    if (fabs(driveSpeed) > maxSpeed)
+    {
+      driveSpeed = sign(driveSpeed) * maxSpeed;
+    }
+
+    if (driveSpeed > 0 && lastDriveSpeed >= 0 && driveSpeed > lastDriveSpeed)
+    {
+      moveLeftDriveVoltage(lastDriveSpeed + increaseFactor + ((angleError * angleCorrectionFactor) + ((angleError - lastAngleError) * angleCorrectionFactorD)));
+      moveRightDriveVoltage(lastDriveSpeed + increaseFactor - ((angleError * angleCorrectionFactor) + ((angleError - lastAngleError) * angleCorrectionFactorD)));
+      lastDriveSpeed += increaseFactor;
+    }
+    else if (driveSpeed < 0 && lastDriveSpeed <= 0 && driveSpeed < lastDriveSpeed)
+    {
+      moveLeftDriveVoltage(lastDriveSpeed - increaseFactor + ((angleError * angleCorrectionFactor) + ((angleError - lastAngleError) * angleCorrectionFactorD)));
+      moveRightDriveVoltage(lastDriveSpeed - increaseFactor - ((angleError * angleCorrectionFactor) + ((angleError - lastAngleError) * angleCorrectionFactorD)));
+      lastDriveSpeed -= increaseFactor;
+    }
+    else
+    {
+      moveLeftDriveVoltage(driveSpeed + ((angleError * angleCorrectionFactor) + ((angleError - lastAngleError) * angleCorrectionFactorD)));
+      moveRightDriveVoltage(driveSpeed - ((angleError * angleCorrectionFactor) + ((angleError - lastAngleError) * angleCorrectionFactorD)));
+      lastDriveSpeed = driveSpeed;
+    }
+    lastAngleError = angleError;
+    lastError = error;
+    pros::delay(1);
+  }
+  applyBrakeForDrive(brakePower, speedTolerance);
+  moveRightDriveVoltage(0);
+  moveLeftDriveVoltage(0);
+}
+
+void Chassis::applyBrakeForDrive(int power, int speedTolerance)
+{
+  if (power > 0)
+  {
+
+    while (frontRightDrive.get_actual_velocity() < speedTolerance &&
+           backRightDrive.get_actual_velocity() < speedTolerance &&
+           frontLeftDrive.get_actual_velocity() < speedTolerance &&
+           backLeftDrive.get_actual_velocity() < speedTolerance)
+    {
+      moveRightDriveVoltage(power);
+      moveLeftDriveVoltage(power);
+    }
+  }
+
+  else
+  {
+    while (frontRightDrive.get_actual_velocity() > speedTolerance &&
+           backRightDrive.get_actual_velocity() > speedTolerance &&
+           frontLeftDrive.get_actual_velocity() > speedTolerance &&
+           backLeftDrive.get_actual_velocity() > speedTolerance)
+    {
+      moveRightDriveVoltage(power);
+      moveLeftDriveVoltage(power);
+    }
+  }
+
+  moveRightDriveVoltage(0);
+  moveLeftDriveVoltage(0);
+}
+
+void Chassis::turnToTarget(float targetAngle, int maxSpeed)
+{
+  float kp = 18;
+  float scaledAngle = targetAngle * GYRO_SCALE;
+  setGlobalTargetAngle(scaledAngle * 10);
+  int error = (scaledAngle * 10.0) - gyro.get_value();
+  int driveSpeed = error * kp;
+  int tolerance = 5;
+  int speedTolerance = 5;
+  int rotationalSpeedTolerance = 2;
+
+  int speedDeadband = 2200;
+
+  int leftBrakePower = 0;
+  int rightBrakePower = 0;
+
+  if (driveSpeed > 0)
+  { //if positive
+    leftBrakePower = -7000;
+    rightBrakePower = 7000;
+  }
+  else
+  {
+    leftBrakePower = 7000;
+    rightBrakePower = -7000;
+  }
+  if (abs(error) < 46)
+  {
+    kp = 17;
+  }
+
+  while (abs(error) > tolerance /* ||
+         abs(frontRight.get_actual_velocity()) > speedTolerance ||
+         abs(backRight.get_actual_velocity()) > speedTolerance ||
+         abs(frontLeft.get_actual_velocity()) > speedTolerance ||
+         abs(backLeft.get_actual_velocity()) > speedTolerance ||
+         abs(getRotationalVelocity()) > rotationalSpeedTolerance*/
+  )
+  {
+
+    error = (scaledAngle * 10) - gyro.get_value();
+    driveSpeed = error * kp;
+
+    if (isBetween(driveSpeed, -1 * speedDeadband, 0))
+    {
+      driveSpeed = -1 * speedDeadband;
+    }
+    if (isBetween(driveSpeed, 0, speedDeadband))
+    {
+      driveSpeed = speedDeadband;
+    }
+
+    if (fabs(driveSpeed) > maxSpeed)
+    {
+      driveSpeed = sign(driveSpeed) * maxSpeed;
+    }
+
+    pros::lcd::print(4, "%f", error);
+
+    moveRightDriveVoltage(driveSpeed * -1);
+    moveLeftDriveVoltage(driveSpeed);
+    pros::delay(5);
+  }
+  applyBrakeForTurn(leftBrakePower, rightBrakePower, rotationalSpeedTolerance);
+  moveRightDriveVoltage(0);
+  moveLeftDriveVoltage(0);
+}
+
+int prevGyroPos = 0;
+int prevGyroTime = 0;
+float prevVelocity = 0;
+float Chassis::getRotationalVelocity()
+{
+  int currentTime = pros::millis();
+  if (currentTime - prevGyroTime < 20)
+  {
+    return prevVelocity;
+  }
+  int currentPos = gyro.get_value();
+
+  float velocity = (currentPos - prevGyroPos) * 30 / (currentTime - prevGyroTime);
+  std::cout << velocity << "\n";
+  prevVelocity = velocity;
+  prevGyroPos = currentPos;
+  prevGyroTime = currentTime;
+  return velocity;
+}
+
+void Chassis::applyBrakeForTurn(int leftPower, int rightPower, int speedTolerance)
+{
+  if (leftPower > 0)
+  {
+    while (getRotationalVelocity() > speedTolerance)
+    {
+      moveRightDriveVoltage(leftPower);
+      moveLeftDriveVoltage(rightPower);
+    }
+  }
+  else
+  {
+    while (getRotationalVelocity() < speedTolerance)
+    {
+      moveRightDriveVoltage(leftPower);
+      moveLeftDriveVoltage(rightPower);
+    }
+  }
+  moveRightDriveVoltage(0);
+  moveLeftDriveVoltage(0);
 }
 
 void Chassis::turnToTargetSync(Angle targetAngle, int speedDeadband, double kp, bool stopOnCompletion)

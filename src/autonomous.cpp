@@ -66,82 +66,192 @@ void autoTest()
   // chassis.addMovement(turn1);
 }
 
-void auto1() //Red Auton
+void auto1() //Small Blue Auton
 {
-  // std::shared_ptr<DriveMovement> deployMovement = std::make_shared<DriveMovement>(0, 12);
-  // deployMovement->setStopOnCompletion(false);
-  // chassis.addMovement(deployMovement);
-
-  // chassis.waitUntilSettled();
-
-  // lift.deploy();
 
   intake.startIntake();
 
-  std::shared_ptr<DriveMovement> pickUpCubes = std::make_shared<DriveMovement>(0, 55);
-  pickUpCubes->setMaxSpeed(5000);
-  chassis.addMovement(pickUpCubes);
+  chassis.driveRampUp('f', 42);
 
-  std::shared_ptr<DriveMovement> pickUpCubes2 = std::make_shared<DriveMovement>(0, 65);
-  pickUpCubes->setMaxSpeed(6000);
-  chassis.addMovement(pickUpCubes2);
+  chassis.turnToTarget(26, 12000);
 
-  chassis.waitUntilSettled();
+  chassis.driveRampUp('b', 43);
+
+  chassis.turnToTarget(-2.5, 12000);
+
+  chassis.driveRampUp('f', 45, 12, 7000);
+
+  chassis.turnToTarget(-152, 6000);
 
   intake.stopIntake();
 
-  std::shared_ptr<DriveMovement> deployCubesDrive = std::make_shared<DriveMovement>(-6.5, 12.5);
-  pickUpCubes->setMaxSpeed(6000);
-  pickUpCubes->setStopOnCompletion(true);
-  chassis.addMovement(deployCubesDrive);
+  chassis.driveRampUp('f', 38, 10, 7000);
 
-  chassis.waitUntilSettled();
-  pros::lcd::print(6, "About to deploy cubes");
+  intake.reverseIntakeForDeploy();
 
   trayTilter.deployCubes();
 
-  pros::lcd::print(6, "Done deploying");
-
-  chassis.driveBackward(10, 3000, 12000);
+  chassis.driveRampUp('b', 4);
 }
 
-void auto2() //Blue Auton
+void auto2() //Big Blue Auton
 {
-  std::shared_ptr<DriveMovement> deployMovement = std::make_shared<DriveMovement>(0, 12);
-  deployMovement->setStopOnCompletion(false);
-  chassis.addMovement(deployMovement);
+  intake.startIntake();
 
-  chassis.waitUntilSettled();
+  chassis.driveRampUp('f', 42);
+
+  chassis.turnToTarget(32);
+
+  chassis.driveRampUp('f', 7.5, 14);
+
+  chassis.turnToTarget(138, 7000);
+
+  chassis.driveRampUp('f', 45, 14, 8000);
+
+  intake.stopIntake();
+
+  intake.reverseIntakeForDeploy();
+
+  trayTilter.deployCubes();
+
+  chassis.driveRampUp('b', 10);
+}
+
+void auto3() //Small Red Auton
+{
 
   intake.startIntake();
 
-  std::shared_ptr<DriveMovement> pickUpCubes = std::make_shared<DriveMovement>(0, 55);
-  pickUpCubes->setMaxSpeed(5000);
-  chassis.addMovement(pickUpCubes);
+  chassis.driveRampUp('f', 42);
 
-  std::shared_ptr<DriveMovement> pickUpCubes2 = std::make_shared<DriveMovement>(0, 65);
-  pickUpCubes->setMaxSpeed(6000);
-  chassis.addMovement(pickUpCubes2);
+  chassis.turnToTarget(-26);
 
-  chassis.waitUntilSettled();
+  chassis.driveRampUp('b', 43);
+
+  chassis.turnToTarget(5, 12000);
+
+  chassis.driveRampUp('f', 45, 12, 7000);
+
+  chassis.turnToTarget(154, 6000);
 
   intake.stopIntake();
 
-  std::shared_ptr<DriveMovement> deployCubesDrive = std::make_shared<DriveMovement>(7.0, 13.0);
-  pickUpCubes->setMaxSpeed(6000);
-  pickUpCubes->setStopOnCompletion(true);
-  chassis.addMovement(deployCubesDrive);
+  chassis.driveRampUp('f', 37.5, 10, 7000);
 
-  chassis.waitUntilSettled();
-  pros::lcd::print(6, "About to deploy cubes");
+  intake.reverseIntakeForDeploy(200);
 
   trayTilter.deployCubes();
 
-  pros::lcd::print(6, "Done deploying");
-
-  chassis.driveBackward(10, 3000, 12000);
+  chassis.driveRampUp('b', 4);
 }
 
+void auto4() //Big Red Auton
+{
+  intake.startIntake();
+
+  chassis.driveRampUp('f', 42);
+
+  chassis.turnToTarget(-32);
+
+  chassis.driveRampUp('f', 9, 14);
+
+  chassis.turnToTarget(-138, 7000);
+
+  chassis.driveRampUp('f', 47, 14, 8000);
+
+  intake.stopIntake();
+
+  intake.reverseIntakeForDeploy();
+
+  trayTilter.deployCubes();
+
+  chassis.driveRampUp('b', 10);
+}
+
+void autonSkills()
+{
+  intake.startIntake();
+
+  chassis.driveRampUp('f', 42);
+
+  chassis.turnToTarget(26, 12000);
+
+  chassis.driveRampUp('b', 43);
+
+  chassis.turnToTarget(-5, 12000);
+
+  chassis.driveRampUp('f', 45, 12, 7000);
+
+  chassis.turnToTarget(-152, 6000);
+
+  intake.stopIntake();
+
+  chassis.driveRampUp('f', 38, 10, 7000);
+
+  intake.reverseIntakeForDeploy();
+
+  trayTilter.deployCubes();
+
+  pros::delay(500);
+
+  chassis.driveRampUp('b', 12.5, 12, 6500);
+
+  chassis.turnToTarget(-260, 8000);
+
+  trayTilter.move(100);
+
+  pros::delay(500);
+
+  intake.startIntake();
+
+  chassis.driveRampUp('f', 42);
+
+  pros::delay(500);
+
+  chassis.turnToTarget(-71, 7000);
+
+  intake.stopIntake();
+
+  chassis.driveRampUp('f', 30, 18, 8000);
+
+  intake.reverseIntakeForDeploy(800);
+
+  lift.raiseArm(2200);
+
+  pros::delay(300);
+
+  intake.reverseIntake(1000, 127); //Deposit cubes into blue alliance tower
+
+  chassis.driveRampUp('b', 16.5);
+
+  lift.lowerArm(100);
+
+  chassis.turnToTarget(0);
+
+  intake.startIntake();
+
+  chassis.driveRampUp('f', 26.5);
+
+  pros::delay(400);
+
+  chassis.driveRampUp('b', 2);
+
+  intake.reverseIntakeForDeploy(800);
+
+  lift.raiseArm(2200);
+
+  chassis.driveRampUp('f', 4);
+
+  intake.reverseIntake(1000, 90);
+
+  chassis.driveRampUp('b', 10);
+
+  chassis.turnToTarget(-260);
+
+  intake.startIntake();
+
+  chassis.driveRampUp('f', 25);
+}
 /**
  * Runs the user autonomous code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -155,13 +265,25 @@ void auto2() //Blue Auton
  */
 void autonomous()
 {
-  autoMode = 1;
+  autoMode = 4;
   if (autoMode == 1)
   {
     auto1();
   }
-  else
+  else if (autoMode == 2)
   {
     auto2();
+  }
+  else if (autoMode == 3)
+  {
+    auto3();
+  }
+  else if (autoMode == 4)
+  {
+    auto4();
+  }
+  else
+  {
+    autonSkills();
   }
 }

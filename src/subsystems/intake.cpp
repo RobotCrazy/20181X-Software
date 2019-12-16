@@ -62,6 +62,24 @@ void Intake::stopIntake()
   intakeRight.move(0);
 }
 
+void Intake::reverseIntakeForDeploy(int ms)
+{
+  intakeLeft.move(-40);
+  intakeRight.move(40);
+  pros::delay(ms);
+  intakeLeft.move(0);
+  intakeRight.move(0);
+}
+
+void Intake::reverseIntake(int ms, int speed)
+{
+  intakeLeft.move(-1 * speed);
+  intakeRight.move(speed);
+  pros::delay(ms);
+  intakeLeft.move(0);
+  intakeRight.move(0);
+}
+
 void intakeTaskActions(void *param)
 {
 

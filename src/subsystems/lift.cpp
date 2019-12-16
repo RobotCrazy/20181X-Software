@@ -2,6 +2,42 @@
 
 Lift::Lift(int liftPort) : liftMotor(liftPort)
 {
+  liftMotor.tare_position();
+}
+
+void Lift::raiseArm(int pos)
+{
+  int elapsedTime = 0;
+
+  while (liftMotor.get_position() < pos)
+  {
+    liftMotor.move(100);
+    elapsedTime += 30;
+    pros::delay(30);
+    if (elapsedTime >= 3000)
+    {
+      break;
+    }
+  }
+  liftMotor.move(0);
+  liftMotor.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
+}
+
+void Lift::lowerArm(int pos)
+{
+  int elapsedTime = 0;
+
+  while (liftMotor.get_position() > pos)
+  {
+    liftMotor.move(-100);
+    elapsedTime += 30;
+    pros::delay(30);
+    if (elapsedTime >= 3000)
+    {
+      break;
+    }
+  }
+  liftMotor.move(0);
 }
 
 void Lift::init()

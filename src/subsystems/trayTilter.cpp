@@ -29,7 +29,7 @@ int TrayTilter::getPosition()
 
 void TrayTilter::move(int speed)
 {
-  tilter.move(speed);
+  tilter.move_absolute(50, speed);
 }
 
 void TrayTilter::deployCubes()

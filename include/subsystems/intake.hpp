@@ -25,6 +25,9 @@ public:
 
   void startIntake();
   void stopIntake();
+
+  void reverseIntakeForDeploy(int ms = 350);
+  void reverseIntake(int ms, int speed = 127);
 };
 
 extern void intakeTaskActions(void *param);
