@@ -47,7 +47,7 @@ void Lift::init()
 
 void Lift::driverControl()
 {
-  if (master.get_digital(DIGITAL_L1) && trayTilter.getPosition() < 720)
+  if (master.get_digital(DIGITAL_L1))
   {
     trayTilter.setTargetPos(720);
     liftMotor.move(100);
