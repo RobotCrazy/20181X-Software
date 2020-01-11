@@ -11,7 +11,7 @@ private:
   int targetPos;
 
 public:
-  static const int DEPLOYED_POSITION = 3500;
+  static const int DEPLOYED_POSITION = 2520;
 
   bool moveTilterRequested;
 

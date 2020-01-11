@@ -81,11 +81,13 @@ void auto1() //Small Blue Auton
 
   chassis.driveRampUp('f', 45, 12, 7000);
 
-  chassis.turnToTarget(-152, 6000);
+  chassis.turnToTarget(-150, 6000);
 
   intake.stopIntake();
 
-  chassis.driveRampUp('f', 38, 10, 7000);
+  intake.reverseIntakeForDeploy(0);
+
+  chassis.driveRampUp('f', 40, 10, 7000);
 
   intake.reverseIntakeForDeploy();
 
@@ -124,7 +126,7 @@ void auto3() //Small Red Auton
 
   chassis.driveRampUp('f', 42);
 
-  chassis.turnToTarget(-26);
+  chassis.turnToTarget(-27.5);
 
   chassis.driveRampUp('b', 43);
 
@@ -135,6 +137,8 @@ void auto3() //Small Red Auton
   chassis.turnToTarget(154, 6000);
 
   intake.stopIntake();
+
+  intake.reverseIntakeForDeploy(0);
 
   chassis.driveRampUp('f', 37.5, 10, 7000);
 
@@ -265,7 +269,7 @@ void autonSkills()
  */
 void autonomous()
 {
-  autoMode = 4;
+  autoMode = 1;
   if (autoMode == 1)
   {
     auto1();

@@ -45,11 +45,7 @@ void opcontrol()
 		// }
 		// else
 		// {
-		if (master.get_digital(DIGITAL_UP))
-		{
-			chassis.setGlobalTargetAngle(chassis.gyro.get_value() * GYRO_SCALE);
-			chassis.driveRampUp('f', 50);
-		}
+
 		chassis.driverControl();
 		intake.driverControl();
 		trayTilter.driverControl();

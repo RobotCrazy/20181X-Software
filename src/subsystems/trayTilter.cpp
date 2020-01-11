@@ -12,14 +12,25 @@ void TrayTilter::init()
 
 void TrayTilter::driverControl()
 {
-  /* if (moveTilterRequested == true)
-  {
-    moveToTargetPos();
+  //tilter.move((master.get_digital(DIGITAL_A) * -85) - (master.get_digital(DIGITAL_B) * -100));
+
+  if(master.get_digital(DIGITAL_A)) {
+    if(tilter.get_position() > -2150) {
+      tilter.move(-80);
+    }
+    else if(tilter.get_position() > -2520) {
+      tilter.move(-35);
+    }
+    else {
+      tilter.move(0);
+    }
   }
-  else
-  {*/
-  tilter.move((master.get_digital(DIGITAL_A) * -85) - (master.get_digital(DIGITAL_B) * -100));
-  /*}*/
+  else if(master.get_digital(DIGITAL_B)) {
+    tilter.move(100);
+  }
+  else {
+    tilter.move(0);
+  }
 }
 
 int TrayTilter::getPosition()
@@ -38,7 +49,13 @@ void TrayTilter::deployCubes()
   pros::lcd::print(7, "Deploying cubes");
   while (abs(tilter.get_position()) < DEPLOYED_POSITION)
   {
-    tilter.move(-85);
+    if(tilter.get_position() > -2150) {
+      tilter.move(-80);
+    }
+    else {
+      tilter.move(-50);
+    }
+    
     pros::delay(30);
   }
   tilter.move(0);
