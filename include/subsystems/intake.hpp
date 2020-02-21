@@ -28,6 +28,8 @@ public:
 
   void reverseIntakeForDeploy(int ms = 350);
   void reverseIntake(int ms, int speed = 127);
+  
+  void runIntakeAt(int speed);
 };
 
 extern void intakeTaskActions(void *param);

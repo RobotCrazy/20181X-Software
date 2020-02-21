@@ -1,6 +1,6 @@
 #include "main.h"
 
-TrayTilter::TrayTilter(int tilterPort) : tilter(tilterPort)
+TrayTilter::TrayTilter(int tilterPort, char tilterPotPort) : tilter(tilterPort), tilterPot(tilterPotPort)
 {
   tilter.tare_position();
 }
@@ -15,15 +15,7 @@ void TrayTilter::driverControl()
   //tilter.move((master.get_digital(DIGITAL_A) * -85) - (master.get_digital(DIGITAL_B) * -100));
 
   if(master.get_digital(DIGITAL_A)) {
-    if(tilter.get_position() > -2150) {
-      tilter.move(-80);
-    }
-    else if(tilter.get_position() > -2520) {
-      tilter.move(-35);
-    }
-    else {
-      tilter.move(0);
-    }
+    deployCubesOP();
   }
   else if(master.get_digital(DIGITAL_B)) {
     tilter.move(100);
@@ -50,10 +42,13 @@ void TrayTilter::deployCubes()
   while (abs(tilter.get_position()) < DEPLOYED_POSITION)
   {
     if(tilter.get_position() > -2150) {
-      tilter.move(-80);
+      tilter.move(-65);
+    }
+    else if(tilter.get_position() > -DEPLOYED_POSITION) {
+      tilter.move(-35);
     }
     else {
-      tilter.move(-50);
+      tilter.move(0);
     }
     
     pros::delay(30);
@@ -62,29 +57,16 @@ void TrayTilter::deployCubes()
   tilter.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
 }
 
-void TrayTilter::deployCubesOP(pros::controller_digital_e_t button)
+void TrayTilter::deployCubesOP()
 {
-  int error = DEPLOYED_POSITION - tilter.get_position();
-  int kp = 100;
-  int speed = error * kp;
-  int prevSpeed = speed;
-  while (master.get_digital(button) && tilter.get_position() < DEPLOYED_POSITION)
-  {
-    error = DEPLOYED_POSITION - tilter.get_position();
-    kp = 100;
-    speed = error * kp;
-    if (speed - prevSpeed > 50)
-    {
-      speed = prevSpeed + 50;
-    }
-
-    tilter.move_voltage(speed);
-
-    prevSpeed = speed;
-
-    pros::delay(30);
+  double error = (double)(DEPLOYED_POSITION) - (double)(tilterPot.get_value());
+  double kp = .1;
+  if(error < 400) {
+    kp = 0.05;
   }
-  tilter.move_voltage(0);
+  double speed = error * kp;
+  tilter.move_velocity(-(speed + 10));
+  intake.runIntakeAt(-15);
 }
 
 void TrayTilter::setTargetPos(int target)

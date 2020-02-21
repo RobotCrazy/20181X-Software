@@ -14,10 +14,10 @@ void Intake::driverControl()
   }
 
   else {
-    intakeLeft.move(master.get_digital(DIGITAL_R1) * 127 - (master.get_digital(DIGITAL_R2) * 127));
-    intakeRight.move(master.get_digital(DIGITAL_R1) * -127 - (master.get_digital(DIGITAL_R2) * -127));
-    //intakeLeft.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
-    //intakeRight.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
+    intakeLeft.move(master.get_digital(DIGITAL_R1) * 127 - (master.get_digital(DIGITAL_R2) * 80));
+    intakeRight.move(master.get_digital(DIGITAL_R1) * -127 - (master.get_digital(DIGITAL_R2) * -80));
+    intakeLeft.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
+    intakeRight.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
   }
 }
 
@@ -87,6 +87,11 @@ void Intake::reverseIntake(int ms, int speed)
   pros::delay(ms);
   intakeLeft.move(0);
   intakeRight.move(0);
+}
+
+void Intake::runIntakeAt(int speed) {
+    intakeLeft.move(speed);
+    intakeRight.move(-1 * speed);
 }
 
 void intakeTaskActions(void *param)

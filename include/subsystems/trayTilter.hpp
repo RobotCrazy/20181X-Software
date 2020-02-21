@@ -8,20 +8,21 @@ class TrayTilter
 
 private:
   pros::Motor tilter;
+  pros::ADIAnalogIn tilterPot;
   int targetPos;
 
 public:
-  static const int DEPLOYED_POSITION = 2520;
+  static const int DEPLOYED_POSITION = 3850;
 
   bool moveTilterRequested;
 
-  TrayTilter(int tilterPort);
+  TrayTilter(int tilterPort, char tilterPotPort);
   void init();
   void driverControl();
   int getPosition();
   void move(int speed);
   void deployCubes();
-  void deployCubesOP(pros::controller_digital_e_t button);
+  void deployCubesOP();
   void setTargetPos(int target);
   void moveToTargetPos();
 };
