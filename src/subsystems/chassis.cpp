@@ -709,7 +709,7 @@ void Chassis::applyBrakeForDrive(int power, int speedTolerance)
 
 void Chassis::turnToTarget(float targetAngle, int maxSpeed)
 {
-  float kp = 18;
+  float kp = 20;
   float scaledAngle = targetAngle * GYRO_SCALE;
   setGlobalTargetAngle(scaledAngle * 10);
   int error = (scaledAngle * 10.0) - gyro.get_value();
@@ -718,7 +718,7 @@ void Chassis::turnToTarget(float targetAngle, int maxSpeed)
   int speedTolerance = 5;
   int rotationalSpeedTolerance = 2;
 
-  int speedDeadband = 2200;
+  int speedDeadband = 2500;
 
   int leftBrakePower = 0;
   int rightBrakePower = 0;

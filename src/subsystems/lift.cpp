@@ -14,7 +14,7 @@ void Lift::raiseArm(int pos)
 {
   int elapsedTime = 0;
 
-  while (liftMotor.get_position() < pos)
+  while (liftPot.get_value() < pos)
   {
     liftMotor.move(100);
     elapsedTime += 30;
@@ -32,7 +32,7 @@ void Lift::lowerArm(int pos)
 {
   int elapsedTime = 0;
 
-  while (liftMotor.get_position() > pos)
+  while (liftPot.get_value() > pos)
   {
     liftMotor.move(-100);
     elapsedTime += 30;
@@ -125,14 +125,14 @@ void Lift::driverControl()
       }
       */
 
-      if((liftTargetPos == LIFT_MIDDLE_TOWER_POS || liftTargetPos == LIFT_HIGH_TOWER_POS) 
-          && liftPot.get_value() > 75 && liftPot.get_value() < 400) {
-        intake.runIntakeAt(-110);
-      }
+      // if((liftTargetPos == LIFT_MIDDLE_TOWER_POS || liftTargetPos == LIFT_HIGH_TOWER_POS) 
+      //     && liftPot.get_value() > 75 && liftPot.get_value() < 300) {
+      //   intake.runIntakeAt(-110);
+      // }
 
-      if(liftTargetPos == 0 && liftPot.get_value() > 80) {
-        intake.runIntakeAt(90);
-      }
+      // if(liftTargetPos == 0 && liftPot.get_value() > 80) {
+      //   intake.runIntakeAt(90);
+      // }
     }
     else {
       liftMotor.move(0);
@@ -181,4 +181,8 @@ void Lift::deploy()
   // }
 
   liftMotor.move(0);
+}
+
+void Lift::holdLiftDown() {
+  liftMotor.move(-20);
 }

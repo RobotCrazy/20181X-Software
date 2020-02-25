@@ -18,6 +18,7 @@ public:
   void lowerArm(int pos);
   void driverControl();
   void deploy();
+  void holdLiftDown();
 };
 
 #endif

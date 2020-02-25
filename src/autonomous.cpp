@@ -69,106 +69,75 @@ void autoTest()
 void auto1() //Small Blue Auton
 {
 
+  // intake.startIntake();
+
+  // lift.holdLiftDown();
+
+  // chassis.driveRampUp('f', 42, 12, 5500);
+
+  // chassis.turnToTarget(-45, 1000);
+
+  // chassis.driveRampUp('b', 20);
+
   intake.startIntake();
 
-  chassis.driveRampUp('f', 26.25, 12, 7000);
+  chassis.driveRampUp('f', 28.25, 12, 7000);
 
-  chassis.turnToTarget(45, 12000);
+  chassis.turnToTarget(44, 12000);
 
-  chassis.driveRampUp('b', 28.75, 18, 12000);
+  pros::delay(250);
 
-  chassis.turnToTarget(0, 10000);
+  chassis.driveRampUp('b', 29.5, 22, 12000);
 
-  chassis.driveRampUp('f', 38, 12, 7000);
+  chassis.turnToTarget(-1, 7000);
 
-  chassis.turnToTarget(-149, 6000);
+  chassis.driveRampUp('f', 33, 12, 7000);
+
+  chassis.turnToTarget(-155.2, 7000);
 
   intake.stopIntake();
 
   intake.reverseIntakeForDeploy(0);
 
-  chassis.driveRampUp('f', 39, 12, 8000);
+  chassis.driveRampUp('f', 33, 13, 8000);
 
-  intake.reverseIntakeForDeploy(550);
+  intake.reverseIntakeForDeploy(250);
 
   trayTilter.deployCubes();
 
-  chassis.driveRampUp('b', 4, 15, 9000);
+  chassis.driveRampUp('b', 6, 15, 9000);
 
-
- // chassis.turnToTarget(40, 8000);
-
-  //chassis.driveRampUp('f', 8, 12, 8000);
-  // intake.startIntake();
-
-  // chassis.driveRampUp('f', 42, 12, 8000);
-
-  // chassis.turnToTarget(26, 12000);
-
-  // chassis.driveRampUp('b', 43);
-
-  // chassis.turnToTarget(-2.5, 12000);
-
-  // chassis.driveRampUp('f', 45, 12, 7000);
-
-  // chassis.turnToTarget(-150, 6000);
-
-  // intake.stopIntake();
-
-  // intake.reverseIntakeForDeploy(0);
-
-  // chassis.driveRampUp('f', 40, 10, 7000);
-
-  // intake.reverseIntakeForDeploy();
-
-  // trayTilter.deployCubes();
-
-  // chassis.driveRampUp('b', 4);
 }
 
 void auto2() //Big Blue Auton
 {
   intake.startIntake();
 
-  chassis.driveRampUp('f', 18);
+  chassis.driveRampUp('f', 27.5, 12, 7000);
 
-  pros::delay(200);
+  pros::delay(250);
 
-  chassis.turnToTarget(-97.5);
+  chassis.turnToTarget(-45, 12000);
 
-  chassis.driveRampUp('f', 23, 18, 9000);
+  chassis.driveRampUp('b', 29.5, 22, 12000);
 
-  chassis.driveRampUp('b', 8);
+  chassis.turnToTarget(0, 8000);
 
-  chassis.driveRampUp('f', 28, 14, 8000);
+  chassis.driveRampUp('f', 40, 12, 7000);
 
-  chassis.driveRampUp('b', 6);
-
-  chassis.turnToTarget(-247, 5000);
-
-  pros::delay(400);
+  chassis.turnToTarget(153, 7000);
 
   intake.stopIntake();
 
   intake.reverseIntakeForDeploy(0);
 
-  // chassis.turnToTarget(-213, 8000);
+  chassis.driveRampUp('f', 36, 13, 8000);
 
-  // chassis.driveRampUp('f', 45, 7, 6000);
+  intake.reverseIntakeForDeploy(250);
 
-  // intake.stopIntake();
+  trayTilter.deployCubes();
 
-  // intake.reverseIntakeForDeploy();
-
-
-
-
-
-
-
-  // trayTilter.deployCubes();
-
-  // chassis.driveRampUp('b', 10);
+  chassis.driveRampUp('b', 6, 15, 9000);
 }
 
 void auto3() //Small Red Auton
@@ -176,55 +145,29 @@ void auto3() //Small Red Auton
 
   intake.startIntake();
 
-  chassis.driveRampUp('f', 26.25, 12, 8500);
+  chassis.driveRampUp('f', 27.5, 12, 7000);
+
+  pros::delay(500);
 
   chassis.turnToTarget(-45, 12000);
 
-  chassis.driveRampUp('b', 28.75, 18, 12000);
+  chassis.driveRampUp('b', 28, 22, 12000);
 
-  chassis.turnToTarget(0, 10000);
+  chassis.turnToTarget(-1.5, 8000);
 
-  chassis.driveRampUp('f', 38, 12, 7000);
+  chassis.driveRampUp('f', 35, 12, 7000);
 
-  chassis.turnToTarget(149, 6000);
+  chassis.turnToTarget(147, 7000);
 
   intake.stopIntake();
 
   intake.reverseIntakeForDeploy(0);
 
-  chassis.driveRampUp('f', 38.25, 12, 8000);
-
-  intake.reverseIntakeForDeploy(550);
+  chassis.driveRampUp('f', 35, 13, 8000);
 
   trayTilter.deployCubes();
 
-  chassis.driveRampUp('b', 4, 15, 9000);
-
-  // intake.startIntake();
-
-  // chassis.driveRampUp('f', 42);
-
-  // chassis.turnToTarget(-27.5);
-
-  // chassis.driveRampUp('b', 43);
-
-  // chassis.turnToTarget(5, 12000);
-
-  // chassis.driveRampUp('f', 45, 12, 7000);
-
-  // chassis.turnToTarget(154, 6000);
-
-  // intake.stopIntake();
-
-  // intake.reverseIntakeForDeploy(0);
-
-  // chassis.driveRampUp('f', 43, 10, 7000);
-
-  // intake.reverseIntakeForDeploy(350);
-
-  // trayTilter.deployCubes();
-
-  // chassis.driveRampUp('b', 4);
+  chassis.driveRampUp('b', 7, 15, 9000);
 }
 
 void auto4() //Big Red Auton
@@ -243,27 +186,47 @@ void auto4() //Big Red Auton
 
   chassis.driveRampUp('b', 8);
 
-  chassis.driveRampUp('f', 28, 14, 8000);
+  chassis.driveRampUp('f', 25.5, 14, 8000);
 
-  chassis.driveRampUp('b', 6);
+  chassis.driveRampUp('b', 27);
 
-  chassis.turnToTarget(247, 5000);
+  chassis.turnToTarget(8.5);
+
+  chassis.driveRampUp('f', 25, 14, 8000);
+}
+
+void auto5() {
+  intake.startIntake();
+
+  chassis.driveRampUp('f', 14.25);
+
+  pros::delay(200);
+
+  chassis.turnToTarget(90);
+
+  pros::delay(200);
+
+  chassis.driveRampUp('f', 23, 18, 9000);
+
+  chassis.driveRampUp('b', 8);
+
+  chassis.driveRampUp('f', 25.5, 14, 8000);
 
   pros::delay(400);
 
+  chassis.driveRampUp('b', 32);
+
   intake.stopIntake();
 
-  intake.reverseIntakeForDeploy(0);
+  chassis.turnToTarget(202.75);
 
-  chassis.driveRampUp('f', 35.1, 11, 8000);
+  chassis.driveRampUp('f', 12.5, 8, 6000);
 
-  intake.reverseIntakeForDeploy(850);
+  intake.reverseIntakeForDeploy(550);
 
   trayTilter.deployCubes();
 
-  pros::delay(500);
-
-  chassis.driveRampUp('b', 9);
+  chassis.driveRampUp('b', 5, 12, 5000);
 }
 
 void autonSkills()
@@ -369,7 +332,7 @@ void autonSkills()
  */
 void autonomous()
 {
-  autoMode = 3;
+  autoMode = 5;  
   if (autoMode == 1)
   {
     auto1();
@@ -385,6 +348,12 @@ void autonomous()
   else if (autoMode == 4)
   {
     auto4();
+  }
+  else if(autoMode == 5) {
+    auto5();
+  }
+  else if(autoMode == 6) {
+
   }
   else
   {

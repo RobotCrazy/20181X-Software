@@ -39,22 +39,20 @@ void TrayTilter::deployCubes()
 {
   tilter.tare_position();
   pros::lcd::print(7, "Deploying cubes");
-  while (abs(tilter.get_position()) < DEPLOYED_POSITION)
+  while (abs(tilterPot.get_value()) < DEPLOYED_POSITION)
   {
-    if(tilter.get_position() > -2150) {
-      tilter.move(-65);
+    double error = (double)(DEPLOYED_POSITION) - (double)(tilterPot.get_value());
+    double kp = .11;
+    if(error < 400) {
+      kp = 0.1;
     }
-    else if(tilter.get_position() > -DEPLOYED_POSITION) {
-      tilter.move(-35);
+    double speed = error * kp;
+    tilter.move_velocity(-(speed + 18));
+    intake.runIntakeAt(-15);
+      pros::delay(30);
     }
-    else {
-      tilter.move(0);
-    }
-    
-    pros::delay(30);
-  }
-  tilter.move(0);
-  tilter.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
+    tilter.move(0);
+    tilter.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
 }
 
 void TrayTilter::deployCubesOP()
