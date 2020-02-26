@@ -66,45 +66,9 @@ void autoTest()
 
 void auto1() //Small Blue Auton
 {
-
-  // intake.startIntake();
-
-  // lift.holdLiftDown();
-
-  // chassis.driveRampUp('f', 42, 12, 5500);
-
-  // chassis.turnToTarget(-45, 1000);
-
-  // chassis.driveRampUp('b', 20);
-
   intake.startIntake();
 
-  chassis.driveRampUp('f', 28.25, 12, 7000);
-
-  chassis.turnToTarget(44, 12000);
-
-  pros::delay(250);
-
-  chassis.driveRampUp('b', 29.5, 22, 12000);
-
-  chassis.turnToTarget(-1, 7000);
-
-  chassis.driveRampUp('f', 33, 12, 7000);
-
-  chassis.turnToTarget(-155.2, 7000);
-
-  intake.stopIntake();
-
-  intake.reverseIntakeForDeploy(0);
-
-  chassis.driveRampUp('f', 33, 13, 8000);
-
-  intake.reverseIntakeForDeploy(250);
-
-  trayTilter.deployCubes();
-
-  chassis.driveRampUp('b', 6, 15, 9000);
-
+  chassis.driveRampUp('f', 27, 12, 7000);
 }
 
 void auto2() //Big Blue Auton
@@ -329,8 +293,8 @@ void autonSkills()
  * from where it left off.
  */
 void autonomous()
-{
-  autonSelection = 5;  
+{ 
+  autonSelection = 1;
   if (autonSelection == 1)
   {
     auto1();

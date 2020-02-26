@@ -15,9 +15,10 @@ void initialize()
 {
 
   autonSelection = 0;
-  selectorInit();
+  //selectorInit();
   //initializeDisplay();
   //runAutonSelector();
+  pros::lcd::initialize();
   lift.init();
   trayTilter.init();
   pros::delay(2000);

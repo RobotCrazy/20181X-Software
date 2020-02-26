@@ -9,8 +9,8 @@ Logger angleDifferenceLogger("/usd/angleDifferenceLog.txt");
 
 const double WHEEL_RADIUS = 2.0;
 const double WHEEL_CIRCUMFERENCE = WHEEL_RADIUS * 2.0 * PI;
-const double GYRO_SCALE = .78;
-const double leftTWheelDistance = 7.17;
+const double GYRO_SCALE = .695;
+const double leftTWheelDistance = 7.17; 
 const double rightTWheelDistance = 7.17;
 const double DRIVE_BASE_GEARING = 1.25;
 double prevFRDrive = degreeToRadian(chassis.frontRightDrive.get_position() * -1) * DRIVE_BASE_GEARING;
@@ -678,13 +678,11 @@ void Chassis::driveRampUp(char dir, float inches, float increaseFactor, int maxS
 
 void Chassis::applyBrakeForDrive(int power, int speedTolerance)
 {
+  
   if (power > 0)
   {
 
-    while (frontRightDrive.get_actual_velocity() < speedTolerance &&
-           backRightDrive.get_actual_velocity() < speedTolerance &&
-           frontLeftDrive.get_actual_velocity() < speedTolerance &&
-           backLeftDrive.get_actual_velocity() < speedTolerance)
+    while (getRightSideVelocity() < -speedTolerance || getLeftSideVelocity() < -speedTolerance)
     {
       moveRightDriveVoltage(power);
       moveLeftDriveVoltage(power);
@@ -693,10 +691,7 @@ void Chassis::applyBrakeForDrive(int power, int speedTolerance)
 
   else
   {
-    while (frontRightDrive.get_actual_velocity() > speedTolerance &&
-           backRightDrive.get_actual_velocity() > speedTolerance &&
-           frontLeftDrive.get_actual_velocity() > speedTolerance &&
-           backLeftDrive.get_actual_velocity() > speedTolerance)
+    while (getRightSideVelocity() > speedTolerance || getLeftSideVelocity() > speedTolerance)
     {
       moveRightDriveVoltage(power);
       moveLeftDriveVoltage(power);
@@ -797,22 +792,67 @@ float Chassis::getRotationalVelocity()
 
 void Chassis::applyBrakeForTurn(int leftPower, int rightPower, int speedTolerance)
 {
-  if (leftPower > 0)
-  {
-    while (getRotationalVelocity() > speedTolerance)
-    {
-      moveRightDriveVoltage(leftPower);
-      moveLeftDriveVoltage(rightPower);
+
+  int leftPower1 = 0;
+  int rightPower1 = 0;
+
+  moveRightDriveVoltage(0);
+  moveLeftDriveVoltage(0);
+
+  getRotationalVelocity(); //I do this call so that the rotationVelocity begins calculating the velocity so it isn't 0
+                           //the first time it is called.
+  pros::delay(30);
+
+  while(fabs(getRotationalVelocity()) > speedTolerance ) {
+    if(getRotationalVelocity() < 0) {
+      leftPower1 = 3750;
+      rightPower1 = -3750;
     }
-  }
-  else
-  {
-    while (getRotationalVelocity() < speedTolerance)
-    {
-      moveRightDriveVoltage(leftPower);
-      moveLeftDriveVoltage(rightPower);
+    else {
+      leftPower1 = -4500;
+      rightPower1 = 4500;
     }
+
+    moveRightDriveVoltage(rightPower1);
+    moveLeftDriveVoltage(leftPower1);
+
+    pros::lcd::print(0, "Rot Vel: %f", getRotationalVelocity());
+    pros::lcd::print(1, "Left: %d", leftPower1);
+    pros::lcd::print(2, "Right: %d", rightPower1);
+    if(fabs(getRotationalVelocity()) < speedTolerance) {
+      pros::lcd::print(3, "Exiting");
+    }
+    else {
+      pros::lcd::print(3, "");
+    }
+
+    pros::delay(20);
+
+    //moveLeftDriveVoltage(leftPower1);
+    //moveRightDrive(rightPower1);
   }
+  // while(true) {
+  //   pros::lcd::print(0, "Rot Vel: %f", getRotationalVelocity());
+  //   pros::lcd::print(1, "Left Pow: %d", leftPower);
+  //   pros::lcd::print(2, "Right Pow: %d", rightPower);
+  //   pros::delay(20);
+  // }
+  // if (leftPower > 0)
+  // {
+  //   while (getRotationalVelocity() > speedTolerance)
+  //   {
+  //     moveRightDriveVoltage(leftPower);
+  //     moveLeftDriveVoltage(rightPower);
+  //   }
+  // }
+  // else
+  // {
+  //   while (getRotationalVelocity() < speedTolerance)
+  //   {
+  //     moveRightDriveVoltage(leftPower);
+  //     moveLeftDriveVoltage(rightPower);
+  //   }
+  // }
   moveRightDriveVoltage(0);
   moveLeftDriveVoltage(0);
 }
@@ -858,6 +898,14 @@ void Chassis::waitUntilSettled()
   {
     pros::delay(30);
   }
+}
+
+double Chassis::getRightSideVelocity() {
+  return (frontRightDrive.get_actual_velocity() + backRightDrive.get_actual_velocity()) / -2.0;
+}
+
+double Chassis::getLeftSideVelocity() {
+  return (frontLeftDrive.get_actual_velocity() + backLeftDrive.get_actual_velocity()) / 2.0;
 }
 
 /*

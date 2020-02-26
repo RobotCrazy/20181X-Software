@@ -46,6 +46,9 @@ public:
   void setGlobalTargetAngle(int newAngle);
   void setCurrentAngle(double angle);
   void printCoords();
+  
+  double getRightSideVelocity();
+  double getLeftSideVelocity();
 
   /**
    * Adds movement to queue of chassis actions
