@@ -38,7 +38,7 @@ void TrayTilter::move(int speed)
 void TrayTilter::deployCubes()
 {
   tilter.tare_position();
-  pros::lcd::print(7, "Deploying cubes");
+  // pros::lcd::print(7, "Deploying cubes");
   while (abs(tilterPot.get_value()) < DEPLOYED_POSITION)
   {
     double error = (double)(DEPLOYED_POSITION) - (double)(tilterPot.get_value());

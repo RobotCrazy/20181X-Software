@@ -3,8 +3,6 @@
 #include <functional>
 #include <memory>
 
-int autoMode = 1;
-
 bool forwardToCubePFunc()
 {
   return (1 == 1);
@@ -332,27 +330,27 @@ void autonSkills()
  */
 void autonomous()
 {
-  autoMode = 5;  
-  if (autoMode == 1)
+  autonSelection = 5;  
+  if (autonSelection == 1)
   {
     auto1();
   }
-  else if (autoMode == 2)
+  else if (autonSelection == 2)
   {
     auto2();
   }
-  else if (autoMode == 3)
+  else if (autonSelection == 3)
   {
     auto3();
   }
-  else if (autoMode == 4)
+  else if (autonSelection == 4)
   {
     auto4();
   }
-  else if(autoMode == 5) {
+  else if(autonSelection == 5) {
     auto5();
   }
-  else if(autoMode == 6) {
+  else if(autonSelection == 6) {
 
   }
   else

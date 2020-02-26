@@ -35,6 +35,7 @@
 #define PROS_USE_LITERALS
 
 #include "api.h"
+#include "pros/apix.h"
 
 #include "subsystems/chassis.hpp"
 #include "subsystems/intake.hpp"
@@ -47,6 +48,7 @@
 #include "utility/globals.h"
 #include "utility/prereq.hpp"
 #include "utility/debug/logger.hpp"
+#include "customDisplay/autonSelector.h"
 
 /**
  * You should add more #includes here

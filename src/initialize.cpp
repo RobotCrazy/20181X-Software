@@ -13,7 +13,10 @@ void initializeGUI()
  */
 void initialize()
 {
-  initializeDisplay();
+
+  autonSelection = 0;
+  selectorInit();
+  //initializeDisplay();
   //runAutonSelector();
   lift.init();
   trayTilter.init();

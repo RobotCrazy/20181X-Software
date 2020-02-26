@@ -124,7 +124,7 @@ void Chassis::completeMovements()
         driveToPointSync(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion());
         completedMovements.push_back(dmPointer);
         deleteFirstMovement();
-        pros::lcd::print(5, "Deleting movement");
+        // pros::lcd::print(5, "Deleting movement");
 
         // if (driveToPoint(dm.getTargetX(), dm.getTargetY(), dm.getSpeedDeadband(), dm.getMaxSpeed(), dm.getKP(), dm.getStopOnCompletion()) == true)
         // {
@@ -142,7 +142,7 @@ void Chassis::completeMovements()
         dmPointer.get()->setComplete();
         completedMovements.push_back(dmPointer);
         deleteFirstMovement();
-        pros::lcd::print(5, "Deleting movement");
+        // pros::lcd::print(5, "Deleting movement");
 
         // if (turnToTarget(dm.getTargetAngle(), dm.getSpeedDeadband(), dm.getKP(), dm.getStopOnCompletion()) == true)
         // {
@@ -161,7 +161,7 @@ void Chassis::initialize()
   currentX = 0.0;
   currentY = 0.0;
   currentAngle.setAngle(PI / 2);
-  pros::lcd::print(7, "initing %f", currentX);
+  //pros::lcd::print(7, "initing %f", currentX);
 }
 
 void Chassis::sensorInit()
@@ -230,8 +230,8 @@ void Chassis::trackPosition()
   currentX += finalXTranslation;
   currentY += finalYTranslation;
 
-  pros::lcd::print(0, "(%f, %f", currentX, currentY);
-  pros::lcd::print(1, "Cur Angle: %f", currentAngle.getAngle());
+  //pros::lcd::print(0, "(%f, %f", currentX, currentY);
+  //pros::lcd::print(1, "Cur Angle: %f", currentAngle.getAngle());
 
   prevFRDrive = frDrive;
   prevBRDrive = brDrive;
@@ -281,8 +281,8 @@ bool Chassis::driveToPoint(double x, double y, int speedDeadband, int maxSpeed, 
 
   double angleDifference = calculateShortestAngleDiff(currentAngle.getAngle(), currentMovementPointer.get()->getTargetAngle());
 
-  pros::lcd::print(2, "%f, %f", xDistance, yDistance);
-  pros::lcd::print(3, "%f, %f, %f", targetAngle.getAngle(), currentMovementPointer.get()->getTargetAngle(), angleDifference);
+ // pros::lcd::print(2, "%f, %f", xDistance, yDistance);
+ // pros::lcd::print(3, "%f, %f, %f", targetAngle.getAngle(), currentMovementPointer.get()->getTargetAngle(), angleDifference);
 
   if (fabs(speed) < speedDeadband)
   {
@@ -372,8 +372,8 @@ void Chassis::driveToPointSync(double x, double y, int speedDeadband, int maxSpe
       speed = maxSpeed * sign(speed);
     }
 
-    pros::lcd::print(2, "%f, %f, %f", xDistance, yDistance, error);
-    pros::lcd::print(3, "%f, %f, %f", speed, targetAngle.getAngle(), angleDifference);
+  //  pros::lcd::print(2, "%f, %f, %f", xDistance, yDistance, error);
+   // pros::lcd::print(3, "%f, %f, %f", speed, targetAngle.getAngle(), angleDifference);
 
     if (fabs(error) > errorInnerRange)
     {
@@ -385,7 +385,7 @@ void Chassis::driveToPointSync(double x, double y, int speedDeadband, int maxSpe
       }
       else
       {
-        pros::lcd::print(4, "Outer range");
+        //pros::lcd::print(4, "Outer range");
         moveRightDriveVoltage(speed);
         moveLeftDriveVoltage(speed);
       }
@@ -394,7 +394,7 @@ void Chassis::driveToPointSync(double x, double y, int speedDeadband, int maxSpe
     {
       if (angleDifference > degreeToRadian(85) && angleDifference < degreeToRadian(95))
       {
-        pros::lcd::print(4, "Inner range 1");
+        //pros::lcd::print(4, "Inner range 1");
         moveRightDriveVoltage(0);
         moveLeftDriveVoltage(0);
         break;
@@ -402,14 +402,14 @@ void Chassis::driveToPointSync(double x, double y, int speedDeadband, int maxSpe
       else if (calculateShortestAngleDiff(currentAngle, targetAngle) < (PI / 2.0))
       {
         //If the robot is facing an angle where forwards will get closer to the target
-        pros::lcd::print(4, "Inner range 2");
+       // pros::lcd::print(4, "Inner range 2");
         moveRightDriveVoltage(abs(speed));
         moveLeftDriveVoltage(abs(speed));
       }
       else
       {
         //If the robot is facing an angle where backwards will get closer to the target
-        pros::lcd::print(4, "Inner range 3");
+       // pros::lcd::print(4, "Inner range 3");
         moveRightDriveVoltage(abs(speed) * -1);
         moveLeftDriveVoltage(abs(speed) * -1);
       }
@@ -764,7 +764,7 @@ void Chassis::turnToTarget(float targetAngle, int maxSpeed)
       driveSpeed = sign(driveSpeed) * maxSpeed;
     }
 
-    pros::lcd::print(4, "%f", error);
+    // pros::lcd::print(4, "%f", error);
 
     moveRightDriveVoltage(driveSpeed * -1);
     moveLeftDriveVoltage(driveSpeed);
@@ -835,7 +835,7 @@ void Chassis::turnToTargetSync(Angle targetAngle, int speedDeadband, double kp, 
     {
       error = angleDifference * sign(error) * -1.0;
     }
-    pros::lcd::print(4, "%f, %f", angleDifference, error);
+    // pros::lcd::print(4, "%f, %f", angleDifference, error);
     speed = error * kp;
 
     if (fabs(speed) < speedDeadband)
