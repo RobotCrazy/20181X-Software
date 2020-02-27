@@ -12,6 +12,10 @@ Lift::Lift(int liftPort, char liftPotPort) : liftMotor(liftPort), liftPot(liftPo
 
 void Lift::raiseArm(int pos)
 {
+
+  double error = (double)pos - (double)liftPot.get_value();
+  double kp = .2;
+
   int elapsedTime = 0;
 
   while (liftPot.get_value() < pos)
