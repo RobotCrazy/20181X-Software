@@ -595,7 +595,7 @@ void Chassis::driveRampUp(char dir, float inches, float increaseFactor, int maxS
   int brakePower = 5000;
 
   //Constants here//
-  float kp = 28;
+  float kp = 26.5;
   float kd = 3;
 
   //Tolerance Variables Here//

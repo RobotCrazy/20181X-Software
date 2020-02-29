@@ -68,7 +68,17 @@ void auto1() //Small Blue Auton
 {
   intake.startIntake();
 
-  chassis.driveRampUp('f', 27, 12, 7000);
+  chassis.driveRampUp('f', 26.2, 12, 7000);
+
+  chassis.turnToTarget(47, 9500);
+
+  pros::delay(250);
+
+  chassis.driveRampUp('b', 26.5, 14, 8000);
+
+  chassis.turnToTarget(-3, 8000);
+
+  chassis.driveRampUp('f', 38, 12, 6000);
 }
 
 void auto2() //Big Blue Auton

@@ -12,23 +12,30 @@ Lift::Lift(int liftPort, char liftPotPort) : liftMotor(liftPort), liftPot(liftPo
 
 void Lift::raiseArm(int pos)
 {
-
-  double error = (double)pos - (double)liftPot.get_value();
-  double kp = .2;
-
-  int elapsedTime = 0;
-
-  while (liftPot.get_value() < pos)
-  {
-    liftMotor.move(100);
-    elapsedTime += 30;
-    pros::delay(30);
-    if (elapsedTime >= 3000)
-    {
-      break;
-    }
+  while(abs(liftPot.get_value() - pos) > 50 && pos >= 0) {
+      
+      double speed = 0;
+      if(liftPot.get_value() < (pos - 300)) {
+        speed = 12000;
+      }
+      else if(liftPot.get_value() < (pos - 50)) {
+        speed = 6000;
+      }
+      else if(pos < 80) {
+        speed = -12000;
+      }
+      else if(liftPot.get_value() > (pos + 50)) {
+        speed = -4000;
+      }
+      else if(liftPot.get_value() > (pos + 300)) {
+        speed = -9500;
+      }
+      else {
+        liftMotor.move(0);
+        liftMotor.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
+      }
+      liftMotor.move_voltage(speed);
   }
-  liftMotor.move(0);
   liftMotor.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
 }
 
