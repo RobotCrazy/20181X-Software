@@ -25,6 +25,7 @@ public:
   void deployCubesOP();
   void setTargetPos(int target);
   void moveToTargetPos();
+  void moveTrayAt(int speed);
 };
 
 #endif

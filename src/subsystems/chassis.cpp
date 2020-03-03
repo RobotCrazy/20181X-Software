@@ -900,6 +900,10 @@ void Chassis::waitUntilSettled()
   }
 }
 
+double Chassis::calculateScaledAngle(double angle) {
+  return angle / GYRO_SCALE / 10.0;
+}
+
 double Chassis::getRightSideVelocity() {
   return (frontRightDrive.get_actual_velocity() + backRightDrive.get_actual_velocity()) / -2.0;
 }

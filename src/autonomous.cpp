@@ -66,32 +66,53 @@ void autoTest()
 
 void auto1() //Small Blue Auton
 {
+
   intake.startIntake();
 
-  chassis.driveRampUp('f', 26.2, 12, 7000);
+  chassis.driveRampUp('f', 27.2, 12, 7500);
 
-  chassis.turnToTarget(47, 9500);
+  chassis.turnToTarget(47, 10500);
 
-  pros::delay(250);
+  chassis.driveRampUp('b', 29, 18);
 
-  chassis.driveRampUp('b', 26.5, 14, 8000);
+  chassis.turnToTarget(-2.25, 9000);
 
-  chassis.turnToTarget(-3, 8000);
+  chassis.driveRampUp('f', 36, 12, 8000);
 
-  chassis.driveRampUp('f', 38, 12, 6000);
-}
+  chassis.driveRampUp('f', 11, 26);
+
+  chassis.driveRampUp('b', 16, 24);
+
+  chassis.turnToTarget(-159, 6500);
+
+  intake.stopIntake();
+
+  chassis.setGlobalTargetAngle(chassis.gyro.get_value());
+
+  intake.reverseIntakeForDeployAsync(); 
+
+  chassis.driveRampUp('f', 31, 15, 10000);
+
+  trayTilter.deployCubes();
+
+  intake.runIntakeAt(-80);
+
+  chassis.driveRampUp('b', 6, 22);
+
+  intake.runIntakeAt(0);
+} 
 
 void auto2() //Big Blue Auton
 {
   intake.startIntake();
 
-  chassis.driveRampUp('f', 27.5, 12, 7000);
+  chassis.driveRampUp('f', 29, 12, 7000);
 
   pros::delay(250);
 
-  chassis.turnToTarget(-45, 12000);
+  chassis.turnToTarget(-47, 12000);
 
-  chassis.driveRampUp('b', 29.5, 22, 12000);
+  chassis.driveRampUp('b', 32, 22, 12000);
 
   chassis.turnToTarget(0, 8000);
 
@@ -205,91 +226,23 @@ void autonSkills()
 {
   intake.startIntake();
 
-  chassis.driveRampUp('f', 42, 16, 10000);
+  chassis.driveRampUp('f', 27, 12, 8000);
 
-  chassis.turnToTarget(28, 12000);
+  chassis.turnToTarget(47, 10500);
 
-  chassis.driveRampUp('b', 45);
+  chassis.driveRampUp('b', 29, 18);
 
-  chassis.turnToTarget(0, 12000);
+  chassis.turnToTarget(-2.5, 9000);
 
-  chassis.driveRampUp('f', 45, 12, 5000);
+  chassis.driveRampUp('f', 36, 12, 8000);
 
-  chassis.turnToTarget(-152, 6000);
-
-  intake.reverseIntakeForDeploy(0);
+  chassis.turnToTarget(-170, 5000); 
 
   intake.stopIntake();
 
-  chassis.driveRampUp('f', 39.6, 10, 7000);
+  intake.reverseIntakeForDeployAsync();
 
-  intake.reverseIntakeForDeploy();
-
-  trayTilter.deployCubes();
-
-  pros::delay(500);
-
-  chassis.driveRampUp('b', 12.5, 12, 6500);
-
-  chassis.turnToTarget(-260, 8000);
-
-  trayTilter.move(100);
-
-  pros::delay(500);
-
-  intake.startIntake();
-
-  chassis.driveRampUp('f', 45);
-
-  pros::delay(500);
-
-  chassis.turnToTarget(-71, 7000);
-
-  intake.stopIntake();
-
-  chassis.driveRampUp('f', 27, 18, 8000);
-
-  intake.reverseIntakeForDeploy(800);
-
-  lift.raiseArm(2100);
-
-  pros::delay(300);
-
-  chassis.driveRampUp('f', 6.5);
-
-  intake.reverseIntake(1000, 80); //Deposit cubes into blue alliance tower
-
-  chassis.driveRampUp('b', 18.5);
-
-  lift.lowerArm(100);
-
-  chassis.turnToTarget(0);
-
-  intake.startIntake();
-
-  chassis.driveRampUp('f', 31);
-
-  pros::delay(400);
-
-  chassis.driveRampUp('b', 8);
-
-  intake.reverseIntakeForDeploy(800);
-
-  lift.raiseArm(2200);
-
-  chassis.driveRampUp('f', 6.8);
-
-  intake.reverseIntake(1000, 90);
-
-  chassis.driveRampUp('b', 10);
-
-  chassis.turnToTarget(-260);
-
-  lift.lowerArm(0);
-
-  intake.startIntake();
-
-  chassis.driveRampUp('f', 25);
+  chassis.driveRampUp('f', 36, 15, 9000);
 }
 /**
  * Runs the user autonomous code. This function will be started in its own task

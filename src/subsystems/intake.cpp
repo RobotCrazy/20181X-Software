@@ -1,21 +1,24 @@
 #include "main.h"
+#include "utility/mathUtil.h"
 
 pros::Motor intake2(16);
-Intake::Intake(int intakePortLeft, int intakePortRight)
-    : intakeLeft(intakePortLeft), intakeRight(intakePortRight)
+Intake::Intake(int intakePortLeft, int intakePortRight, char intakeLineSensorPort)
+    : intakeLeft(intakePortLeft), intakeRight(intakePortRight), intakeLineSensor(intakeLineSensorPort)
 {
+  deploySetUpRequested = false;
 }
 
 void Intake::driverControl()
 {
+  setDeploySetUpRequestedFalse();
   if(master.get_digital(DIGITAL_RIGHT)) {
     intakeLeft.move(20);
     intakeRight.move(20);
   }
 
   else {
-    intakeLeft.move(master.get_digital(DIGITAL_R1) * 127 - (master.get_digital(DIGITAL_R2) * 80));
-    intakeRight.move(master.get_digital(DIGITAL_R1) * -127 - (master.get_digital(DIGITAL_R2) * -80));
+    intakeLeft.move(master.get_digital(DIGITAL_R1) * 127 - (master.get_digital(DIGITAL_R2) * 70));
+    intakeRight.move(master.get_digital(DIGITAL_R1) * -127 - (master.get_digital(DIGITAL_R2) * -70));
     intakeLeft.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
     intakeRight.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
   }
@@ -48,13 +51,14 @@ void Intake::deleteFirstMovement()
 
 void Intake::completeMovements()
 {
-  if (movements.empty() == false)
-  {
-    //pros::lcd::print(6, "Inside if statement");
-    IntakeMovement im = getFirstMovement();
-    if (im.readyToOperate() == true)
-    {
-      runIntake(im.getDegrees());
+  if(deploySetUpRequested == true) {
+    if(intakeLineSensor.get_value() > 2550) {
+      intakeLeft.move_velocity(-40);
+      intakeRight.move_velocity(40);
+    }
+    else {
+      intakeLeft.move(0);
+      intakeRight.move(0);
     }
   }
 }
@@ -80,6 +84,14 @@ void Intake::reverseIntakeForDeploy(int ms)
   intakeRight.move(-10);
 }
 
+void Intake::reverseIntakeForDeployAsync() {
+  deploySetUpRequested = true;
+}
+
+void Intake::setDeploySetUpRequestedFalse() {
+  deploySetUpRequested = false;
+}
+
 void Intake::reverseIntake(int ms, int speed)
 {
   intakeLeft.move(-1 * speed);
@@ -92,6 +104,11 @@ void Intake::reverseIntake(int ms, int speed)
 void Intake::runIntakeAt(int speed) {
     intakeLeft.move(speed);
     intakeRight.move(-1 * speed);
+}
+
+void Intake::runIntakeForAsync(int ticks) {
+  intakeLeft.move_relative(ticks, 100);
+  intakeLeft.move_relative(-ticks, 100);
 }
 
 void intakeTaskActions(void *param)

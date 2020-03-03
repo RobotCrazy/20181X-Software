@@ -46,6 +46,8 @@ public:
   void setGlobalTargetAngle(int newAngle);
   void setCurrentAngle(double angle);
   void printCoords();
+
+  double calculateScaledAngle(double angle);
   
   double getRightSideVelocity();
   double getLeftSideVelocity();

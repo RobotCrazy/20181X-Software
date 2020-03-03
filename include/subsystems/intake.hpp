@@ -10,10 +10,12 @@ class Intake
 private:
   pros::Motor intakeLeft;
   pros::Motor intakeRight;
+  bool deploySetUpRequested;
+  pros::ADIAnalogIn intakeLineSensor;
   std::queue<IntakeMovement> movements;
 
 public:
-  Intake(int intakePortLeft, int intakePortRight);
+  Intake(int intakePortLeft, int intakePortRight, char intakeLineSensorPort);
   void driverControl();
 
   void runIntake(int ticks);
@@ -27,9 +29,13 @@ public:
   void stopIntake();
 
   void reverseIntakeForDeploy(int ms = 350);
+  void reverseIntakeForDeployAsync();
+  void setDeploySetUpRequestedFalse();
   void reverseIntake(int ms, int speed = 127);
   
   void runIntakeAt(int speed);
+
+  void runIntakeForAsync(int ticks);
 };
 
 extern void intakeTaskActions(void *param);

@@ -37,6 +37,7 @@ void TrayTilter::move(int speed)
 
 void TrayTilter::deployCubes()
 {
+  intake.setDeploySetUpRequestedFalse();
   tilter.tare_position();
   // pros::lcd::print(7, "Deploying cubes");
   while (abs(tilterPot.get_value()) < DEPLOYED_POSITION)
@@ -88,4 +89,8 @@ void TrayTilter::moveToTargetPos()
   {
     tilter.move(0);
   }
+}
+
+void TrayTilter::moveTrayAt(int speed) {
+  tilter.move(speed);
 }
