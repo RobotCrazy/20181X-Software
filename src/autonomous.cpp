@@ -66,10 +66,9 @@ void autoTest()
 
 void auto1() //Small Blue Auton
 {
-
   intake.startIntake();
 
-  chassis.driveRampUp('f', 27.2, 12, 7500);
+  chassis.driveRampUp('f', 26.75, 10, 5000);
 
   chassis.turnToTarget(47, 10500);
 
@@ -77,27 +76,21 @@ void auto1() //Small Blue Auton
 
   chassis.turnToTarget(-2.25, 9000);
 
-  chassis.driveRampUp('f', 36, 12, 8000);
+  chassis.driveRampUp('f', 36, 12, 6500);
 
-  chassis.driveRampUp('f', 11, 26);
-
-  chassis.driveRampUp('b', 16, 24);
-
-  chassis.turnToTarget(-159, 6500);
-
-  intake.stopIntake();
+  chassis.turnToTarget(-160, 6500);
 
   chassis.setGlobalTargetAngle(chassis.gyro.get_value());
 
-  intake.reverseIntakeForDeployAsync(); 
+  chassis.driveRampUp('f', 35.75, 15, 10000);
 
-  chassis.driveRampUp('f', 31, 15, 10000);
+  intake.stopIntake();
 
   trayTilter.deployCubes();
 
-  intake.runIntakeAt(-80);
+  intake.runIntakeAt(-90);
 
-  chassis.driveRampUp('b', 6, 22);
+  chassis.driveRampUp('b', 6, 30);
 
   intake.runIntakeAt(0);
 } 
@@ -138,29 +131,31 @@ void auto3() //Small Red Auton
 
   intake.startIntake();
 
-  chassis.driveRampUp('f', 27.5, 12, 7000);
+  chassis.driveRampUp('f', 26.75, 10, 5000);
 
-  pros::delay(500);
+  chassis.turnToTarget(-47, 10500);
 
-  chassis.turnToTarget(-45, 12000);
+  chassis.driveRampUp('b', 30.5, 18);
 
-  chassis.driveRampUp('b', 28, 22, 12000);
+  chassis.turnToTarget(-2.5, 9000);
 
-  chassis.turnToTarget(-1.5, 8000);
+  chassis.driveRampUp('f', 38, 12, 6500);
 
-  chassis.driveRampUp('f', 35, 12, 7000);
+  chassis.turnToTarget(153, 6500);
 
-  chassis.turnToTarget(147, 7000);
+  chassis.setGlobalTargetAngle(chassis.gyro.get_value());
+
+  chassis.driveRampUp('f', 35.75, 15, 10000);
 
   intake.stopIntake();
 
-  intake.reverseIntakeForDeploy(0);
-
-  chassis.driveRampUp('f', 35, 13, 8000);
-
   trayTilter.deployCubes();
 
-  chassis.driveRampUp('b', 7, 15, 9000);
+  intake.runIntakeAt(-90);
+
+  chassis.driveRampUp('b', 6, 30);
+
+  intake.runIntakeAt(0);
 }
 
 void auto4() //Big Red Auton
@@ -224,25 +219,79 @@ void auto5() {
 
 void autonSkills()
 {
-  intake.startIntake();
 
-  chassis.driveRampUp('f', 27, 12, 8000);
+/*  intake.startIntake();
 
-  chassis.turnToTarget(47, 10500);
-
-  chassis.driveRampUp('b', 29, 18);
-
-  chassis.turnToTarget(-2.5, 9000);
-
-  chassis.driveRampUp('f', 36, 12, 8000);
-
-  chassis.turnToTarget(-170, 5000); 
+  pros::delay(2500);
 
   intake.stopIntake();
 
-  intake.reverseIntakeForDeployAsync();
+  trayTilter.deployCubes();
 
-  chassis.driveRampUp('f', 36, 15, 9000);
+  intake.runIntakeAt(-90);
+
+  chassis.driveRampUp('b', 6, 30);*/
+
+  trayTilter.deployCubes();
+
+  trayTilter.setTargetPos(90);
+
+
+  // intake.startIntake();
+
+  // chassis.driveRampUp('f', 26.75, 10, 5000);
+
+  // chassis.turnToTarget(47, 10500);
+
+  // chassis.driveRampUp('b', 29, 18);
+
+  // chassis.turnToTarget(-2.25, 9000);
+
+  // chassis.driveRampUp('f', 36, 12, 6500);
+
+  // chassis.turnToTarget(-160, 6500);
+
+  // chassis.setGlobalTargetAngle(chassis.gyro.get_value());
+
+  // chassis.driveRampUp('f', 35.75, 15, 10000);
+
+  // intake.stopIntake();
+
+  // trayTilter.deployCubes();
+
+  // intake.runIntakeAt(-90);
+
+  // chassis.driveRampUp('b', 6, 30);
+
+  // intake.runIntakeAt(0);
+
+  // chassis.driveRampUp('b', 37);
+
+  // trayTilter.setTargetPos(90);
+
+  // chassis.turnToTarget(-3, 8000);
+
+  // intake.startIntake();
+
+  // chassis.driveRampUp('f', 16, 16, 8000);
+
+  // chassis.driveRampUp('b', 3);
+
+  // intake.stopIntake();
+
+  // pros::delay(250);
+  
+  // intake.reverseIntake(325, 85);
+
+  // lift.raiseArm(LIFT_MIDDLE_TOWER_POS);
+
+  // intake.reverseIntake(500, 85);
+
+  // chassis.driveRampUp('b', 8);
+
+  // lift.raiseArm(90);
+
+  // chassis.turnToTarget(80);
 }
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -257,7 +306,7 @@ void autonSkills()
  */
 void autonomous()
 { 
-  autonSelection = 1;
+  autonSelection = 10;
   if (autonSelection == 1)
   {
     auto1();

@@ -22,6 +22,7 @@ void TrayTilter::driverControl()
   }
   else {
     tilter.move(0);
+    tilter.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
   }
 }
 
@@ -37,6 +38,7 @@ void TrayTilter::move(int speed)
 
 void TrayTilter::deployCubes()
 {
+  moveTilterRequested = false;
   intake.setDeploySetUpRequestedFalse();
   tilter.tare_position();
   // pros::lcd::print(7, "Deploying cubes");
@@ -49,10 +51,11 @@ void TrayTilter::deployCubes()
     }
     double speed = error * kp;
     tilter.move_velocity(-(speed + 18));
-    intake.runIntakeAt(-15);
+    intake.runIntakeAt(-36);
       pros::delay(30);
     }
     tilter.move(0);
+    intake.runIntakeAt(0);
     tilter.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
 }
 
@@ -72,22 +75,26 @@ void TrayTilter::setTargetPos(int target)
 {
   moveTilterRequested = true;
   targetPos = target;
+  tilter.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
 }
 
 void TrayTilter::moveToTargetPos()
 {
-  int error = targetPos - tilter.get_position();
-  if (error > 10)
-  {
-    tilter.move(-80);
-  }
-  else if (error < 10)
-  {
-    tilter.move(80);
-  }
-  else
-  {
-    tilter.move(0);
+  if(moveTilterRequested == true) {
+    int error = targetPos - tilterPot.get_value();
+    if (error > 40)
+    {
+      tilter.move(-80);
+    }
+    else if (error < 40)
+    {
+     tilter.move(80);
+    }
+    else
+    {
+      tilter.move(0);
+      tilter.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
+    }
   }
 }
 

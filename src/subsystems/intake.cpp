@@ -57,22 +57,22 @@ void Intake::completeMovements()
       intakeRight.move_velocity(40);
     }
     else {
-      intakeLeft.move(0);
-      intakeRight.move(0);
+      intakeLeft.move_velocity(0);
+      intakeRight.move_velocity(0);
     }
   }
 }
 
 void Intake::startIntake()
 {
-  intakeLeft.move(127);
-  intakeRight.move(-127);
+  intakeLeft.move_velocity(180);
+  intakeRight.move_velocity(-180);
 }
 
 void Intake::stopIntake()
 {
-  intakeLeft.move(0);
-  intakeRight.move(0);
+  intakeLeft.move_velocity(0);
+  intakeRight.move_velocity(0);
 }
 
 void Intake::reverseIntakeForDeploy(int ms)
@@ -85,7 +85,14 @@ void Intake::reverseIntakeForDeploy(int ms)
 }
 
 void Intake::reverseIntakeForDeployAsync() {
-  deploySetUpRequested = true;
+  // deploySetUpRequested = true;
+  while(intakeLineSensor.get_value() > 2550) {
+      intakeLeft.move_velocity(-40);
+      intakeRight.move_velocity(40);
+    }
+    
+    intakeLeft.move_velocity(0);
+    intakeRight.move_velocity(0);
 }
 
 void Intake::setDeploySetUpRequestedFalse() {

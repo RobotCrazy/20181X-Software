@@ -31,11 +31,12 @@ void Lift::raiseArm(int pos)
         speed = -9500;
       }
       else {
-        liftMotor.move(0);
+        liftMotor.move_voltage(0);
         liftMotor.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
       }
       liftMotor.move_voltage(speed);
   }
+  liftMotor.move_voltage(0);
   liftMotor.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
 }
 

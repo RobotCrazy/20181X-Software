@@ -1,6 +1,9 @@
 #ifndef _LIFT_HPP_
 #define _LIFT_HPP_
 
+extern const int LIFT_MIDDLE_TOWER_POS;
+extern const int LIFT_HIGH_TOWER_POS;
+
 class Lift
 {
 private:

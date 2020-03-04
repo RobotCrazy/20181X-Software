@@ -966,6 +966,7 @@ void chassisOdometry(void *param)
   while (true)
   {
     chassis.trackPosition();
+    trayTilter.moveToTargetPos();
     pros::delay(30);
   }
 } //run odometry code seperately from complete movements to allow complete Movements to sometimes be blocking and not prevent position tracking from running
