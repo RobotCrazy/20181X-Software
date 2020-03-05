@@ -15,18 +15,20 @@ void initialize()
 {
 
   autonSelection = 0;
-  //selectorInit();
+  selectorInit();
   //initializeDisplay();
   //runAutonSelector();
-  pros::lcd::initialize();
+  //pros::lcd::initialize();
   lift.init();
   trayTilter.init();
-  pros::delay(2000);
-  chassis.sensorInit();
-  pros::delay(300);
 
-  chassis.sensorInit();
-  pros::delay(300);
+  
+  // pros::delay(2000);
+  // chassis.sensorInit();
+  // pros::delay(300);
+
+  // chassis.sensorInit();
+  // pros::delay(300);
 }
 
 /**

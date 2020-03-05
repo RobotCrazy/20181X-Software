@@ -94,6 +94,7 @@ void TrayTilter::moveToTargetPos()
     {
       tilter.move(0);
       tilter.set_brake_mode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
+      moveTilterRequested = false;
     }
   }
 }

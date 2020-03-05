@@ -53,8 +53,8 @@ void Intake::completeMovements()
 {
   if(deploySetUpRequested == true) {
     if(intakeLineSensor.get_value() > 2550) {
-      intakeLeft.move_velocity(-40);
-      intakeRight.move_velocity(40);
+      intakeLeft.move_velocity(-80);
+      intakeRight.move_velocity(80);
     }
     else {
       intakeLeft.move_velocity(0);
@@ -85,14 +85,14 @@ void Intake::reverseIntakeForDeploy(int ms)
 }
 
 void Intake::reverseIntakeForDeployAsync() {
-  // deploySetUpRequested = true;
-  while(intakeLineSensor.get_value() > 2550) {
-      intakeLeft.move_velocity(-40);
-      intakeRight.move_velocity(40);
-    }
+   deploySetUpRequested = true;
+  // while(intakeLineSensor.get_value() > 2550) {
+  //     intakeLeft.move_velocity(-65);
+  //     intakeRight.move_velocity(65);
+  //   }
     
-    intakeLeft.move_velocity(0);
-    intakeRight.move_velocity(0);
+  //   intakeLeft.move_velocity(0);
+  //   intakeRight.move_velocity(0);
 }
 
 void Intake::setDeploySetUpRequestedFalse() {

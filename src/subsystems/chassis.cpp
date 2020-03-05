@@ -816,7 +816,7 @@ void Chassis::applyBrakeForTurn(int leftPower, int rightPower, int speedToleranc
     moveRightDriveVoltage(rightPower1);
     moveLeftDriveVoltage(leftPower1);
 
-    pros::lcd::print(0, "Rot Vel: %f", getRotationalVelocity());
+    /*pros::lcd::print(0, "Rot Vel: %f", getRotationalVelocity());
     pros::lcd::print(1, "Left: %d", leftPower1);
     pros::lcd::print(2, "Right: %d", rightPower1);
     if(fabs(getRotationalVelocity()) < speedTolerance) {
@@ -824,7 +824,7 @@ void Chassis::applyBrakeForTurn(int leftPower, int rightPower, int speedToleranc
     }
     else {
       pros::lcd::print(3, "");
-    }
+    }*/
 
     pros::delay(20);
 
