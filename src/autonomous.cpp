@@ -325,7 +325,7 @@ void autonSkills()
 
   intake.setDeploySetUpRequestedFalse();
 
-  intake.reverseIntake(700, 85);
+  intake.reverseIntake(700, 85); //Spit cube into first tower
 
   chassis.setGlobalTargetAngle(chassis.gyro.get_value());
 
@@ -339,7 +339,7 @@ void autonSkills()
 
   chassis.driveRampUp('f', 13, 14, 8000);
 
-  chassis.turnToTarget(237, 7000);
+  chassis.turnToTarget(239, 7000);
 
   intake.reverseIntakeForDeployAsync();
 
@@ -374,6 +374,8 @@ void autonSkills()
   lift.raiseArm(LIFT_HIGH_TOWER_POS);
 
   intake.setDeploySetUpRequestedFalse();
+
+//  chassis.setGlobalTargetAngle(chassis.gyro.get_value()); Potential line.  Try and see the result
 
   chassis.driveRampUp('f', 3);
 
