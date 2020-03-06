@@ -101,7 +101,7 @@ void auto1() //Small Blue Auton
 
   chassis.setGlobalTargetAngle(chassis.gyro.get_value());
 
-  chassis.driveRampUp('f', 34.3, 15, 10000);
+  chassis.driveRampUp('f', 34.2, 15, 10000);
 
   intake.stopIntake();
 
