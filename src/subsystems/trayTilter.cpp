@@ -51,7 +51,7 @@ void TrayTilter::deployCubes()
     }
     double speed = error * kp;
     tilter.move_velocity(-(speed + 18));
-    intake.runIntakeAt(-36);
+    intake.runIntakeAt(-32);
       pros::delay(30);
     }
     tilter.move(0);
@@ -82,7 +82,7 @@ void TrayTilter::moveToTargetPos()
 {
   if(moveTilterRequested == true) {
     int error = targetPos - tilterPot.get_value();
-    if (error > 40)
+    if (error > 80)
     {
       tilter.move(-80);
     }

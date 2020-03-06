@@ -65,12 +65,14 @@ void Intake::completeMovements()
 
 void Intake::startIntake()
 {
+  deploySetUpRequested = false;
   intakeLeft.move_velocity(180);
   intakeRight.move_velocity(-180);
 }
 
 void Intake::stopIntake()
 {
+  deploySetUpRequested = false;
   intakeLeft.move_velocity(0);
   intakeRight.move_velocity(0);
 }

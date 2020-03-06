@@ -5,5 +5,6 @@
 
 void selectorInit();
 extern int autonSelection;
+extern lv_obj_t * feedbackLabel;
 
 #endif

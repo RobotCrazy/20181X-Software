@@ -7,7 +7,7 @@ int currentAutonMode = 0;
 static const char *btnmMap[] = {"Small Zone", "Big Zone", "Sit Idle", ""};
 
 //Global variables
-lv_obj_t * feedbackLabel;
+  lv_obj_t * feedbackLabel;
 
 /*Create a button descriptor string array*/
 int autonSelection = 3;
